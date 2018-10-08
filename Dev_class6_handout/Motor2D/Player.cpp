@@ -71,8 +71,37 @@ bool PlayerClass::Update(float dt) {
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) {
 		data.ypos += data.yvel;
 	}
+	//if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) {
+	//	
+	//	if (jumping == false) {
+	//		data.yvel = 10.0;
+	//		bot_reached = false;
+	//		top_reached = false;
+	//		jumping = true;
+	//		data.yvel = 10;
+	//		yposaux = data.ypos;
+	//	}
+	//	if (jumping /*&& !top_reached*/) {
+	//		data.ypos -= data.yvel;
+	//		data.yvel -= 0.15;
+	//		usethisbool = true;
+	//		if (data.ypos >= yposaux) {
+	//			jumping = false;
+	//		}
+	//	}
+
+	//}
+	//if (jumping && usethisbool) {
+	//	data.ypos -= data.yvel;
+	//	data.yvel -= 0.15;
+
+	//	if (data.ypos >= yposaux) {
+	//		jumping = false;
+	//	}
+	//}
+
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) {
-		
+
 		if (jumping == false) {
 			data.yvel = 10.0;
 			bot_reached = false;
@@ -84,13 +113,21 @@ bool PlayerClass::Update(float dt) {
 		if (jumping /*&& !top_reached*/) {
 			data.ypos -= data.yvel;
 			data.yvel -= 0.15;
+			usethisbool = true;
 			if (data.ypos >= yposaux) {
 				jumping = false;
 			}
 		}
 
 	}
+	if (jumping && usethisbool) {
+		data.ypos -= data.yvel;
+		data.yvel -= 0.15;
 
+		if (data.ypos >= yposaux) {
+			jumping = false;
+		}
+	}
 	//if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN) {
 	//	if (!jumping) {
 	//		data.yvel = 12.0f;

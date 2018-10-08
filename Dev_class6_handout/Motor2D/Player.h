@@ -74,6 +74,7 @@ public:
 	uint max_height;
 	uint min_height;
 	uint yposaux;
+	bool usethisbool;
 };
 
 #endif
