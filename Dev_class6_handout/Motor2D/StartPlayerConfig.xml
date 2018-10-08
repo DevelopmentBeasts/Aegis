@@ -3,7 +3,7 @@
 <!-- Config file for the game -->
 
 <config>
-  <player xpos ="20" ypos ="20" type ="0"/>
+  <player xpos ="300" ypos ="300" type ="0" yvel ="0" xvel ="1"/>
 </config>
 
 

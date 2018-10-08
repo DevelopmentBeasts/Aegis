@@ -17,18 +17,22 @@ enum PlayerTypes {
 struct PlayerData {
 	uint xpos;
 	uint ypos;
+	float yvel;
+	float xvel;
 	PlayerTypes type;
 };
 
 
 class PlayerClass: public j1Module {
+
 public:
+	char name;
 	PlayerClass();
 
-	//destructor 
-	~PlayerClass();
+	//destructor
+	virtual ~PlayerClass();
 	bool Start();
-	bool Awake(pugi::xml_node &config);
+	//bool Awake(pugi::xml_node &config);
 
 	void Draw();
 
@@ -39,13 +43,16 @@ public:
 	iPoint MapToWorld(int x, int y) const;
 	iPoint WorldToMap(int x, int y) const;
 
+
+	bool Update(float dt);
+	
 private:
 
-	bool LoadPlayer();
+	/*bool LoadPlayer();
 	bool LoadTilesetDetails(pugi::xml_node& tileset_node, TileSet* set);
 	bool LoadTilesetImage(pugi::xml_node& tileset_node, TileSet* set);
 	bool LoadLayer(pugi::xml_node& node, MapLayer* layer);
-
+*/
 public:
 
 	//MapData data;
@@ -58,7 +65,15 @@ private:
 	p2SString			folder;
 	bool				map_loaded;
 	
-
+public:
+	SDL_Rect rect;
+public:
+	bool jumping = false;
+	bool bot_reached = false;
+	bool top_reached = false;
+	uint max_height;
+	uint min_height;
+	uint yposaux;
 };
 
 #endif
