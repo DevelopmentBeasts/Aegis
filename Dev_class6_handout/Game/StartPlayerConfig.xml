@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+
+<!-- Config file for the game -->
+
+<config>
+  <player xpos ="300" ypos ="500" type ="FIRE_WISP"/>
+</config>
+
+
+
+
+
