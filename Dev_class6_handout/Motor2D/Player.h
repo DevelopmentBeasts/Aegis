@@ -75,6 +75,8 @@ public:
 	uint min_height;
 	uint yposaux;
 	bool usethisbool;
+	bool automatic_right = false;
+	bool automatic_left = false;
 };
 
 #endif
