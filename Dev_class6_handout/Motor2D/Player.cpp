@@ -90,7 +90,7 @@ bool PlayerClass::Update(float dt) {
 	}
 	if (jumping /*&& usethisbool*/) {
 		data.ypos -= data.yvel;
-		data.yvel -= 0.15;
+		data.yvel -= 0.43;
 
 		if (data.ypos >= yposaux) {
 			data.ypos = yposaux;
