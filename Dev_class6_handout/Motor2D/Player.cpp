@@ -22,7 +22,7 @@ bool PlayerClass::Start() {
 	pugi::xml_parse_result result = PlayerStartFile.load_file("StartPlayerConfig.xml");
 	if (result == NULL) {
 		LOG("Could not load StartPlayerConfig.xml. pugi error: %s", result.description());
-		ret = false;
+		//ret = false;
 	}
 	if (ret == true) {
 		//Load all Player starter info
@@ -30,7 +30,7 @@ bool PlayerClass::Start() {
 	}
 	PlayerXmlNode = PlayerStartFile.child("config").child("player");
 	if (PlayerXmlNode == NULL) {
-		LOG("PENE");
+		LOG("PlayerXmlNode is not reading correctly");
 	}
 	//Asigment of the values
 	uint type1 = PlayerXmlNode.attribute("type").as_uint();
@@ -44,10 +44,12 @@ bool PlayerClass::Start() {
 	case 3:
 		data.type = WIND_WISP;
 	}
-	data.xpos = PlayerXmlNode.attribute("xpos").as_uint();
-	data.ypos = PlayerXmlNode.attribute("ypos").as_uint();
+	/*data.xpos = PlayerXmlNode.attribute("xpos").as_uint();
+	data.ypos = PlayerXmlNode.attribute("ypos").as_uint();*/
 	/*data.yvel = PlayerXmlNode.attribute("yvel").as_uint();*/
 	/*data.xvel = PlayerXmlNode.attribute("xvel").as_uint(1);*/
+	data.xpos = 300;
+	data.ypos = 500;
 	data.yvel = 0.0;
 	data.xvel = 5.0;
 	rect.w = 40;
@@ -69,92 +71,33 @@ bool PlayerClass::Update(float dt) {
 		data.xpos -= data.xvel;
 	}
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) {
-		data.ypos += data.yvel;
+		data.ypos -= data.yvel;
 	}
-	//if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) {
-	//	
-	//	if (jumping == false) {
-	//		data.yvel = 10.0;
-	//		bot_reached = false;
-	//		top_reached = false;
-	//		jumping = true;
-	//		data.yvel = 10;
-	//		yposaux = data.ypos;
-	//	}
-	//	if (jumping /*&& !top_reached*/) {
-	//		data.ypos -= data.yvel;
-	//		data.yvel -= 0.15;
-	//		usethisbool = true;
-	//		if (data.ypos >= yposaux) {
-	//			jumping = false;
-	//		}
-	//	}
-
-	//}
-	//if (jumping && usethisbool) {
-	//	data.ypos -= data.yvel;
-	//	data.yvel -= 0.15;
-
-	//	if (data.ypos >= yposaux) {
-	//		jumping = false;
-	//	}
-	//}
+	
 
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) {
 
 		if (jumping == false) {
-			data.yvel = 10.0;
+			data.yvel = 1.0;
 			bot_reached = false;
 			top_reached = false;
 			jumping = true;
 			data.yvel = 10;
 			yposaux = data.ypos;
 		}
-		if (jumping /*&& !top_reached*/) {
-			data.ypos -= data.yvel;
-			data.yvel -= 0.15;
-			usethisbool = true;
-			if (data.ypos >= yposaux) {
-				jumping = false;
-			}
-		}
+		
 
 	}
-	if (jumping && usethisbool) {
+	if (jumping /*&& usethisbool*/) {
 		data.ypos -= data.yvel;
 		data.yvel -= 0.15;
 
 		if (data.ypos >= yposaux) {
+			data.ypos = yposaux;
 			jumping = false;
 		}
 	}
-	//if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN) {
-	//	if (!jumping) {
-	//		data.yvel = 12.0f;
-	//		bot_reached = false;
-	//		top_reached = false;
-	//		jumping = true;
-	//	}
-	//}
-	//if (jumping) {
-	//	if (!top_reached) {
-	//		data.ypos -= data.yvel;
-	//		//data.yvel - 0.05;
-	//		if (data.ypos <= max_height)
-	//			top_reached = true;
-	//	}
-	//	else if (!bot_reached) {
-	//		data.ypos += data.yvel;
-	//		if (data.ypos >= min_height) {
-	//			data.yvel = 0.0f;
-	//			min_height = data.ypos;
-	//			max_height = data.ypos - 300;
-	//			jumping = false;
-	//			bot_reached = true;
-	//		}
-
-	//	}
-	//}
+	
 
 
 
