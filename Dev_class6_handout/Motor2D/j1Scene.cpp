@@ -32,6 +32,8 @@ bool j1Scene::Start()
 {
 	//App->map->Load("hello2.tmx");
 	App->map->Load("AEGIS_MAP.tmx");
+
+	App->map->DrawColliders();
 	
 	return true;
 }
@@ -64,6 +66,7 @@ bool j1Scene::Update(float dt)
 		App->render->camera.x -= 1;
 
 	App->map->Draw();
+
 
 	int x, y;
 	App->input->GetMousePosition(x, y);

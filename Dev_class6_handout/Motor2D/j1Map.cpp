@@ -198,6 +198,17 @@ bool j1Map::Load(const char* file_name)
 			data.layers.add(lay);
 	}
 
+	pugi::xml_node objectgroup;
+	p2SString objectname;
+
+	for (objectgroup = map_file.child("map").child("objectgroup"); objectgroup && ret; objectgroup.next_sibling("objectgroup")) {
+		objectname = objectgroup.attribute("name").as_string();
+		if (objectname == "Colliders") {
+			LoadColliders(objectgroup, &data.colliders);
+			break;
+		}
+	}
+
 	if(ret == true)
 	{
 		LOG("Successfully parsed map XML file: %s", file_name);
@@ -385,5 +396,36 @@ bool j1Map::LoadLayer(pugi::xml_node& node, MapLayer* layer)
 		}
 	}
 
+
 	return ret;
+}
+bool j1Map::LoadColliders(pugi::xml_node& node, ColliderData* collider) {
+	bool ret = true;
+	pugi::xml_node& colliders = node.child("object");
+
+	if (collider == NULL) {
+		LOG("Error parsing map xml file: Cannot find 'colliders' tag.");
+		ret = false;
+		RELEASE(collider);
+	}
+	else {
+		for (colliders; colliders; colliders = colliders.next_sibling("object")) {
+			SDL_Rect auxiliar_rect;
+			auxiliar_rect.x = colliders.attribute("x").as_int();
+			auxiliar_rect.y = colliders.attribute("y").as_int();
+			auxiliar_rect.w = colliders.attribute("width").as_int();
+			auxiliar_rect.h = colliders.attribute("height").as_int();
+			data.colliders.collider_rects.add(auxiliar_rect);
+		}
+	}
+	
+	return ret;
+}
+
+void j1Map::DrawColliders() {
+	uint i = 0;
+	while (i < data.colliders.collider_rects.count()) {
+		data.colliders.collider = App->collider->AddCollider(data.colliders.collider_rects[i++], COLLIDER_WALL);
+		++i;
+	}
 }
