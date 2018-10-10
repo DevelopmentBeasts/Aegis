@@ -34,11 +34,6 @@
     <ClCompile Include="j1Map.cpp">
       <Filter>Desenvolupament  ========\Modules</Filter>
     </ClCompile>
-    <ClCompile Include="j1Collision.cpp">
-    <ClCompile Include="Player.cpp">
-      
-      <Filter>Desenvolupament  ========\Modules</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="j1Window.h">
@@ -92,11 +87,6 @@
     <ClInclude Include="j1Map.h">
       <Filter>Desenvolupament  ========\Modules</Filter>
     </ClInclude>
-    <ClInclude Include="j1Collision.h">
-    <ClInclude Include="Player.h">
-      
-      <Filter>Desenvolupament  ========\Modules</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Programacio 2 ===========">
@@ -117,10 +107,5 @@
     <Filter Include="Desenvolupament  ========\Tools\PuguiXML">
       <UniqueIdentifier>{7cb78d67-17cc-45eb-af97-e2106becce7b}</UniqueIdentifier>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <Xml Include="StartPlayerConfig.xml">
-      <Filter>Desenvolupament  ========\Tools</Filter>
-    </Xml>
   </ItemGroup>
 </Project>
