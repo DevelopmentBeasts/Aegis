@@ -5,7 +5,6 @@
 #include "j1Module.h"
 #include "PugiXml\src\pugixml.hpp"
 
-
 // Modules
 class j1Window;
 class j1Input;
@@ -14,8 +13,6 @@ class j1Textures;
 class j1Audio;
 class j1Scene;
 class j1Map;
-class j1Collision;
-class PlayerClass;
 
 class j1App
 {
@@ -86,9 +83,7 @@ public:
 	j1Audio*			audio;
 	j1Scene*			scene;
 	j1Map*				map;
-	j1Collision*		collider;
 
-	PlayerClass*        player;
 private:
 
 	p2List<j1Module*>	modules;
