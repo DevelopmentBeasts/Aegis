@@ -119,7 +119,7 @@ private:
 	bool LoadLayer(pugi::xml_node& node, MapLayer* layer);
 	bool LoadColliders(pugi::xml_node& node, ColliderData* collider);
 	
-
+	TileSet* GetTilesetFromTileId(int id) const;
 public:
 
 	MapData data;

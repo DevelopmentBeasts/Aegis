@@ -60,7 +60,22 @@ void j1Map::Draw()
 	
 	
 
-	// TODO 10(old): Complete the draw function
+TileSet* j1Map::GetTilesetFromTileId(int id) const
+{
+	// TODO 3: Complete this method so we pick the right
+	// Tileset based on a tile id
+
+	for (int i = 0; i < data.tilesets.count() - 1; ++i) {
+		if (data.tilesets[i + 1] != nullptr) {
+			if (data.tilesets[i + 1]->firstgid > id)
+				return data.tilesets[i];
+		}
+	}
+	return data.tilesets.end->data;
+
+
+
+}
 
 
 iPoint j1Map::MapToWorld(int x, int y) const
