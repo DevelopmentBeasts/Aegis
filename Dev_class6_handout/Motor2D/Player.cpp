@@ -53,7 +53,7 @@ bool PlayerClass::Start() {
 	data.yvel = 0.0;
 	data.xvel = 5.0;
 	rect.w = 40;
-	rect.h = 80;
+	rect.h = 40;
 
 	max_height = data.ypos - 300;
 	min_height = data.ypos;
@@ -74,7 +74,7 @@ bool PlayerClass::Update(float dt) {
 		}
 	}
 	if (automatic_right) {
-		data.xpos += (data.xvel+0.5);
+		data.xpos += (data.xvel+1.5);
 	}
 	//__________________
 
@@ -88,7 +88,7 @@ bool PlayerClass::Update(float dt) {
 		}
 	}
 	if (automatic_left) {
-		data.xpos -= (data.xvel + 0.5);
+		data.xpos -= (data.xvel + 1.5);
 	}
 	
 	if (data.ypos == yposaux) {
@@ -104,7 +104,7 @@ bool PlayerClass::Update(float dt) {
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) {
 
 		if (jumping == false) {
-			data.yvel = 1.0;
+			//data.yvel = 1.0;
 			bot_reached = false;
 			top_reached = false;
 			jumping = true;
@@ -114,7 +114,7 @@ bool PlayerClass::Update(float dt) {
 	}
 	if (jumping /*&& usethisbool*/) {
 		data.ypos -= data.yvel;
-		data.yvel -= 0.15;
+		data.yvel -= 0.3;
 
 		if (data.ypos >= yposaux) {
 			data.ypos = yposaux;
