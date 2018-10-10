@@ -2,7 +2,7 @@
 #define __p2List_H__
 
 #include "p2Defs.h"
-#include <assert.h>
+
 /**
 * Contains items from double linked list
 */
@@ -196,8 +196,8 @@ public:
 			p_item = p_item->next;
 		}
 
-		//ASSERT(p_item);
-		assert(p_item);
+		ASSERT(p_item);
+
 		return(p_item->data);
 	}
 

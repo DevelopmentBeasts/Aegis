@@ -5,16 +5,7 @@
 #include "p2List.h"
 #include "p2Point.h"
 #include "j1Module.h"
-
-// TODO 5: Create a generic structure to hold properties
-// TODO 7: Our custom properties should have one method
-// to ask for the value of a custom property
-// ----------------------------------------------------
-
-struct Properties{
-	bool collider;
-	uint navigation;
-};
+#include "j1Collision.h"
 
 // ----------------------------------------------------
 struct MapLayer
@@ -23,7 +14,6 @@ struct MapLayer
 	int			width;
 	int			height;
 	uint*		data;
-	Properties	properties;
 
 	MapLayer() : data(NULL)
 	{}
@@ -33,13 +23,25 @@ struct MapLayer
 		RELEASE(data);
 	}
 
+	// TODO 6 (old): Short function to get the value of x,y
 	inline uint Get(int x, int y) const
 	{
-		return data[(y*width) + x];
+		return (y*width+x);
 	}
 };
 
-// ----------------------------------------------------
+struct ColliderData {
+	Collider*			collider;
+	p2List<SDL_Rect>	collider_rects;
+
+	ColliderData(): collider(NULL)
+	{}
+
+	~ColliderData() {
+		RELEASE(collider);
+	}
+};
+
 struct TileSet
 {
 	SDL_Rect GetTileRect(int id) const;
@@ -77,6 +79,7 @@ struct MapData
 	MapTypes			type;
 	p2List<TileSet*>	tilesets;
 	p2List<MapLayer*>	layers;
+	ColliderData		colliders;
 };
 
 // ----------------------------------------------------
@@ -101,6 +104,10 @@ public:
 	// Load new map
 	bool Load(const char* path);
 
+	//Add all the colliders of the map
+	void DrawColliders();
+
+	// Coordinate translation methods
 	iPoint MapToWorld(int x, int y) const;
 	iPoint WorldToMap(int x, int y) const;
 
@@ -110,9 +117,8 @@ private:
 	bool LoadTilesetDetails(pugi::xml_node& tileset_node, TileSet* set);
 	bool LoadTilesetImage(pugi::xml_node& tileset_node, TileSet* set);
 	bool LoadLayer(pugi::xml_node& node, MapLayer* layer);
-	bool LoadProperties(pugi::xml_node& node, Properties& properties);
-
-	TileSet* GetTilesetFromTileId(int id) const;
+	bool LoadColliders(pugi::xml_node& node, ColliderData* collider);
+	
 
 public:
 
@@ -123,7 +129,6 @@ private:
 	pugi::xml_document	map_file;
 	p2SString			folder;
 	bool				map_loaded;
-	bool showlayer = false;
 };
 
 #endif // __j1MAP_H__
