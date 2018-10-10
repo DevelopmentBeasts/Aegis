@@ -19,6 +19,7 @@ struct PlayerData {
 	uint ypos;
 	float yvel;
 	float xvel;
+	float yvel2;
 	PlayerTypes type;
 };
 
@@ -45,7 +46,7 @@ public:
 
 
 	bool Update(float dt);
-	
+	void MovePlayer();
 private:
 
 	/*bool LoadPlayer();
@@ -67,6 +68,7 @@ private:
 	
 public:
 	SDL_Rect rect;
+	SDL_Rect StaminaRect;
 public:
 	bool jumping = false;
 	bool bot_reached = false;
@@ -77,6 +79,7 @@ public:
 	bool usethisbool;
 	bool automatic_right = false;
 	bool automatic_left = false;
+	bool fall_atack = false;
 };
 
 #endif

@@ -52,18 +52,36 @@ bool PlayerClass::Start() {
 	data.ypos = 500;
 	data.yvel = 0.0;
 	data.xvel = 5.0;
-	rect.w = 40;
+
+
+	rect.w = 40;//rect used for the player
 	rect.h = 40;
 
-	max_height = data.ypos - 300;
-	min_height = data.ypos;
+	
+	StaminaRect.w = 10;
+	StaminaRect.h = 40;
 
+	StaminaRect.x = 30;
+	StaminaRect.y = 700;
+	
 	return ret;
 }
 
 
 bool PlayerClass::Update(float dt) {
 
+	MovePlayer();
+
+	
+	return true;
+
+}
+
+
+
+
+
+void PlayerClass::MovePlayer() {
 	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) {
 		automatic_left = false;
 		if (!automatic_right) {
@@ -74,7 +92,7 @@ bool PlayerClass::Update(float dt) {
 		}
 	}
 	if (automatic_right) {
-		data.xpos += (data.xvel+1.5);
+		data.xpos += (data.xvel + 1.5);
 	}
 	//__________________
 
@@ -90,17 +108,28 @@ bool PlayerClass::Update(float dt) {
 	if (automatic_left) {
 		data.xpos -= (data.xvel + 1.5);
 	}
-	
+
 	if (data.ypos == yposaux) {
 		automatic_right = false;
 		automatic_left = false;
 	}
 	//_________________
-	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) {
-		data.ypos -= data.yvel;
-	}
-	
 
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN) {
+		if (data.yvel > -3 && jumping) {
+			if (StaminaRect.w >= 121) {
+				StaminaRect.w -= 120;
+				if (jumping) {
+					fall_atack = true;
+					jumping = false;
+					automatic_left = false;
+					automatic_right = false;
+
+				}
+			}
+		}
+	}
+	//____________________
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) {
 
 		if (jumping == false) {
@@ -112,7 +141,7 @@ bool PlayerClass::Update(float dt) {
 			yposaux = data.ypos;
 		}
 	}
-	if (jumping /*&& usethisbool*/) {
+	if (jumping) {
 		data.ypos -= data.yvel;
 		data.yvel -= 0.3;
 
@@ -121,37 +150,40 @@ bool PlayerClass::Update(float dt) {
 			jumping = false;
 		}
 	}
-	
-
-
+	if (!jumping) {
+		data.yvel = 0.0;
+		if (StaminaRect.w <= 300) {
+			StaminaRect.w += 1;
+		}
+	}
+	if (fall_atack && !jumping) {
+		data.yvel = 25.0;
+		data.ypos += data.yvel;
+		data.yvel += 2;
+		if (data.ypos >= yposaux) {
+			fall_atack = false;
+			data.ypos = yposaux;
+		}
+	}
+	//_____________
 
 	rect.x = data.xpos;
 	rect.y = data.ypos;
 
 	App->render->DrawQuad(rect, 0, 255, 0, 100);
 
+	App->render->DrawQuad(StaminaRect, 0, 0, 255, 100);
 
-
-
-	return true;
-
+	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT) {
+		StaminaRect.y -= 2;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT) {
+		StaminaRect.y += 2;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) {
+		StaminaRect.x -= 2;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT) {
+		StaminaRect.x += 2;
+	}
 }
-//bool PlayerClass::CleanUp()
-//{
-//	LOG("Freeing Player");
-//
-//	return true;
-//}
-
-
-
-
-//
-//bool PlayerClass::Awake(pugi::xml_node& config) {
-//	LOG("Loading Player parser");
-//
-//	bool ret = true;
-//
-//	folder.create(config.child("folder").child_value());
-//	return ret;
-//}
