@@ -7,6 +7,23 @@
 #include "j1Module.h"
 #include "j1Collision.h"
 
+// TODO 5: Create a generic structure to hold properties
+// TODO 7: Our custom properties should have one method
+// to ask for the value of a custom property
+// ----------------------------------------------------
+
+struct ColliderData {
+	Collider*			collider;
+	p2List<SDL_Rect>	collider_rects;
+
+	ColliderData() : collider(NULL)
+	{}
+
+	~ColliderData() {
+		collider->to_delete = true;
+	}
+};
+
 // ----------------------------------------------------
 struct MapLayer
 {
@@ -23,25 +40,13 @@ struct MapLayer
 		RELEASE(data);
 	}
 
-	// TODO 6 (old): Short function to get the value of x,y
 	inline uint Get(int x, int y) const
 	{
-		return (y*width+x);
+		return data[(y*width) + x];
 	}
 };
 
-struct ColliderData {
-	Collider*			collider;
-	p2List<SDL_Rect>	collider_rects;
-
-	ColliderData(): collider(NULL)
-	{}
-
-	~ColliderData() {
-		collider->to_delete = true;
-	}
-};
-
+// ----------------------------------------------------
 struct TileSet
 {
 	SDL_Rect GetTileRect(int id) const;
@@ -79,7 +84,6 @@ struct MapData
 	MapTypes			type;
 	p2List<TileSet*>	tilesets;
 	p2List<MapLayer*>	layers;
-
 	ColliderData		colliders;
 };
 
@@ -105,10 +109,9 @@ public:
 	// Load new map
 	bool Load(const char* path);
 
-	//Add all the colliders of the map
+	//Add all the colliders to the map
 	void DrawColliders();
 
-	// Coordinate translation methods
 	iPoint MapToWorld(int x, int y) const;
 	iPoint WorldToMap(int x, int y) const;
 
@@ -118,9 +121,11 @@ private:
 	bool LoadTilesetDetails(pugi::xml_node& tileset_node, TileSet* set);
 	bool LoadTilesetImage(pugi::xml_node& tileset_node, TileSet* set);
 	bool LoadLayer(pugi::xml_node& node, MapLayer* layer);
-	bool LoadColliders(pugi::xml_node& node, ColliderData* collider);
-	
+	bool LoadColliders(pugi::xml_node& node, ColliderData* collider);		
+
+
 	TileSet* GetTilesetFromTileId(int id) const;
+
 public:
 
 	MapData data;
@@ -130,6 +135,7 @@ private:
 	pugi::xml_document	map_file;
 	p2SString			folder;
 	bool				map_loaded;
+	bool showlayer = false;
 };
 
 #endif // __j1MAP_H__

@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<!-- Config file for the game -->
+
+<config>
+  <player xpos ="700" ypos ="500" type ="0" yvel="0" xvel ="5">
+    <playerrect w="60" h="60"/>
+    <StaminaRect w ="13" h="40" x="30" y="700"/>
+  </player>/>
+ 
+</config>
+
+
+
+
+

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="50" height="15" tilewidth="32" tileheight="32" nextobjectid="4">
- <tileset firstgid="1" name="Desert" tilewidth="32" tileheight="32" spacing="1" margin="1" tilecount="48" columns="8">
+<!DOCTYPE map SYSTEM "http://mapeditor.org/dtd/1.0/map.dtd">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="50" height="15" tilewidth="32" tileheight="32" nextobjectid="1">
+ <tileset firstgid="1" name="Desert" tilewidth="32" tileheight="32" spacing="1" margin="1">
   <image source="tmw_desert_spacing.png" width="265" height="199"/>
   <terraintypes>
    <terrain name="Bricks" tile="9"/>
@@ -803,9 +804,4 @@
    <tile gid="0"/>
   </data>
  </layer>
- <objectgroup name="Colliders">
-  <object id="1" x="153" y="25" width="214" height="311"/>
-  <object id="2" x="373" y="155" width="242" height="203"/>
-  <object id="3" x="707" y="199" width="242" height="154"/>
- </objectgroup>
 </map>
