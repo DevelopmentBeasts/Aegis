@@ -315,7 +315,7 @@ void PlayerClass::PlayerAnims() {
 
 		SDL_RenderCopyEx(App->render->renderer, Textures, &CurrentAnimationRect, &playerrect, 90.0, NULL, SDL_FLIP_NONE);
 
-		App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &playerrect, NULL, 0.0, 1, 1, 1.0);
+		//App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &playerrect, NULL, 0.0, 1, 1, 1.0);
 	}
 
 	// JUMP UP STRAIGHT (going down)
@@ -327,7 +327,7 @@ void PlayerClass::PlayerAnims() {
 
 		SDL_RenderCopyEx(App->render->renderer, Textures, &CurrentAnimationRect, &playerrect, 90, NULL, SDL_FLIP_HORIZONTAL);
 
-		App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &playerrect, NULL, 0.0, 1, 1, 1.0);
+		//App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &playerrect, NULL, 0.0, 1, 1, 1.0);
 	}
 
 
@@ -340,7 +340,7 @@ void PlayerClass::PlayerAnims() {
 
 		SDL_RenderCopyEx(App->render->renderer, Textures, &CurrentAnimationRect, &playerrect, 90, NULL, SDL_FLIP_HORIZONTAL);
 
-		App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &playerrect, NULL, 0.0, 1, 1, 1.0);
+		//App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &playerrect, NULL, 0.0, 1, 1, 1.0);
 	}
 
 
@@ -352,7 +352,7 @@ void PlayerClass::PlayerAnims() {
 
 		SDL_RenderCopyEx(App->render->renderer, Textures, &CurrentAnimationRect, &playerrect, data.yvel*4, NULL, SDL_FLIP_NONE);
 
-		App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &playerrect, NULL, 0.0, 1, 1, 1.0);
+		//App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &playerrect, NULL, 0.0, 1, 1, 1.0);
 	}
 	if (jumping && (data.yvel < 0) && LastDirectionLeft && automatic_left) {  //JUMPING DOWN + LEFT
 		current_animation = &run_left;
@@ -361,7 +361,7 @@ void PlayerClass::PlayerAnims() {
 
 		SDL_RenderCopyEx(App->render->renderer, Textures, &CurrentAnimationRect, &playerrect, data.yvel * 4, NULL, SDL_FLIP_NONE);
 
-		App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &playerrect, NULL, 0.0, 1, 1, 1.0);
+		//App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &playerrect, NULL, 0.0, 1, 1, 1.0);
 	}
 
 	//MOVE LEFT 
@@ -372,7 +372,7 @@ void PlayerClass::PlayerAnims() {
 
 		SDL_RenderCopyEx(App->render->renderer, Textures, &CurrentAnimationRect, &playerrect, NULL, NULL, SDL_FLIP_NONE);
 
-		App->render->Blit(Textures, (int)data.xpos, (int)data.ypos,&playerrect, NULL, 0.0, 1, 1, 1.0);
+		//App->render->Blit(Textures, (int)data.xpos, (int)data.ypos,&playerrect, NULL, 0.0, 1, 1, 1.0);
 	}
 
 
@@ -384,7 +384,7 @@ void PlayerClass::PlayerAnims() {
 		
 		SDL_RenderCopyEx(App->render->renderer, Textures, &CurrentAnimationRect,&playerrect , NULL, NULL, SDL_FLIP_HORIZONTAL);
 
-		App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &playerrect, NULL, data.yvel*4.0, 1, 1, 1.0);
+		//App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &playerrect, NULL, data.yvel*4.0, 1, 1, 1.0);
 	}
 	// JUMP RIGHT
 
@@ -395,7 +395,7 @@ void PlayerClass::PlayerAnims() {
 
 		SDL_RenderCopyEx(App->render->renderer, Textures, &CurrentAnimationRect, &playerrect, data.yvel * (-4), NULL, SDL_FLIP_HORIZONTAL);
 
-		App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &playerrect, NULL, 0.0, 1, 1, 1.0);
+		//App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &playerrect, NULL, 0.0, 1, 1, 1.0);
 	}
 	if (jumping && (data.yvel < 0) && LastDirectionRight && automatic_right) {  //JUMPING DOWN + LEFT
 		current_animation = &run_left;
@@ -404,7 +404,7 @@ void PlayerClass::PlayerAnims() {
 
 		SDL_RenderCopyEx(App->render->renderer, Textures, &CurrentAnimationRect, &playerrect, data.yvel * (-4), NULL, SDL_FLIP_HORIZONTAL);
 
-		App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &playerrect, NULL, 0.0, 1, 1, 1.0);
+		//App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &playerrect, NULL, 0.0, 1, 1, 1.0);
 	}
 
 	// IDEL LEFT
@@ -415,7 +415,7 @@ void PlayerClass::PlayerAnims() {
 
 		SDL_RenderCopyEx(App->render->renderer, Textures, &CurrentAnimationRect, &playerrect, data.yvel * (-4), NULL, SDL_FLIP_NONE);
 
-		App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &playerrect, NULL, 0.0, 1, 1, 1.0);
+		//App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &playerrect, NULL, 0.0, 1, 1, 1.0);
 	}
 
 	//IDEL RIGHT
@@ -426,7 +426,7 @@ void PlayerClass::PlayerAnims() {
 
 		SDL_RenderCopyEx(App->render->renderer, Textures, &CurrentAnimationRect, &playerrect, data.yvel * (-4), NULL, SDL_FLIP_HORIZONTAL);
 
-		App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &playerrect, NULL, 0.0, 1, 1, 1.0);
+		//App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &playerrect, NULL, 0.0, 1, 1, 1.0);
 	}
 
 
