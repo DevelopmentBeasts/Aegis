@@ -38,8 +38,8 @@ bool j1Scene::Start()
 
 	screeninitx = App->render->camera.x;
 	screeninity = App->render->camera.y;*/
-	App->map->DrawColliders();
 
+	App->map->DrawColliders();
 
 	return true;
 }
@@ -107,6 +107,6 @@ bool j1Scene::PostUpdate()
 bool j1Scene::CleanUp()
 {
 	LOG("Freeing scene");
-	
+
 	return true;
 }

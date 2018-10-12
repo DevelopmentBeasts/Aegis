@@ -85,6 +85,7 @@ struct MapData
 	p2List<TileSet*>	tilesets;
 	p2List<MapLayer*>	layers;
 	ColliderData		colliders;
+
 };
 
 // ----------------------------------------------------
@@ -111,7 +112,7 @@ public:
 
 	//Add all the colliders to the map
 	void DrawColliders();
-
+  
 	iPoint MapToWorld(int x, int y) const;
 	iPoint WorldToMap(int x, int y) const;
 

@@ -41,6 +41,7 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(scene);
 	AddModule(player);
 	AddModule(collision);
+
 	// render last to swap buffer
 	AddModule(render);
 }
@@ -293,7 +294,8 @@ void j1App::SaveGame(const char* file) const
 	// from the "GetSaveGames" list ... should we overwrite ?
 
 	want_to_save = true;
-	save_game.create(file);
+	save_game.create(file);  //ric dejando regalitos por aqui...
+=======
 }
 
 // ---------------------------------------
@@ -361,12 +363,9 @@ bool j1App::SavegameNow() const
 
 	if(ret == true)
 	{
-		data.save_file(save_game.GetString());
-
+		data.save_file(save_game.GetString()); 
 		// we are done, so write data to disk
-		//fs->Save(save_game.GetString(), stream.str().c_str(), stream.str().length());
-
-
+		//fs->Save(save_game.GetString(), stream.str().c_str(), stream.str().length())
 		LOG("... finished saving", save_game.GetString());
 	}
 	else
