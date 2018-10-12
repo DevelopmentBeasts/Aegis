@@ -4,6 +4,7 @@
 #include "j1Window.h"
 #include "j1Render.h"
 #include "player.h"
+#include "j1Input.h"
 #define VSYNC true
 
 j1Render::j1Render() : j1Module()
@@ -70,6 +71,18 @@ bool j1Render::PreUpdate()
 bool j1Render::Update(float dt)
 {
 	
+	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
+		camera.y += 2;
+
+	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
+		camera.y -= 2;
+
+	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
+		camera.x += 30;
+		
+	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
+		camera.x -= 30;
+
 	return true;
 }
 
@@ -124,7 +137,7 @@ void j1Render::ResetViewPort()
 }
 
 // Blit to screen
-bool j1Render::Blit(SDL_Texture* texture, int x, int y, const SDL_Rect* section, float speed, double angle, int pivot_x, int pivot_y,float extrascale) const
+bool j1Render::Blit(SDL_Texture* texture, int x, int y, const SDL_Rect* section, float speed, double angle,SDL_RendererFlip flip, int pivot_x, int pivot_y,float extrascale) const
 {
 	bool ret = true;
 	uint scale = App->win->GetScale();
@@ -156,7 +169,7 @@ bool j1Render::Blit(SDL_Texture* texture, int x, int y, const SDL_Rect* section,
 		p = &pivot;
 	}
 
-	if(SDL_RenderCopyEx(renderer, texture, section, &rect, angle, p, SDL_FLIP_NONE) != 0)
+	if(SDL_RenderCopyEx(renderer, texture, section, &rect, angle,0, flip) != 0)
 	{
 		LOG("Cannot blit to screen. SDL_RenderCopy error: %s", SDL_GetError());
 		ret = false;
