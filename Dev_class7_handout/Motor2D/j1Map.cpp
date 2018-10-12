@@ -48,9 +48,9 @@ void j1Map::Draw()
 						iPoint pos = MapToWorld(x, y);
 						App->render->Blit(tileset->texture, pos.x, pos.y, &r);
 					}
-				}
-			}
-		}		
+				}	
+			}		
+		}			
 			layer_item = layer_item->next;
 
 	}
@@ -169,7 +169,7 @@ bool j1Map::CleanUp()
 bool j1Map::Load(const char* file_name)
 {
 	bool ret = true;
-	p2SString tmp("%s%s", folder.GetString(), file_name);
+	p2SString tmp("maps//%s", file_name);
 
 	pugi::xml_parse_result result = map_file.load_file(tmp.GetString());
 
@@ -221,7 +221,9 @@ bool j1Map::Load(const char* file_name)
 	p2SString objectname;
 
 	for (objectgroup = map_file.child("map").child("objectgroup"); objectgroup && ret; objectgroup.next_sibling("objectgroup")) {
+		
 		objectname = objectgroup.attribute("name").as_string();
+		
 		if (objectname == "Colliders") {
 			LoadColliders(objectgroup, &data.colliders);
 			break;
@@ -422,7 +424,7 @@ bool j1Map::LoadColliders(pugi::xml_node& node, ColliderData* collider) {
 	bool ret = true;
 	pugi::xml_node& colliders = node.child("object");
 
-	if (collider == NULL) {
+	if (colliders == NULL) {
 		LOG("Error parsing map xml file: Cannot find 'colliders' tag.");
 		ret = false;
 		RELEASE(collider);

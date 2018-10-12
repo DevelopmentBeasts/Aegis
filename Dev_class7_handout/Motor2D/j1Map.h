@@ -13,7 +13,7 @@
 // ----------------------------------------------------
 
 struct ColliderData {
-	Collider*			collider;
+	Collider*			collider=nullptr;
 	p2List<SDL_Rect>	collider_rects;
 
 	ColliderData() : collider(NULL)
