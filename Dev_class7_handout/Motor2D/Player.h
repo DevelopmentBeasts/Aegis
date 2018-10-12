@@ -47,8 +47,7 @@ public:
 	// Load / Save
 	//bool Load(pugi::xml_node&);
 	//bool Save(pugi::xml_node&) const;
-
-	void LoadPushbacks(pugi::xml_node node,Animation &anim);
+	
 	iPoint MapToWorld(int x, int y) const;
 	iPoint WorldToMap(int x, int y) const;
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="200" height="70" tilewidth="32" tileheight="32" nextobjectid="1">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="200" height="70" tilewidth="32" tileheight="32" nextobjectid="4">
  <tileset firstgid="1" name="AEGIS_TILESET" tilewidth="32" tileheight="32" tilecount="290" columns="29">
   <image source="AEGIS_TILESET.png" width="928" height="320"/>
  </tileset>
@@ -182058,4 +182058,9 @@
    <tile gid="0"/>
   </data>
  </layer>
+ <objectgroup name="Colliders">
+  <object id="1" x="467" y="350" width="183" height="232"/>
+  <object id="2" x="782" y="505" width="202" height="258"/>
+  <object id="3" x="785" y="299" width="210" height="307"/>
+ </objectgroup>
 </map>
