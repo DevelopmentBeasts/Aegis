@@ -14,6 +14,7 @@ class j1Audio;
 class j1Scene;
 class j1Map;
 class PlayerClass;
+class j1Collision;
 
 class j1App
 {
@@ -84,7 +85,9 @@ public:
 	j1Audio*			audio;
 	j1Scene*			scene;
 	j1Map*				map;
+	j1Collision*		collision;
 	PlayerClass*        player;
+
 private:
 
 	p2List<j1Module*>	modules;

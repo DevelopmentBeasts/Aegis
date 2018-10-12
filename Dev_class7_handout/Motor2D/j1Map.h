@@ -5,15 +5,23 @@
 #include "p2List.h"
 #include "p2Point.h"
 #include "j1Module.h"
+#include "j1Collision.h"
 
 // TODO 5: Create a generic structure to hold properties
 // TODO 7: Our custom properties should have one method
 // to ask for the value of a custom property
 // ----------------------------------------------------
 
-struct Properties{
-	bool collider;
-	uint navigation;
+struct ColliderData {
+	Collider*			collider=nullptr;
+	p2List<SDL_Rect>	collider_rects;
+
+	ColliderData() : collider(NULL)
+	{}
+
+	~ColliderData() {
+		collider->to_delete = true;
+	}
 };
 
 // ----------------------------------------------------
@@ -23,7 +31,6 @@ struct MapLayer
 	int			width;
 	int			height;
 	uint*		data;
-	Properties	properties;
 
 	MapLayer() : data(NULL)
 	{}
@@ -77,6 +84,8 @@ struct MapData
 	MapTypes			type;
 	p2List<TileSet*>	tilesets;
 	p2List<MapLayer*>	layers;
+	ColliderData		colliders;
+
 };
 
 // ----------------------------------------------------
@@ -101,6 +110,9 @@ public:
 	// Load new map
 	bool Load(const char* path);
 
+	//Add all the colliders to the map
+	void DrawColliders();
+  
 	iPoint MapToWorld(int x, int y) const;
 	iPoint WorldToMap(int x, int y) const;
 
@@ -110,7 +122,8 @@ private:
 	bool LoadTilesetDetails(pugi::xml_node& tileset_node, TileSet* set);
 	bool LoadTilesetImage(pugi::xml_node& tileset_node, TileSet* set);
 	bool LoadLayer(pugi::xml_node& node, MapLayer* layer);
-	bool LoadProperties(pugi::xml_node& node, Properties& properties);
+	bool LoadColliders(pugi::xml_node& node, ColliderData* collider);		
+
 
 	TileSet* GetTilesetFromTileId(int id) const;
 

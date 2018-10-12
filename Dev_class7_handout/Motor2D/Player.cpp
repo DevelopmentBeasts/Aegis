@@ -26,7 +26,6 @@ PlayerClass::PlayerClass() {   //DO PUSHBACKS WITH XML
 	LoadPushbacks(AnimsNode, idle_left);
 	AnimsNode = AnimsDoc.child("config").child("AnimsCoords").child("run_left");
 	LoadPushbacks(AnimsNode, run_left);
-
 }
 bool PlayerClass::Start() {
 	
@@ -73,13 +72,14 @@ bool PlayerClass::Start() {
 	StaminaRect.y = PlayerXmlNode.child("StaminaRect").attribute("y").as_int();
 	//___________________________________________________________________________
 	LOG("Resseting anims");
+
 	
 	idle_left.Reset();
 	run_left.Reset();
 
 	jump_right.Reset();
 	jump_left.Reset();
-	
+
 	fall_left.Reset();
 	attack_right.Reset();
 	attack_left.Reset();
@@ -87,6 +87,7 @@ bool PlayerClass::Start() {
 	LOG("LOADING PLAYER TEXTURES");
 
 	Textures = App->tex->Load("textures/Fire_Wisp/fireSheet.png");
+
 	current_animation = &idle_left;
 
 	return ret;
@@ -131,6 +132,7 @@ void PlayerClass::MovePlayer() {
 	}
 	if (automatic_right) {
 		data.xpos += (data.xvel + 3); // a little boost of the speed in the air to make the jump more interesting in a plataformer game
+
 	}
 	//__________________
 	
@@ -278,6 +280,7 @@ void PlayerClass::PlayerAnims() {
 		CurrentAnimationRect = current_animation->GetCurrentFrame();
 
 		SDL_RenderCopyEx(App->render->renderer, Textures, &CurrentAnimationRect, &playerrect, 90.0, NULL, SDL_FLIP_HORIZONTAL);
+
 
 		//App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &playerrect, NULL, 0.0, 1, 1, 1.0);
 	}

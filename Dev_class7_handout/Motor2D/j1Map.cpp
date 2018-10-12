@@ -31,28 +31,6 @@ void j1Map::Draw()
 	if (map_loaded == false)
 		return;
 
-	// TODO 4: Make sure we draw all the layers and not just the first one
-	/*MapLayer* layer = this->data.layers.start->data;
-	
-		for (int y = 0; y < data.height; ++y)
-		{
-			for (int x = 0; x < data.width; ++x)
-			{
-				int tile_id = layer->Get(x, y);
-				if (tile_id > 0)
-				{
-					TileSet* tileset = GetTilesetFromTileId(tile_id);
-					if (tileset != nullptr)
-					{
-						SDL_Rect r = tileset->GetTileRect(tile_id);
-						iPoint pos = MapToWorld(x, y);
-
-						App->render->Blit(tileset->texture, pos.x, pos.y, &r);
-					}
-				}
-			}
-		}*/
-
 	p2List_item <MapLayer*>*layer_item = data.layers.start;
 	MapLayer* layer;
 	
@@ -84,8 +62,7 @@ void j1Map::Draw()
 
 TileSet* j1Map::GetTilesetFromTileId(int id) const
 {
-	// TODO 3: Complete this method so we pick the right
-	// Tileset based on a tile id
+	// Return the tileset based on a tile id
 
 		for (int i = 0; i < data.tilesets.count() - 1; ++i) {
 			if (data.tilesets[i + 1] != nullptr) {
@@ -196,7 +173,8 @@ bool j1Map::CleanUp()
 bool j1Map::Load(const char* file_name)
 {
 	bool ret = true;
-	p2SString tmp("maps\\%s", file_name); //ric dejando regalitos por aqui...
+	p2SString tmp("maps\\%s", file_name); 
+
 
 	pugi::xml_parse_result result = map_file.load_file(tmp.GetString());
 
@@ -241,6 +219,20 @@ bool j1Map::Load(const char* file_name)
 
 		if(ret == true)
 			data.layers.add(lay);
+	}
+
+	//Load colliders data
+	pugi::xml_node objectgroup;
+	p2SString objectname;
+
+	for (objectgroup = map_file.child("map").child("objectgroup"); objectgroup && ret; objectgroup.next_sibling("objectgroup")) {
+		
+		objectname = objectgroup.attribute("name").as_string();
+		
+		if (objectname == "Colliders") {
+			LoadColliders(objectgroup, &data.colliders);
+			break;
+		}
 	}
 
 	if(ret == true)
@@ -410,7 +402,6 @@ bool j1Map::LoadLayer(pugi::xml_node& node, MapLayer* layer)
 	layer->name = node.attribute("name").as_string();
 	layer->width = node.attribute("width").as_int();
 	layer->height = node.attribute("height").as_int();
-	LoadProperties(node, layer->properties);
 	pugi::xml_node layer_data = node.child("data");
 
 	if(layer_data == NULL)
@@ -434,24 +425,32 @@ bool j1Map::LoadLayer(pugi::xml_node& node, MapLayer* layer)
 	return ret;
 }
 
-// Load a group of properties from a node and fill a list with it
-bool j1Map::LoadProperties(pugi::xml_node& node, Properties& properties)
-{
+bool j1Map::LoadColliders(pugi::xml_node& node, ColliderData* collider) {
 	bool ret = true;
+	pugi::xml_node& colliders = node.child("object");
 
-	// TODO 6: Fill in the method to fill the custom properties from 
-	// an xml_node
-	/*for (int i = 0; node.child("propertiers").child("property") != NULL; node.child("properties").next_sibling("property")) {
-
-	}*/
-
-	pugi::xml_node property;
-
-	for (property = node.child("properties").child("property"); property && ret; property = property.next_sibling("property")) {
-	
+	if (colliders == NULL) {
+		LOG("Error parsing map xml file: Cannot find 'colliders' tag.");
+		ret = false;
+		RELEASE(collider);
+	}
+	else {
+		for (colliders; colliders; colliders = colliders.next_sibling("object")) {
+			SDL_Rect auxiliar_rect;
+			auxiliar_rect.x = colliders.attribute("x").as_int();
+			auxiliar_rect.y = colliders.attribute("y").as_int();
+			auxiliar_rect.w = colliders.attribute("width").as_int();
+			auxiliar_rect.h = colliders.attribute("height").as_int();
+			data.colliders.collider_rects.add(auxiliar_rect);
+		}
 	}
 
-
-
 	return ret;
+}
+
+void j1Map::DrawColliders() {
+	uint i = 0;
+	while (i < data.colliders.collider_rects.count()) {
+		data.colliders.collider = App->collision->AddCollider(data.colliders.collider_rects[i++], COLLIDER_WALL);
+	}
 }

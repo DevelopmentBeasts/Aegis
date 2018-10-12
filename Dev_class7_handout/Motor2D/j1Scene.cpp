@@ -38,6 +38,9 @@ bool j1Scene::Start()
 
 	screeninitx = App->render->camera.x;
 	screeninity = App->render->camera.y;*/
+
+	App->map->DrawColliders();
+
 	return true;
 }
 
