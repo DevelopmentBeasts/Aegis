@@ -50,6 +50,22 @@ public:
 	{
 		current_frame = 0;
 	}
+
+	void LoadPushbacks(pugi::xml_node node) {
+
+		loop = node.attribute("loop").as_bool();
+		speed = node.attribute("speed").as_float();
+		SDL_Rect rect;
+		for (node = node.child("PushBack"); node; node = node.next_sibling("PushBack")) {
+			rect.x = node.attribute("x").as_int();
+			rect.y = node.attribute("y").as_int();
+			rect.w = node.attribute("w").as_int();
+			rect.h = node.attribute("h").as_int();
+			this->PushBack({ rect });
+		}
+
+	}
+
 };
 
 #endif // __P2ANIMATION_H__ 

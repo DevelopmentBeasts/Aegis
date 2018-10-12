@@ -23,9 +23,10 @@ PlayerClass::PlayerClass() {   //DO PUSHBACKS WITH XML
 	}
 	
 	AnimsNode = AnimsDoc.child("config").child("AnimsCoords").child("idle_left");
-	LoadPushbacks(AnimsNode, idle_left);
+	idle_left.LoadPushbacks(AnimsNode);/*
+	LoadPushbacks(AnimsNode, idle_left);*/
 	AnimsNode = AnimsDoc.child("config").child("AnimsCoords").child("run_left");
-	LoadPushbacks(AnimsNode, run_left);
+	run_left.LoadPushbacks(AnimsNode);
 }
 bool PlayerClass::Start() {
 	
@@ -98,20 +99,10 @@ bool PlayerClass::Update(float dt) {
 
 	MovePlayer();
 	PlayerAnims();
-	//SDL_RenderCopyEx();
 	
-
-
-
-	
-
 	return true;
 
 }
-
-
-
-
 
 void PlayerClass::MovePlayer() {
 	
@@ -134,7 +125,6 @@ void PlayerClass::MovePlayer() {
 		data.xpos += (data.xvel + 3); // a little boost of the speed in the air to make the jump more interesting in a plataformer game
 
 	}
-	//__________________
 	
 	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) { // the same as "D"
 		movingleft = true;
@@ -155,11 +145,10 @@ void PlayerClass::MovePlayer() {
 		automatic_right = false;
 		automatic_left = false;
 	}
-	//_________________
 
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN) {
 		
-		if (data.yvel > -3 && jumping) { // if you are in the top of your jump you can press "S" to fall down doing a smash in the ground
+		if (data.yvel > -8 && jumping) { // if you are in the top of your jump you can press "S" to fall down doing a smash in the ground
 			if (StaminaRect.w >= 121) { 
 				StaminaRect.w -= 120; // the stamina bar have 300p and every time you press "S" in the air you use 120p
 				if (jumping) {
@@ -172,7 +161,7 @@ void PlayerClass::MovePlayer() {
 			}
 		}
 	}
-	//____________________
+
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) {
 
 		if (jumping == false) { //this is here because we don't want the player to press w in the air and jump again if it is not allowed
@@ -209,7 +198,6 @@ void PlayerClass::MovePlayer() {
 			data.ypos = yposaux;
 		}
 	}
-	//_____________
 
 	playerrect.x = data.xpos;  //here we put the SDL_Rect where we print the sprites in the player position.
 	playerrect.y = data.ypos;
@@ -384,27 +372,7 @@ void PlayerClass::PlayerAnims() {
 		//App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &playerrect, NULL, 0.0, 1, 1, 1.0);
 	}
 
-
-
-
-
-
-	//App->render->DrawQuad(playerrect, 0, 255, 0, 100); //used for debugging player positions, DO NOT ERASE PLEASE!!!!!!!!!
+	App->render->DrawQuad(playerrect, 0, 255, 0, 100); //used for debugging player positions, DO NOT ERASE PLEASE!!!!!!!!!
 
 	App->render->DrawQuad(StaminaRect, 0, 0, 255, 100);
-}
-void PlayerClass::LoadPushbacks(pugi::xml_node node, Animation &anim) {
-
-	anim.loop = node.attribute("loop").as_bool();
-	anim.speed = node.attribute("speed").as_float();
-	SDL_Rect rect;
-	for (node = node.child("PushBack"); node; node = node.next_sibling("PushBack")) {
-		rect.x = node.attribute("x").as_int();
-		rect.y = node.attribute("y").as_int();
-		rect.w = node.attribute("w").as_int();
-		rect.h = node.attribute("h").as_int();
-		anim.PushBack({ rect });
-	}
-	
-	
 }
