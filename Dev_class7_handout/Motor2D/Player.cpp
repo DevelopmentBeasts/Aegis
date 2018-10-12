@@ -255,8 +255,6 @@ void PlayerClass::PlayerAnims() {
 
 		CurrentAnimationRect = current_animation->GetCurrentFrame();
 
-		SDL_RenderCopyEx(App->render->renderer, Textures, &CurrentAnimationRect, &playerrect, 90.0, NULL, SDL_FLIP_NONE);
-
 		App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &CurrentAnimationRect, 1, 90.0, SDL_FLIP_NONE, 1, 1, 1.0);
 	}
 
@@ -266,8 +264,6 @@ void PlayerClass::PlayerAnims() {
 		current_animation = &run_left;
 
 		CurrentAnimationRect = current_animation->GetCurrentFrame();
-
-		SDL_RenderCopyEx(App->render->renderer, Textures, &CurrentAnimationRect, &playerrect, 90.0, NULL, SDL_FLIP_HORIZONTAL);
 
 
 		App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &CurrentAnimationRect, 1, 90.0, SDL_FLIP_HORIZONTAL, 1, 1, 1.0);
@@ -279,8 +275,6 @@ void PlayerClass::PlayerAnims() {
 		current_animation = &run_left;
 		CurrentAnimationRect = current_animation->GetCurrentFrame();
 
-		SDL_RenderCopyEx(App->render->renderer, Textures, &CurrentAnimationRect, &playerrect, 90.0, NULL, SDL_FLIP_HORIZONTAL);
-
 		App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &CurrentAnimationRect, 1, 90, SDL_FLIP_HORIZONTAL, 1, 1, 1.0);
 	}
 
@@ -291,16 +285,12 @@ void PlayerClass::PlayerAnims() {
 
 		CurrentAnimationRect = current_animation->GetCurrentFrame();
 
-		SDL_RenderCopyEx(App->render->renderer, Textures, &CurrentAnimationRect, &playerrect, data.yvel*4, NULL, SDL_FLIP_NONE);
-
 		App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &CurrentAnimationRect, 1, data.yvel * 4, SDL_FLIP_NONE, 1, 1, 1.0);
 	}
 	if (jumping && (data.yvel < 0) && LastDirectionLeft && automatic_left) {  //JUMPING DOWN + LEFT
 		current_animation = &run_left;
 
 		CurrentAnimationRect = current_animation->GetCurrentFrame();
-
-		SDL_RenderCopyEx(App->render->renderer, Textures, &CurrentAnimationRect, &playerrect, data.yvel * 4, NULL, SDL_FLIP_NONE);
 
 		App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &CurrentAnimationRect, 1, data.yvel * 4, SDL_FLIP_NONE, 1, 1, 1.0);
 	}
@@ -311,8 +301,6 @@ void PlayerClass::PlayerAnims() {
 		
 		CurrentAnimationRect = current_animation->GetCurrentFrame();
 
-		SDL_RenderCopyEx(App->render->renderer, Textures, &CurrentAnimationRect, &playerrect, NULL, NULL, SDL_FLIP_NONE);
-
 		App->render->Blit(Textures, (int)data.xpos, (int)data.ypos,&CurrentAnimationRect, 1, 0.0, SDL_FLIP_NONE, 1, 1, 1.0);
 	}
 
@@ -322,8 +310,6 @@ void PlayerClass::PlayerAnims() {
 		current_animation = &run_left;
 		
 		CurrentAnimationRect = current_animation->GetCurrentFrame();
-		
-		SDL_RenderCopyEx(App->render->renderer, Textures, &CurrentAnimationRect,&playerrect , NULL, NULL, SDL_FLIP_HORIZONTAL);
 
 	App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &CurrentAnimationRect, 1, 0.0, SDL_FLIP_HORIZONTAL, 1, 1, 1.0);
 	}
@@ -334,16 +320,12 @@ void PlayerClass::PlayerAnims() {
 
 		CurrentAnimationRect = current_animation->GetCurrentFrame();
 
-		SDL_RenderCopyEx(App->render->renderer, Textures, &CurrentAnimationRect, &playerrect, data.yvel * (-4), NULL, SDL_FLIP_HORIZONTAL);
-
 		App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &CurrentAnimationRect,1, data.yvel * (-4), SDL_FLIP_HORIZONTAL, 1, 1, 1.0);
 	}
 	if (jumping && (data.yvel < 0) && LastDirectionRight && automatic_right) {  //JUMPING DOWN + LEFT
 		current_animation = &run_left;
 
 		CurrentAnimationRect = current_animation->GetCurrentFrame();
-
-		SDL_RenderCopyEx(App->render->renderer, Textures, &CurrentAnimationRect, &playerrect, data.yvel * (-4), NULL, SDL_FLIP_HORIZONTAL);
 
 		App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &CurrentAnimationRect, 1, data.yvel * (-4), SDL_FLIP_HORIZONTAL, 1, 1, 1.0);
 	}
@@ -354,8 +336,6 @@ void PlayerClass::PlayerAnims() {
 
 		CurrentAnimationRect = current_animation->GetCurrentFrame();
 
-		//DL_RenderCopyEx(App->render->renderer, Textures, &CurrentAnimationRect, &playerrect, data.yvel * (-4), NULL, SDL_FLIP_NONE);
-
 		App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &CurrentAnimationRect, 1, data.yvel * (-4), SDL_FLIP_NONE, 1, 1, 1.0);
 	}
 
@@ -364,8 +344,6 @@ void PlayerClass::PlayerAnims() {
 		current_animation = &idle_left;
 
 		CurrentAnimationRect = current_animation->GetCurrentFrame();
-
-		//SDL_RenderCopyEx(App->render->renderer, Textures, &CurrentAnimationRect, &playerrect, data.yvel * (-4), NULL, SDL_FLIP_HORIZONTAL);
 
 		App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &CurrentAnimationRect, 1, data.yvel * (-4), SDL_FLIP_HORIZONTAL, 1, 1, 1.0);
 	}
