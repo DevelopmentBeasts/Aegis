@@ -46,11 +46,15 @@ void j1Map::Draw()
 					if (tileset != nullptr) {
 						SDL_Rect r = tileset->GetTileRect(tile_id);
 						iPoint pos = MapToWorld(x, y);
-						App->render->Blit(tileset->texture, pos.x, pos.y, &r);
+						//create a define for App->render->camera.z for better legibility
+						if (pos.x<(-(App->render->camera.x)+App->render->camera.w+1200) && pos.x >(-(App->render->camera.x)-100)) {//
+							App->render->Blit(tileset->texture, pos.x, pos.y, &r);
+						}
+						
 					}
-				}	
-			}		
-		}			
+				}
+			}
+		}		
 			layer_item = layer_item->next;
 
 	}
@@ -169,7 +173,8 @@ bool j1Map::CleanUp()
 bool j1Map::Load(const char* file_name)
 {
 	bool ret = true;
-	p2SString tmp("maps//%s", file_name);
+	p2SString tmp("maps\\%s", file_name); 
+
 
 	pugi::xml_parse_result result = map_file.load_file(tmp.GetString());
 

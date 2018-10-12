@@ -48,6 +48,7 @@ public:
 	//bool Load(pugi::xml_node&);
 	//bool Save(pugi::xml_node&) const;
 
+	void LoadPushbacks(pugi::xml_node node,Animation &anim);
 	iPoint MapToWorld(int x, int y) const;
 	iPoint WorldToMap(int x, int y) const;
 
@@ -70,22 +71,25 @@ public:
 private:
 
 	pugi::xml_document	PlayerStartFile;
+	pugi::xml_document AnimsDoc;
+	
+	pugi::xml_node AnimsNode;
 	pugi::xml_node PlayerXmlNode;
 	p2SString			folder;
-	bool				map_loaded;
+
 
 public:
 	SDL_Rect playerrect;
 	SDL_Rect StaminaRect;
 	SDL_Rect CurrentAnimationRect;
+
 public:
+	bool map_loaded;
+
 	bool jumping = false;
 	bool bot_reached = false;
 	bool top_reached = false;
-	uint max_height;
-	uint min_height;
 	uint yposaux;
-	bool usethisbool;
 	bool automatic_right = false;
 	bool automatic_left = false;
 	bool fall_atack = false;
@@ -93,24 +97,28 @@ public:
 	bool movingleft = false;
 	bool activateleftmovement = false;
 	bool activaterightmovement = false;
+
 public:
 
 
 	SDL_Texture* Textures = nullptr;
 	SDL_Texture* Texturesflipped = nullptr;
+
 	Animation* current_animation = nullptr;
 
-	Animation idle_right;
+	
 	Animation idle_left;
-	Animation run_right;
+	
 	Animation run_left;
 	Animation jump_right;
 	Animation jump_left;
-	Animation fall_right;
+	
 	Animation fall_left;
 	Animation attack_right;
 	Animation attack_left;
+
 public:
+
 	bool SCANCODE_A = false;
 	bool SCANCODE_D = false;
 	bool SCANCODE_W = false;

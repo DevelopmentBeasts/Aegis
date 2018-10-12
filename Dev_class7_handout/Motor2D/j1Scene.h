@@ -33,7 +33,6 @@ public:
 	bool CleanUp();
 
 private:
-
 public:
 	float playerinitx;
 	float playerinity;

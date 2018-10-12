@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+
+<!-- Config file for the game -->
+
+<config>
+  <AnimsCoords >
+    
+    <idle_left loop="true" speed="0.12">
+      <PushBack x="19" y="7" w="26" h="30"/>
+      <PushBack x="81" y="9" w="26" h="27"/>
+      <PushBack x="143" y="7" w="26" h="29"/>
+      <PushBack x="206" y="7" w="23" h="28"/>
+    </idle_left>
+    
+    <run_left loop="1" speed="0.12">
+      <PushBack x="271" y="15" w="27" h="23"/>
+      <PushBack x="23" y="57" w="27" h="23"/>
+      <PushBack x="85" y="57" w="29" h="24"/>
+      <PushBack x="146" y="57" w="31" h="23"/>
+    </run_left>
+    
+  </AnimsCoords>
+ 
+</config>
+
+
+
+
+
