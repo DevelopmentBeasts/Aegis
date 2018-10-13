@@ -132,7 +132,7 @@ void PlayerClass::MovePlayer() {
 	if (data.PlayerColliding) {
 		
 		if ((playerrect.y + (playerrect.h + 1)) > TheWallCollider->rect.y) {
-			LOG("THE PLAYER  IS UPPER THE Y OF THE COLLIDER");
+			LOG("THE PLAYER  IS ABOVE THE Y OF THE COLLIDER");
 			data.PlayerOnTop = true;
 		}
 		/*int x = playerrect.x;
@@ -309,7 +309,6 @@ void PlayerClass::PlayerAnims() {
 
 		CurrentAnimationRect = current_animation->GetCurrentFrame();
 
-
 		App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &CurrentAnimationRect, 1, 90.0, SDL_FLIP_HORIZONTAL, 1, 1, 1.0);
 	}
 
@@ -317,6 +316,7 @@ void PlayerClass::PlayerAnims() {
 
 	if (!jumping && (data.yvel < 0) && !movingleft && !movingright && !automatic_left && !automatic_right) { //looking the left
 		current_animation = &run_left;
+
 		CurrentAnimationRect = current_animation->GetCurrentFrame();
 
 		App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &CurrentAnimationRect, 1, 90, SDL_FLIP_HORIZONTAL, 1, 1, 1.0);

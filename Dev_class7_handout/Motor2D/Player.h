@@ -40,8 +40,6 @@ public:
 	char name;
 	PlayerClass();
 
-	SDL_Rect aux_rect = { 50,50,0,0 };
-
 	//destructor
 	virtual ~PlayerClass();
 	bool Start();
