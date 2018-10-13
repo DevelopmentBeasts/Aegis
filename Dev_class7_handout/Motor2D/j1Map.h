@@ -17,8 +17,9 @@ struct ColliderData {
 	p2List<SDL_Rect>			collider_rects;
 
 	~ColliderData() {
-		for (int i = 0; i < collider_list.count(); ++i) {
-			collider_list[i]->to_delete = true;
+		for (int i = 0; i < collider_list.count()-1; ++i) {
+			if (collider_list[i] != nullptr)
+				collider_list[i]->to_delete=true;
 		}
 	}
 };
