@@ -8,7 +8,17 @@ j1Collision::j1Collision()
 {
 	for (uint i = 0; i < MAX_COLLIDERS; ++i)
 		colliders[i] = nullptr;
+	matrix[COLLIDER_NONE][COLLIDER_NONE] = false;
+	matrix[COLLIDER_NONE][COLLIDER_WALL] = false;
+	matrix[COLLIDER_NONE][COLLIDER_PLAYER] = false;
 
+	matrix[COLLIDER_WALL][COLLIDER_WALL]=false;
+	matrix[COLLIDER_WALL][COLLIDER_PLAYER] = true;
+	matrix[COLLIDER_WALL][COLLIDER_NONE] = false;
+
+	matrix[COLLIDER_PLAYER][COLLIDER_PLAYER] = false;
+	matrix[COLLIDER_PLAYER][COLLIDER_WALL] = true;
+	matrix[COLLIDER_PLAYER][COLLIDER_NONE] = false;
 }
 
 // Destructor
@@ -94,7 +104,9 @@ void j1Collision::DebugDraw()
 		case COLLIDER_WALL: // blue
 			App->render->DrawQuad(colliders[i]->rect, 0, 0, 255, alpha);
 			break;
-
+		case COLLIDER_PLAYER: // blue
+			App->render->DrawQuad(colliders[i]->rect, 255, 30, 12, alpha);
+			break;
 		}
 	}
 }

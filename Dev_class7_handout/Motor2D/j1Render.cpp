@@ -72,10 +72,10 @@ bool j1Render::Update(float dt)
 {
 	
 	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
-		camera.y += 2;
+		camera.y += 30;
 
 	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
-		camera.y -= 2;
+		camera.y -= 30;
 
 	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
 		camera.x += 30;
