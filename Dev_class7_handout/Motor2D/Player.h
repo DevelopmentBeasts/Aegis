@@ -20,8 +20,8 @@ enum PlayerTypes {
 };
 
 struct PlayerData {
-	uint xpos;
-	uint ypos;
+	int xpos;
+	int ypos;
 	float yvel;
 	float xvel;
 	float yvel2;
