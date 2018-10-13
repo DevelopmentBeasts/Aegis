@@ -8,7 +8,7 @@
 
 #define VSYNC true
 #define RIGHT_BORDER	500
-#define LEFT_BORDER		100
+#define LEFT_BORDER		200
 #define TOP_BORDER		300
 #define BOTTOM_BORDER	200
 
@@ -92,17 +92,26 @@ bool j1Render::Update(float dt)
 			camera.x -= 30;
 	}
 	else {
-		if ((App->player->data.xpos) >  (-camera.x+camera.w - RIGHT_BORDER))	//Move the camera to the right if the player is advancing and ahead of the border
-			camera.x -= App->player->data.xvel;
-
-		if ((App->player->data.xpos) < (-camera.x + LEFT_BORDER))				//Move the camera to the left if the player is going back and behnid the left border
-			camera.x += App->player->data.xvel;
+		if ((App->player->data.xpos) > (-camera.x + camera.w - RIGHT_BORDER)) {	//Move the camera to the right if the player is advancing and ahead of the border
+			
+			if (App->player->automatic_right == true)							//If the player jumps while going to a side, his velocity.x increases, so we increase
+				camera.x -= App->player->data.xvel + 3;							//the velocity of the camera aswell
+			else
+				camera.x -= App->player->data.xvel;
+		}
+		if ((App->player->data.xpos) < (-camera.x + LEFT_BORDER)) {				//Move the camera to the left if the player is going back and behnid the left border
+			
+			if (App->player->automatic_left==true)								//If the player jumps while going to a side, his velocity.x increases, so we increase
+				camera.x += App->player->data.xvel + 3;							//the velocity of the camera aswell
+			else 
+				camera.x += App->player->data.xvel;
+		}
 
 		if ((App->player->data.ypos)<(-camera.y + TOP_BORDER))					//Move the camera upwards if the player is going up and above the top border
-			camera.y += App->player->data.xvel;
+			camera.y += App->player->data.xvel+3;
 
-		if ((App->player->data.ypos) > (-camera.y + camera.h - BOTTOM_BORDER))					//Move the camera upwards if the player is going up and above the top border
-			camera.y -= App->player->data.xvel;
+		if ((App->player->data.ypos) > (-camera.y + camera.h - BOTTOM_BORDER))	//Move the camera upwards if the player is going up and above the top border
+			camera.y -= App->player->data.xvel + 3;
 	}
 
 	return true;

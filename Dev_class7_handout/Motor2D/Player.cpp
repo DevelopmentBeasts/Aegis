@@ -14,7 +14,7 @@ PlayerClass::~PlayerClass() {
 
 }
 PlayerClass::PlayerClass() {   //DO PUSHBACKS WITH XML
-	this->name = 'a';
+	name.create("player");
 
 	pugi::xml_parse_result result = AnimsDoc.load_file("PlayerAnims.xml");
 
@@ -216,6 +216,23 @@ void PlayerClass::MovePlayer() {
 	}
 }
 
+bool PlayerClass::Save(pugi::xml_node& node)const{
+	
+	pugi::xml_node pos = node.append_child("position");
+
+	pos.append_attribute("x") = data.xpos;
+	pos.append_attribute("y") = data.ypos;
+
+	return true;
+}
+
+bool PlayerClass::Load(pugi::xml_node& node) {
+
+	data.xpos = node.child("position").attribute("x").as_int();
+	data.ypos = node.child("position").attribute("y").as_int();
+	return true;
+}
+
 void PlayerClass::PlayerAnims() {
 
 	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) {
@@ -348,7 +365,7 @@ void PlayerClass::PlayerAnims() {
 		App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &CurrentAnimationRect, 1, data.yvel * (-4), SDL_FLIP_HORIZONTAL, 1, 1, 1.0);
 	}
 
-	App->render->DrawQuad(playerrect, 0, 255, 0, 100); //used for debugging player positions, DO NOT ERASE PLEASE!!!!!!!!!
+//	App->render->DrawQuad(playerrect, 0, 255, 0, 100); //used for debugging player positions, DO NOT ERASE PLEASE!!!!!!!!!
 
 	App->render->DrawQuad(StaminaRect, 0, 0, 255, 100);
 }

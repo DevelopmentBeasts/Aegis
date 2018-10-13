@@ -32,7 +32,6 @@ struct PlayerData {
 class PlayerClass : public j1Module {
 
 public:
-	char name;
 	PlayerClass();
 
 	SDL_Rect aux_rect = { 50,50,0,0 };
@@ -47,8 +46,8 @@ public:
 	//bool CleanUp();
 
 	// Load / Save
-	//bool Load(pugi::xml_node&);
-	//bool Save(pugi::xml_node&) const;
+	bool Load(pugi::xml_node&);
+	bool Save(pugi::xml_node&) const;
 	
 	iPoint MapToWorld(int x, int y) const;
 	iPoint WorldToMap(int x, int y) const;

@@ -6,8 +6,11 @@
 	<audio />
 	<map />
 	<scene />
+	<player>
+		<position x="423" y="100" />
+	</player>
 	<:anonymous />
 	<renderer>
-		<camera x="-1260" y="-18" />
+		<camera x="-194" y="206" />
 	</renderer>
 </game_state>
