@@ -105,7 +105,7 @@ bool PlayerClass::Start() {
 
 
 bool PlayerClass::Update(float dt) {
-
+	
 	MovePlayer();
 	MovePlayerCollider();
 	PlayerAnims();
@@ -113,14 +113,6 @@ bool PlayerClass::Update(float dt) {
 	return true;
 
 }
-
-
-
-
-
-//---------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
 
 
 
@@ -134,22 +126,17 @@ void PlayerClass::MovePlayer() {
 		if ((playerrect.y + (playerrect.h + 1)) > TheWallCollider->rect.y) {
 			LOG("THE PLAYER  IS ABOVE THE Y OF THE COLLIDER");
 			data.PlayerOnTop = true;
+			data.ypos = TheWallCollider->rect.y;
 		}
-		/*int x = playerrect.x;
-		int w = playerrect.x + playerrect.w;
-		int x_ = TheWallCollider->rect.x;
-		int w_ = TheWallCollider->rect.x + TheWallCollider->rect.w;
-	*/
-		//if (((x > x_) && (x < w_)) && (((w < x) && (w > w_)) || (((w < x_) && (w < w_)) || ((w > x_) && (w > w_))))) { //esta basura ilegible hecha previamente a papel controla si estas dentro de la anchura rel collider q pasamos
-		//	LOG("INSIDE PLAYER IS INSIDE THE W OF THE COLLIDER");
-		//	if ((playerrect.y + (playerrect.h+1)) > TheWallCollider->rect.y) {
-		//		LOG("THE PLAYER ALSO IS UPPER THE Y OF THE COLLIDER");
-		//		data.PlayerOnTop = true;
-		//	}
-		//}
-			
-		
+
+
 	}
+
+	if (!((playerrect.y + (playerrect.h + 1)) > TheWallCollider->rect.y)) {
+		LOG("THE PLAYER  IS ABOVE THE Y OF THE COLLIDER");
+		data.PlayerOnTop = false;
+	}
+
 	//lets make the player fall down by default
 	if (!data.PlayerOnTop && !jumping) {
 		data.yvel += 1;
@@ -210,17 +197,19 @@ void PlayerClass::MovePlayer() {
 		}
 	}
 
-	if (fall_atack) {
+	if (fall_atack && !data.PlayerOnTop) {
 		data.yvel = 25;
 		data.ypos += data.yvel;
 		data.yvel += 2;
 	}
 
-	//if (data.PlayerOnTop) {  //HERE NEEDS TO STOP THE Y MOVEMENT (NOT DONE YET)
-	//	data.yvel = 0;
-	//	data.ypos = TheWallCollider->rect.y-(playerrect.h+1);
-	//	jumping = false;
-	//}
+	if (data.PlayerOnTop) {  //HERE NEEDS TO STOP THE Y MOVEMENT (NOT DONE YET)
+		data.yvel = 0;
+		data.ypos = TheWallCollider->rect.y-(playerrect.h+1);
+		jumping = false;
+		fall_atack = false;
+		data.PlayerColliding = false;
+	}
 
 	//_________________________________________________________________
 

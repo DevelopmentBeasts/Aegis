@@ -53,7 +53,6 @@ public:
 	
 	
 
-
 	bool Update(float dt);
 	void MovePlayer();
 	void MovePlayerCollider();
