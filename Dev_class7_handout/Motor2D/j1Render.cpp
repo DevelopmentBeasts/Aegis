@@ -108,10 +108,10 @@ bool j1Render::Update(float dt)
 		}
 
 		if ((App->player->data.ypos)<(-camera.y + TOP_BORDER))					//Move the camera upwards if the player is going up and above the top border
-			camera.y += App->player->data.xvel+3;
+			camera.y += App->player->data.xvel;
 
 		if ((App->player->data.ypos) > (-camera.y + camera.h - BOTTOM_BORDER))	//Move the camera upwards if the player is going up and above the top border
-			camera.y -= App->player->data.xvel + 3;
+			camera.y -= App->player->data.xvel;
 	}
 
 	return true;

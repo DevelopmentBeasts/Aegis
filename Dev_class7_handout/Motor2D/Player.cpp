@@ -97,8 +97,15 @@ bool PlayerClass::Start() {
 
 bool PlayerClass::Update(float dt) {
 
-	MovePlayer();
-	PlayerAnims();
+	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
+		godmode_activated = !godmode_activated;
+
+	if (godmode_activated == false) {
+		MovePlayer();
+		PlayerAnims();
+	}
+	else
+		GodMode();
 	
 	return true;
 
@@ -368,4 +375,23 @@ void PlayerClass::PlayerAnims() {
 //	App->render->DrawQuad(playerrect, 0, 255, 0, 100); //used for debugging player positions, DO NOT ERASE PLEASE!!!!!!!!!
 
 	App->render->DrawQuad(StaminaRect, 0, 0, 255, 100);
+}
+
+void PlayerClass::GodMode() {									//The player flies and ignores collisions
+	
+	current_animation = &idle_left;
+
+	if (App->input->GetKey(SDL_SCANCODE_A)==KEY_REPEAT)
+		data.xpos -= data.xvel;
+
+	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
+		data.xpos += data.xvel;
+
+	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
+		data.ypos -= data.xvel;
+
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
+		data.ypos += data.xvel;
+
+	App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &current_animation->GetCurrentFrame(), 1, 0, SDL_FLIP_NONE, 1, 1, 1.0);
 }

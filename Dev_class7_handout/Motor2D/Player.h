@@ -57,6 +57,8 @@ public:
 	void MovePlayer();
 	void PlayerAnims();
 
+	void GodMode();
+
 private:
 
 	/*bool LoadPlayer();
@@ -85,6 +87,8 @@ public:
 	SDL_Rect CurrentAnimationRect;
 
 public:
+	bool godmode_activated = false;				//God Mode will allow the player to fly around the map ignoring collisions
+
 	bool map_loaded;
 
 	bool jumping = false;

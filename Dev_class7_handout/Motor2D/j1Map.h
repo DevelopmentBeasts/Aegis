@@ -13,14 +13,13 @@
 // ----------------------------------------------------
 
 struct ColliderData {
-	Collider*			collider=nullptr;
-	p2List<SDL_Rect>	collider_rects;
-
-	ColliderData() : collider(NULL)
-	{}
+	p2List<Collider*>			collider_list;
+	p2List<SDL_Rect>			collider_rects;
 
 	~ColliderData() {
-		collider->to_delete = true;
+		for (int i = 0; i < collider_list.count(); ++i) {
+			collider_list[i]->to_delete = true;
+		}
 	}
 };
 
