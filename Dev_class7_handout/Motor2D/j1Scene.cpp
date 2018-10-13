@@ -31,7 +31,7 @@ bool j1Scene::Awake()
 // Called before the first frame
 bool j1Scene::Start()
 {
-	App->map->Load("AEGIS_MAP1.tmx");
+	App->map->Load("AEGIS_RUN.tmx");
 	//here we take the initial player pos to make camera do the same movements
 	/*playerinitx = App->player->data.xpos;
 	playerinity = App->player->data.ypos;

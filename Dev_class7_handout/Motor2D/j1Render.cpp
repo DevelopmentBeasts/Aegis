@@ -5,7 +5,10 @@
 #include "j1Render.h"
 #include "player.h"
 #include "j1Input.h"
+
 #define VSYNC true
+#define RIGHT_BORDER	500
+#define LEFT_BORDER		100
 
 j1Render::j1Render() : j1Module()
 {
@@ -70,18 +73,29 @@ bool j1Render::PreUpdate()
 
 bool j1Render::Update(float dt)
 {
-	
-	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
-		camera.y += 2;
+	if (App->input->GetKey(SDL_SCANCODE_F1)==KEY_DOWN)
+		debug=!debug;
 
-	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
-		camera.y -= 2;
+	if (debug == true) {
+		if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
+			camera.y += 30;
 
-	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
-		camera.x += 30;
-		
-	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
-		camera.x -= 30;
+		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
+			camera.y -= 30;
+
+		if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
+			camera.x += 30;
+
+		if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
+			camera.x -= 30;
+	}
+	else {
+		if ((App->player->data.xpos) >  -camera.x+camera.w - RIGHT_BORDER)
+			camera.x -= App->player->data.xvel;
+
+		if ((App->player->data.xpos) < -camera.x + LEFT_BORDER)
+			camera.x += App->player->data.xvel;
+	}
 
 	return true;
 }
