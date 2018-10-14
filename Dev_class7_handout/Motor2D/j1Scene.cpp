@@ -32,8 +32,8 @@ bool j1Scene::Awake()
 // Called before the first frame
 bool j1Scene::Start()
 {
-	LoadLevel(level1);/*
-	current_level = level1;*/
+
+	LoadLevel(level1);
 	App->render->camera.x = App->player->data.xpos - 500;
 	App->render->camera.y = App->player->data.ypos - 1000;
 	
