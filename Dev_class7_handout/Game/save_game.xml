@@ -4,13 +4,13 @@
 	<window />
 	<textures />
 	<audio />
-	<map />
 	<scene level="AEGIS_RUN.tmx" />
 	<player>
-		<position x="932" y="1494" />
+		<position x="1540" y="1391" />
 	</player>
+	<map />
 	<:anonymous />
 	<renderer>
-		<camera x="-408" y="-1128" />
+		<camera x="-1004" y="-1082" />
 	</renderer>
 </game_state>
