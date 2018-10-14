@@ -112,7 +112,7 @@ bool PlayerClass::Start() {
 
 bool PlayerClass::Update(float dt) {
 
-	if (!(data.ypos > 2250)) {
+	if (!data.dead) {
 		if (App->input->GetKey(SDL_SCANCODE_F10) == KEY_DOWN)
 			godmode_activated = !godmode_activated;
 
@@ -123,10 +123,13 @@ bool PlayerClass::Update(float dt) {
 		}
 		else
 			GodMode();
-	}
-	else
-		Die();
 
+	}	
+		if ((data.ypos > 2250)&& !(godmode_activated)) {
+			Die();
+		}
+		
+		
 
 
 
@@ -544,13 +547,18 @@ void PlayerClass::GodMode() {									//The player flies and ignores collisions
 void PlayerClass::Die() {
 
 	data.yvel = 0;
+	App->player->data.xpos = App->map->data.start_position.x;
+	App->player->data.ypos = App->map->data.start_position.y;
 
-	current_animation = &death;
+	
+	App->render->find_player = true;
+	/*current_animation = &death;
 
 	CurrentAnimationRect = current_animation->GetCurrentFrame();
 
+	data.dead = true;
 
 	if (!(current_animation->Finished())) {
 		App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &CurrentAnimationRect, 1, data.yvel, SDL_FLIP_HORIZONTAL, 1, 1, 1.0);
-	}	
+	}	*/
 }
