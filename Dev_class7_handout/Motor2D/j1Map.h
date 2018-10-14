@@ -6,6 +6,7 @@
 #include "p2Point.h"
 #include "j1Module.h"
 #include "j1Collision.h"
+#include "j1App.h"
 
 // TODO 5: Create a generic structure to hold properties
 // TODO 7: Our custom properties should have one method
@@ -17,7 +18,7 @@ struct ColliderData {
 	p2List<SDL_Rect>			collider_rects;
 
 	~ColliderData() {
-		for (int i = 0; i < collider_list.count()-1; ++i) {
+		for (int i = 0; i < collider_list.count(); ++i) {
 			if (collider_list[i] != nullptr)
 				collider_list[i]->to_delete=true;
 		}
@@ -64,6 +65,8 @@ struct TileSet
 	int					num_tiles_height;
 	int					offset_x;
 	int					offset_y;
+
+	~TileSet() { App->tex->UnLoad(texture); }
 };
 
 enum MapTypes
@@ -85,6 +88,7 @@ struct MapData
 	p2List<TileSet*>	tilesets;
 	p2List<MapLayer*>	layers;
 	ColliderData		colliders;
+	iPoint				start_position = {0,0};
 
 };
 

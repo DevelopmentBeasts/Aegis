@@ -74,7 +74,7 @@ bool j1Render::PreUpdate()
 
 bool j1Render::Update(float dt)
 {
-	if (App->input->GetKey(SDL_SCANCODE_F1)==KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_F8)==KEY_DOWN)
 		debug=!debug;
 
 	if (debug == true) {

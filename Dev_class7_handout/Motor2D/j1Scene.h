@@ -4,6 +4,8 @@
 #include "j1Module.h"
 
 struct SDL_Texture;
+class j1Map;
+
 
 class j1Scene : public j1Module
 {
@@ -32,8 +34,26 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
+	// Load / Save
+	bool Load(pugi::xml_node&);
+	bool Save(pugi::xml_node&) const;
+
+	//Called when we want the change the level
+	void LoadLevel(const char* leveltoload);
+
 private:
+	
+	const char* level1= "AEGIS_RUN.tmx";	//Level 1
+	const char* level2="hello2.tmx";			//Level 2
+	
+	//Level that is loaded at the moment
+	p2SString current_level;
+
 public:
+
+	////Pointer to the current map
+	j1Map* current_map=nullptr;
+
 	float playerinitx;
 	float playerinity;
 	float screeninitx;
