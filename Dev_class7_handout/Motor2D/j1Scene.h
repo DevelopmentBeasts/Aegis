@@ -7,6 +7,7 @@ struct SDL_Texture;
 class j1Map;
 
 
+
 class j1Scene : public j1Module
 {
 public:

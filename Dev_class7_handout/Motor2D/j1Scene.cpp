@@ -53,10 +53,10 @@ bool j1Scene::PreUpdate()
 bool j1Scene::Update(float dt)
 {
 	
-	if(App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)			//Save game
+	if(App->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)			//Save game
 		App->LoadGame("save_game.xml");
 
-	if(App->input->GetKey(SDL_SCANCODE_F4) == KEY_DOWN)			//Load game
+	if(App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)			//Save game
 		App->SaveGame("save_game.xml");
 
 	if (App->input->GetKey(SDL_SCANCODE_H) == KEY_DOWN) {//Load game
@@ -77,6 +77,18 @@ bool j1Scene::Update(float dt)
 		LoadLevel2NOW = false;
 	}
 
+	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
+		LoadLevel(level1);
+
+	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)			//Load game
+	{
+		App->player->data.xpos = App->map->data.start_position.x;
+		App->player->data.ypos = App->map->data.start_position.y;
+
+		App->render->CenterCamera();
+	}
+
+
 	//Draw the map
 	current_map->Draw();				
 
@@ -84,11 +96,11 @@ bool j1Scene::Update(float dt)
 	int x, y;
 	App->input->GetMousePosition(x, y);
 	iPoint map_coordinates = App->map->WorldToMap(x - App->render->camera.x, y - App->render->camera.y);
-	p2SString title("Map:%dx%d Tiles:%dx%d Tilesets:%d Tile:%d,%d",
+	p2SString title("AEGIS Version 0.2"); /*Map:%dx%d Tiles:%dx%d Tilesets:%d Tile:%d,%d",
 		App->map->data.width, App->map->data.height,
 		App->map->data.tile_width, App->map->data.tile_height,
 		App->map->data.tilesets.count(),
-					map_coordinates.x, map_coordinates.y);
+					map_coordinates.x, map_coordinates.y);*/
 
 	App->win->SetTitle(title.GetString());
 	return true;
