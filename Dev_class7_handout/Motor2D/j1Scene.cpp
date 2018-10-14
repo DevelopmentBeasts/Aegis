@@ -59,12 +59,23 @@ bool j1Scene::Update(float dt)
 	if(App->input->GetKey(SDL_SCANCODE_F4) == KEY_DOWN)			//Load game
 		App->SaveGame("save_game.xml");
 
-	if (App->input->GetKey(SDL_SCANCODE_H) == KEY_DOWN)			//Load game
-		LoadLevel(level1);
-
-	if (App->input->GetKey(SDL_SCANCODE_J) == KEY_DOWN)			//Load game
-		LoadLevel(level2);
+	if (App->input->GetKey(SDL_SCANCODE_H) == KEY_DOWN) {//Load game
+	/*	LoadLevel(level1);*/
+		LoadLevel1NOW = true;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_J) == KEY_DOWN)	//Load game
+		LoadLevel2NOW = true;
+		
 	
+
+	if (LoadLevel1NOW && App->player->jumping) {
+		LoadLevel(level1);
+		LoadLevel1NOW = false;
+	}
+	if (LoadLevel2NOW && App->player->jumping) {
+		LoadLevel(level2);
+		LoadLevel2NOW = false;
+	}
 
 	//Draw the map
 	current_map->Draw();				

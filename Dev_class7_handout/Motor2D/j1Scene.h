@@ -58,6 +58,11 @@ public:
 	float playerinity;
 	float screeninitx;
 	float screeninity;
+
+
+public:
+	bool LoadLevel1NOW;
+	bool LoadLevel2NOW;
 };
 
 #endif // __j1SCENE_H__

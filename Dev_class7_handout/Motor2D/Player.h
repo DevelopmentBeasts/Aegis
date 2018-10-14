@@ -122,9 +122,6 @@ public:
 	bool activaterightmovement = false;
 
 	bool UpdatePlayer; //update player start
-
-	
-
 public:
 
 
@@ -133,7 +130,6 @@ public:
 
 	Animation* current_animation = nullptr;
 
-	
 	Animation idle_left;
 	
 	Animation run_left;
