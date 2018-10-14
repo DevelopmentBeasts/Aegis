@@ -59,8 +59,7 @@ bool PlayerClass::Start() {
 	if (type1 == "WISP_WISP") {
 		data.type = WIND_WISP;
 	}
-	data.xpos = PlayerXmlNode.attribute("xpos").as_uint();
-	data.ypos = PlayerXmlNode.attribute("ypos").as_uint(); 
+
 	data.yvel = PlayerXmlNode.attribute("yvel").as_uint(); //player stats
 	data.xvel = PlayerXmlNode.attribute("xvel").as_uint();
 	data.PlayerOnTop = PlayerXmlNode.attribute("PlayerOnTop").as_bool();
@@ -109,7 +108,7 @@ bool PlayerClass::Start() {
 bool PlayerClass::Update(float dt) {
 
 
-	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_F10) == KEY_DOWN)
 		godmode_activated = !godmode_activated;
 
 	if (godmode_activated == false) {

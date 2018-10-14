@@ -7,9 +7,8 @@
 #include "j1Render.h"
 #include "j1Window.h"
 #include "j1Map.h"
-#include "j1Scene.h"
+#include "j1Scene2.h"
 #include "Player.h"
-
 
 j1Scene::j1Scene() : j1Module()
 {
@@ -32,14 +31,17 @@ bool j1Scene::Awake()
 // Called before the first frame
 bool j1Scene::Start()
 {
-	LoadLevel(level1);/*
-	current_level = level1;*/
+	App->map->Load("AEGIS_RUN.tmx");
 	App->render->camera.x = App->player->data.xpos - 500;
 	App->render->camera.y = App->player->data.ypos - 1000;
-	
-	current_map = App->map;
-	
-	current_map->DrawColliders();
+	//here we take the initial player pos to make camera do the same movements
+	/*playerinitx = App->player->data.xpos;
+	playerinity = App->player->data.ypos;
+
+	screeninitx = App->render->camera.x;
+	screeninity = App->render->camera.y;*/
+
+	App->map->DrawColliders();
 
 	return true;
 }
@@ -53,32 +55,29 @@ bool j1Scene::PreUpdate()
 // Called each loop iteration
 bool j1Scene::Update(float dt)
 {
-	
-	if(App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)			//Save game
+	/*if (App->player->data.xpos != playerinitx) {
+		 App->render->camera.x = (App->player->data.xpos - playerinitx);
+	}
+	*/
+
+	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
 		App->LoadGame("save_game.xml");
 
-	if(App->input->GetKey(SDL_SCANCODE_F4) == KEY_DOWN)			//Load game
+	if (App->input->GetKey(SDL_SCANCODE_F4) == KEY_DOWN)
 		App->SaveGame("save_game.xml");
 
-	if (App->input->GetKey(SDL_SCANCODE_H) == KEY_DOWN)			//Load game
-		LoadLevel(level1);
 
-	if (App->input->GetKey(SDL_SCANCODE_J) == KEY_DOWN)			//Load game
-		LoadLevel(level2);
-	
-	
-	//Draw the map
-	current_map->Draw();				
+	App->map->Draw();
 
-	//Draw the title
 	int x, y;
+
 	App->input->GetMousePosition(x, y);
 	iPoint map_coordinates = App->map->WorldToMap(x - App->render->camera.x, y - App->render->camera.y);
 	p2SString title("Map:%dx%d Tiles:%dx%d Tilesets:%d Tile:%d,%d",
 		App->map->data.width, App->map->data.height,
 		App->map->data.tile_width, App->map->data.tile_height,
 		App->map->data.tilesets.count(),
-					map_coordinates.x, map_coordinates.y);
+		map_coordinates.x, map_coordinates.y);
 
 	App->win->SetTitle(title.GetString());
 	return true;
@@ -89,7 +88,7 @@ bool j1Scene::PostUpdate()
 {
 	bool ret = true;
 
-	if(App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
 		ret = false;
 
 	return ret;
@@ -101,40 +100,4 @@ bool j1Scene::CleanUp()
 	LOG("Freeing scene");
 
 	return true;
-}
-
-// Load Game State
-bool j1Scene::Load(pugi::xml_node& data)
-{
-	
-	LoadLevel(data.attribute("level").as_string());
-
-	return true;
-}
-
-// Save Game State
-bool j1Scene::Save(pugi::xml_node& data) const
-{
-
-	data.append_attribute("level") = current_level.GetString();
-
-	return true;
-}
-
-void j1Scene::LoadLevel(const char* leveltoload) {
-	
-	if (leveltoload != current_level.GetString()) {
-		
-		App->map->CleanUp();
-		App->map->Load(leveltoload);
-		App->map->DrawColliders();
-		current_level = leveltoload;
-
-		App->player->data.xpos = App->map->data.start_position.x;
-		App->player->data.ypos = App->map->data.start_position.y;
-
-		App->render->camera.x = App->player->data.xpos- App->render->camera.x;
-
-		App->render->camera.y = App->player->data.ypos + App->render->camera.y;
-	}
 }
