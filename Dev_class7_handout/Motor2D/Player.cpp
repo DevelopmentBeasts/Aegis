@@ -375,7 +375,7 @@ void PlayerClass::PlayerAnims() {
 
 	//ANIMS BASED ON LAST DIRECTION RECORD
 	//IDL AT THE START
-	if (!jumping && !movingleft && !movingright && !automatic_left && !automatic_right && (current_animation==&idle_left) ) {
+	if (!jumping && !movingleft && !movingright && !automatic_left && !automatic_right && (current_animation==&idle_left) && !(data.Falling) ) {
 		current_animation = &idle_left;
 
 		CurrentAnimationRect = current_animation->GetCurrentFrame();
