@@ -24,14 +24,17 @@ struct PlayerData {
 	int ypos;
 	float yvel;
 	float xvel;
-	float yvel2;
-	PlayerTypes type;
+
+	PlayerTypes type; // used for future adding of types of players
+
 	bool PlayerOnTop;
 	bool PlayerOnBot;  //CONTROL IF THE PLAYER IS COLLISIONING WITH A COLLIDER AND WHERE IS THE PLAYER RESPECT THE COLLIDER
 	bool PlayerOnLeft;
 	bool PlayerOnRight;
-	bool PlayerColliding; //CONTROL IF PLAYER IS COLLIDING
-	bool Falling;
+
+	bool PlayerColliding; //CONTROL IF PLAYER IS COLLIDING WITH SOMETHING (TOP,BOT,LEFT OR RIGHT)
+
+	bool Falling; // IT IS NOT THE SAME TO JUST FALL THAN TO BE IN A JUMPING PRABOLA
 	
 };
 
@@ -65,6 +68,7 @@ public:
 	void PlayerAnims();
 	void OnCollision(Collider *c1, Collider *c2);
 
+	void Die();
 
 	void GodMode();
 
@@ -100,18 +104,25 @@ public:
 
 	bool map_loaded;
 
-	bool jumping = false;  //bool to know when is jumping 
+	bool jumping = false;   //bool to know when there is a jump
+	
 	bool bot_reached = false;
 	bool top_reached = false;
-	uint yposaux;
+
+
 	bool automatic_right = false;  //two bools on left and right to know if the player is moving in the air(xdirection) automatically after stop pressing A or D
 	bool automatic_left = false;
-	bool fall_atack = false; //bool to know if the fall attack is being done
+
+	bool fall_atack = false; //bool to know if the fall attack is being USED (still not beig coded)
+
 	bool movingright = false;  //usefool for the idle left or idle right anims
-	bool movingleft = false;
+	bool movingleft = false; 
+
 	bool activateleftmovement = false;
 	bool activaterightmovement = false;
-	bool StillColliding = false;
+
+	
+
 public:
 
 
@@ -130,6 +141,7 @@ public:
 	Animation fall_left;
 	Animation attack_right;
 	Animation attack_left;
+	Animation death;
 
 public:
 
