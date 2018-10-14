@@ -31,6 +31,7 @@ struct PlayerData {
 	bool PlayerOnLeft;
 	bool PlayerOnRight;
 	bool PlayerColliding; //CONTROL IF PLAYER IS COLLIDING
+	bool Falling;
 	
 };
 
@@ -110,7 +111,7 @@ public:
 	bool movingleft = false;
 	bool activateleftmovement = false;
 	bool activaterightmovement = false;
-
+	bool StillColliding = false;
 public:
 
 

@@ -142,6 +142,10 @@ bool j1Map::CleanUp()
 {
 	LOG("Unloading map");
 
+	data.colliders.~ColliderData();
+
+	
+
 	// Remove all tilesets
 	p2List_item<TileSet*>* item;
 	item = data.tilesets.start;
@@ -222,18 +226,26 @@ bool j1Map::Load(const char* file_name)
 			data.layers.add(lay);
 	}
 
-	//Load colliders data
+	//Load colliders and start position data
 	pugi::xml_node objectgroup;
 	p2SString objectname;
 
-	for (objectgroup = map_file.child("map").child("objectgroup"); objectgroup && ret; objectgroup.next_sibling("objectgroup")) {
+	for (objectgroup = map_file.child("map").child("objectgroup"); objectgroup && ret; objectgroup = objectgroup.next_sibling("objectgroup")) {
 		
 		objectname = objectgroup.attribute("name").as_string();
 		
+		if (objectname == "Spawn") {
+			data.start_position.x = objectgroup.child("object").attribute("x").as_int();
+			data.start_position.y = objectgroup.child("object").attribute("y").as_int();
+			
+		}
+
 		if (objectname == "Colliders") {
 			LoadColliders(objectgroup, &data.colliders);
 			break;
 		}
+
+		
 	}
 
 	if(ret == true)
