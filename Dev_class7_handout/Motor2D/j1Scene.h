@@ -43,7 +43,7 @@ public:
 
 private:
 	
-	const char* level1= "AEGIS_RUN.tmx";	//Level 1
+	const char* level1="AEGIS_RUN.tmx";	//Level 1
 	const char* level2="hello2.tmx";			//Level 2
 	
 	//Level that is loaded at the moment
