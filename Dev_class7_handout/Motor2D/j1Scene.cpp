@@ -34,8 +34,7 @@ bool j1Scene::Start()
 {
 
 	LoadLevel(level1);
-	App->render->camera.x = App->player->data.xpos - 500;
-	App->render->camera.y = App->player->data.ypos - 1000;
+	
 	
 	current_map = App->map;
 	
@@ -66,7 +65,7 @@ bool j1Scene::Update(float dt)
 	if (App->input->GetKey(SDL_SCANCODE_J) == KEY_DOWN)			//Load game
 		LoadLevel(level2);
 	
-	
+
 	//Draw the map
 	current_map->Draw();				
 
@@ -122,8 +121,6 @@ bool j1Scene::Save(pugi::xml_node& data) const
 }
 
 void j1Scene::LoadLevel(const char* leveltoload) {
-	
-	if (leveltoload != current_level.GetString()) {
 		
 		App->map->CleanUp();
 		App->map->Load(leveltoload);
@@ -133,8 +130,6 @@ void j1Scene::LoadLevel(const char* leveltoload) {
 		App->player->data.xpos = App->map->data.start_position.x;
 		App->player->data.ypos = App->map->data.start_position.y;
 
-		App->render->camera.x = App->player->data.xpos- App->render->camera.x;
+		App->render->CenterCamera();
 
-		App->render->camera.y = App->player->data.ypos + App->render->camera.y;
-	}
 }

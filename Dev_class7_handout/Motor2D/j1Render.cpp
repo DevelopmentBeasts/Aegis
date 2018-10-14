@@ -5,11 +5,6 @@
 #include "j1Render.h"
 #include "player.h"
 #include "j1Input.h"
-#define VSYNC true
-#define RIGHT_BORDER	500
-#define LEFT_BORDER		200
-#define TOP_BORDER		300
-#define BOTTOM_BORDER	200
 
 j1Render::j1Render() : j1Module()
 {
@@ -29,6 +24,13 @@ bool j1Render::Awake(pugi::xml_node& config)
 {
 	LOG("Create SDL rendering context");
 	bool ret = true;
+	//laod borders
+	pugi::xml_node borders= config.child("borders");
+	top_border = borders.attribute("top").as_int();
+	bot_border = borders.attribute("bot").as_int();
+	left_border = borders.attribute("left").as_int();
+	right_border = borders.attribute("right").as_int();
+
 	// load flags
 	Uint32 flags = SDL_RENDERER_ACCELERATED;
 
@@ -77,40 +79,14 @@ bool j1Render::Update(float dt)
 	if (App->input->GetKey(SDL_SCANCODE_F8)==KEY_DOWN)
 		debug=!debug;
 
+	if (find_player)
+		FindPlayer();
+
 	if (debug == true) {
-		if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
-			camera.y += 30;
-
-		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
-			camera.y -= 30;
-
-		if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
-			camera.x += 30;
-
-		if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
-			camera.x -= 30;
+		FreeMovement();
 	}
 	else {
-		if ((App->player->data.xpos) > (-camera.x + camera.w - RIGHT_BORDER)) {	//Move the camera to the right if the player is advancing and ahead of the border
-			
-			if (App->player->automatic_right == true)							//If the player jumps while going to a side, his velocity.x increases, so we increase
-				camera.x -= App->player->data.xvel + 3;							//the velocity of the camera aswell
-			else
-				camera.x -= App->player->data.xvel;
-		}
-		if ((App->player->data.xpos) < (-camera.x + LEFT_BORDER)) {				//Move the camera to the left if the player is going back and behnid the left border
-			
-			if (App->player->automatic_left==true)								//If the player jumps while going to a side, his velocity.x increases, so we increase
-				camera.x += App->player->data.xvel + 3;							//the velocity of the camera aswell
-			else 
-				camera.x += App->player->data.xvel;
-		}
-
-		if ((App->player->data.ypos)<(-camera.y + TOP_BORDER))					//Move the camera upwards if the player is going up and above the top border
-			camera.y += App->player->data.xvel;
-
-		if ((App->player->data.ypos) > (-camera.y + camera.h - BOTTOM_BORDER))	//Move the camera upwards if the player is going up and above the top border
-			camera.y -= App->player->data.xvel;
+		FollowPlayer();
 	}
 
 	return true;
@@ -288,4 +264,78 @@ bool j1Render::DrawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, U
 	}
 
 	return ret;
+}
+
+void j1Render::CenterCamera(){
+	camera.x = left_border - App->player->data.xpos;
+	camera.y = top_border - App->player->data.ypos;
+		
+}
+
+void j1Render::FreeMovement() {
+	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
+		camera.y += 30;
+
+	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
+		camera.y -= 30;
+
+	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
+		camera.x += 30;
+
+	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
+		camera.x -= 30;
+}
+
+void j1Render::FollowPlayer() {
+	if ((App->player->data.xpos) > (-camera.x + camera.w - right_border)) {	//Move the camera to the right if the player is advancing and ahead of the border
+
+		if (App->player->automatic_right == true)							//If the player jumps while going to a side, his velocity.x increases, so we increase
+			camera.x -= App->player->data.xvel + 3;							//the velocity of the camera aswell
+		else
+			camera.x -= App->player->data.xvel;
+	}
+	if ((App->player->data.xpos) < (-camera.x + left_border)) {				//Move the camera to the left if the player is going back and behnid the left border
+
+		if (App->player->automatic_left == true)								//If the player jumps while going to a side, his velocity.x increases, so we increase
+			camera.x += App->player->data.xvel + 3;							//the velocity of the camera aswell
+		else
+			camera.x += App->player->data.xvel;
+	}
+
+	if ((App->player->data.ypos) < (-camera.y + top_border))					//Move the camera upwards if the player is going up and above the top border
+		camera.y += App->player->data.xvel;
+
+	if ((App->player->data.ypos) > (-camera.y + camera.h - bot_border))		//Move the camera upwards if the player is going up and above the top border
+		camera.y -= App->player->data.xvel;
+}
+
+void j1Render::FindPlayer() {
+	int vel = 20;
+
+	if ((App->player->data.xpos) > (-camera.x + camera.w - right_border)) {	
+
+		if (App->player->automatic_right == true)							
+			camera.x -=vel;													
+		else
+			camera.x -= vel;
+	}
+	if ((App->player->data.xpos) < (-camera.x + left_border)) {				
+
+		if (App->player->automatic_left == true)							
+			camera.x += vel;												
+		else
+			camera.x += vel;
+	}
+
+	if ((App->player->data.ypos) < (-camera.y + top_border))				
+		camera.y += vel;
+
+	if ((App->player->data.ypos) > (-camera.y + camera.h - bot_border))		
+		camera.y -= vel;
+
+	if (((App->player->data.xpos) < (-camera.x + camera.w - right_border))		//If we found the player, stop looking for it
+		&& ((App->player->data.xpos) > (-camera.x + left_border))
+		&& ((App->player->data.ypos) > (-camera.y + top_border))
+		&& ((App->player->data.ypos) < (-camera.y + camera.h - bot_border)))
+		find_player = false;
 }
