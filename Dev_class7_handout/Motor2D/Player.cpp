@@ -120,27 +120,61 @@ void PlayerClass::MovePlayer() {
 	
 	//where is the player respect the collider?
 
-	//BEFORE TRYING TO UNDERSTAND THIS CONDITION ENTER HERE: http://prntscr.com/l5it33
+	
 	if (data.PlayerColliding) {
 		
-		if ((playerrect.y + (playerrect.h + 1)) > TheWallCollider->rect.y) {
-			LOG("THE PLAYER  IS ABOVE THE Y OF THE COLLIDER");
-			data.PlayerOnTop = true;
-			data.ypos = TheWallCollider->rect.y;
+		if (playerrect.x || (playerrect.x + playerrect.w) > (TheWallCollider->rect.x + 10) && (playerrect.x || (playerrect.x + playerrect.w) < (TheWallCollider->rect.x + TheWallCollider->rect.w))) {
+			if ((playerrect.y + playerrect.h) < (TheWallCollider->rect.y +10)) {
+				data.PlayerOnTop = true;
+			}			
+		}
+		
+		if ((playerrect.y > (TheWallCollider->rect.y + 10)) || ((playerrect.y + playerrect.h) > (TheWallCollider->rect.y + 10))) {
+			if (playerrect.x < TheWallCollider->rect.x) {
+				data.PlayerOnLeft = true;
+			}
+		}
+		
+		if ((playerrect.y > (TheWallCollider->rect.y + 10)) || ((playerrect.y + playerrect.h) > (TheWallCollider->rect.y + 10))) {
+			if (playerrect.x > TheWallCollider->rect.x + (TheWallCollider->rect.w-5)) {
+				data.PlayerOnRight = true;
+			}
+		}
+
+		if (playerrect.x || (playerrect.x + playerrect.w) > (TheWallCollider->rect.x + 10) && (playerrect.x || (playerrect.x + playerrect.w) < (TheWallCollider->rect.x + TheWallCollider->rect.w))) {
+			if (playerrect.y > (TheWallCollider->rect.y - 10)) {
+				data.PlayerOnBot = true;
+			}
 		}
 
 
 	}
-
-	if (!((playerrect.y + (playerrect.h + 1)) > TheWallCollider->rect.y)) {
-		LOG("THE PLAYER  IS ABOVE THE Y OF THE COLLIDER");
+	
+	if (!data.PlayerColliding && !fall_atack/*||data.PlayerOnLeft||data.PlayerOnRight*/) { //descomentar esto cuando estén hechas las colisiones laterales
+		jumping = true;
 		data.PlayerOnTop = false;
 	}
 
 	//lets make the player fall down by default
-	if (!data.PlayerOnTop && !jumping) {
-		data.yvel += 1;
-		data.ypos += data.yvel;
+	if (!data.PlayerOnTop && !jumping ) {
+		data.yvel +=0.3;
+		data.ypos += data.yvel;		
+	}
+	//conditions depending on the collision pos
+	if (data.PlayerOnTop) {  //HERE NEEDS TO STOP THE Y MOVEMENT (NOT DONE YET)
+		data.PlayerOnLeft = false;
+		data.PlayerOnRight = false;
+		data.yvel = 0;
+		data.ypos = TheWallCollider->rect.y - (playerrect.h - 1);
+		jumping = false;
+		fall_atack = false;
+		data.PlayerColliding = false;
+	}
+	if (data.PlayerOnLeft) {
+		automatic_right = false;
+	}
+	if (data.PlayerOnRight) {
+		automatic_left = false;
 	}
 	
 
@@ -150,7 +184,7 @@ void PlayerClass::MovePlayer() {
 
 	//_______________________________________________________________
 
-	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) {
+	if ((App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) && !data.PlayerOnLeft) {
 		movingleft = false;
 		movingright = true;
 		automatic_left = false; 
@@ -167,7 +201,7 @@ void PlayerClass::MovePlayer() {
 
 	//________________________________________________________________
 
-	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) {
+	if ((App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) && !data.PlayerOnRight) {
 		movingleft = true;
 		movingright = false;
 		automatic_right = false;
@@ -198,42 +232,40 @@ void PlayerClass::MovePlayer() {
 	}
 
 	if (fall_atack && !data.PlayerOnTop) {
-		data.yvel = 25;
+		data.yvel = 15;
 		data.ypos += data.yvel;
 		data.yvel += 2;
 	}
 
-	if (data.PlayerOnTop) {  //HERE NEEDS TO STOP THE Y MOVEMENT (NOT DONE YET)
-		data.yvel = 0;
-		data.ypos = TheWallCollider->rect.y-(playerrect.h+1);
-		jumping = false;
-		fall_atack = false;
-		data.PlayerColliding = false;
-	}
-
 	//_________________________________________________________________
 
-	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) {
+	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN) {
 		if (!jumping) {
 			data.PlayerOnTop = false;
 			data.PlayerColliding = false;
 			jumping = true;
-			data.yvel = 10;
+			data.yvel = 9;
 			//yposaux = data.ypos; never gonna use this again erase when stop editing player movement
 		}
 	}
 
 	if (jumping) {
 		data.ypos -= data.yvel;
-		data.yvel -= 0.3;
+		if (!data.PlayerOnLeft && !data.PlayerOnRight) {
+			data.yvel -= 0.3;
+		}
+		if (data.PlayerOnLeft || data.PlayerOnRight) {
+			data.yvel -= 0.6;
+		}
+		
 		if (data.PlayerOnTop && data.PlayerColliding) {
 			data.ypos = TheWallCollider->rect.y - playerrect.h;
 			jumping = false;
 		}
+		//data.PlayerOnTop = false; //hhhhhhhhhhh
 	}
 
 	if (!jumping) { //STAMINA AMOUNT CONTROL
-		//data.yvel = 0;
 		automatic_left = false;
 		automatic_right = false;
 		if (StaminaRect.w <= 300) {
@@ -381,7 +413,7 @@ void PlayerClass::PlayerAnims() {
 		App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &CurrentAnimationRect, 1, data.yvel * (-4), SDL_FLIP_HORIZONTAL, 1, 1, 1.0);
 	}
 
-	App->render->DrawQuad(playerrect, 0, 255, 0, 100); //used for debugging player positions, DO NOT ERASE PLEASE!!!!!!!!!
+	//App->render->DrawQuad(playerrect, 0, 255, 0, 100); //used for debugging player positions, DO NOT ERASE PLEASE!!!!!!!!!
 
 	App->render->DrawQuad(StaminaRect, 0, 0, 255, 100);
 }
@@ -396,7 +428,6 @@ void PlayerClass::MovePlayerCollider() {
 void PlayerClass::OnCollision(Collider *c1, Collider *c2) {
 
 	if ((c1->type == COLLIDER_TYPE::COLLIDER_WALL  &&  c2->type == COLLIDER_TYPE::COLLIDER_WALL ) || (c1->type == COLLIDER_PLAYER && c2->type==COLLIDER_TYPE::COLLIDER_WALL)) {
-		LOG("COLLISION OF THE PLAYER WITH A WALL DETECTED");
 		data.PlayerColliding = true;
 	}
 	else if (!((c1->type == COLLIDER_TYPE::COLLIDER_WALL  &&  c2->type == COLLIDER_TYPE::COLLIDER_PLAYER) || (c1->type == COLLIDER_PLAYER  && c2->type == COLLIDER_TYPE::COLLIDER_WALL))) {

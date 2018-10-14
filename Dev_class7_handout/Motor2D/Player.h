@@ -30,7 +30,8 @@ struct PlayerData {
 	bool PlayerOnBot;  //CONTROL IF THE PLAYER IS COLLISIONING WITH A COLLIDER AND WHERE IS THE PLAYER RESPECT THE COLLIDER
 	bool PlayerOnLeft;
 	bool PlayerOnRight;
-	bool PlayerColliding;
+	bool PlayerColliding; //CONTROL IF PLAYER IS COLLIDING
+	
 };
 
 
