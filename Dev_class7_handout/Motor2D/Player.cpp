@@ -103,6 +103,9 @@ bool PlayerClass::Start() {
 	//a collider that needs to be initialized and its values are redefinited in ONCOLLISION FUNCTION
 	TheWallCollider = App->collision->AddCollider({ NULL, NULL, NULL, NULL }, COLLIDER_NONE, this);
 	
+	//make the player fisics start
+	UpdatePlayer = true;
+
 	return ret;
 }
 
@@ -182,7 +185,7 @@ void PlayerClass::MovePlayer() {
 		}
 		
 			if ((Px > Cx) && (Px < (Cx + Cw))/*Px inside Cw*/ || (((Px + Pw) > Cx) && ((Px + Pw) < (Cx + Cw)))/*(Px+Pw) inside Cw*/) {
-				if ((Py + Ph) < (Cy + 20)/*if (Py+Ph) is inside the C but not more than 20p*/ && !((Py< (Cy + 20))&&(Py>(Cy+Ch)))) {
+				if ((Py + Ph) < (Cy + 30)/*if (Py+Ph) is inside the C but not more than 20p*/ && !((Py< (Cy + 20))&&(Py>(Cy+Ch)))) {
 					if (!data.PlayerOnLeft && !data.PlayerOnRight) {
 						data.PlayerOnTop = true;
 						LOG("PLAYER ON TOP");
@@ -201,7 +204,12 @@ void PlayerClass::MovePlayer() {
 			}
 		
 	}
-	
+	if (UpdatePlayer) {
+		data.Falling = true;
+		current_animation = &idle_left;
+		UpdatePlayer = false;
+	}
+
 	if (data.PlayerOnTop) {
 		jumping = false;
 		data.Falling = false;
@@ -239,7 +247,7 @@ void PlayerClass::MovePlayer() {
 	}
 	if (data.Falling) {
 		data.ypos += data.yvel;
-		data.yvel += 0.5;
+		data.yvel += 0.3;
 	}
 
 //___________________________________________________________________________________________________________________________________________________
@@ -367,7 +375,7 @@ void PlayerClass::PlayerAnims() {
 
 	//ANIMS BASED ON LAST DIRECTION RECORD
 	//IDL AT THE START
-	if (!jumping && !movingleft && !movingright && !automatic_left && !automatic_right && (data.xpos == 623)) {
+	if (!jumping && !movingleft && !movingright && !automatic_left && !automatic_right && (current_animation==&idle_left) && !(data.Falling) ) {
 		current_animation = &idle_left;
 
 		CurrentAnimationRect = current_animation->GetCurrentFrame();
