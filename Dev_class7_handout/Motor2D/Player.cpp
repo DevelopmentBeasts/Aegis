@@ -7,6 +7,7 @@
 #include "Player.h"
 #include <math.h>
 #include "j1Input.h"
+#include "j1Scene.h"
 
 //Destructor
 
@@ -129,9 +130,8 @@ bool PlayerClass::Update(float dt) {
 			Die();
 		}
 		
-		
-
-
+	
+			
 
 	
 	
@@ -552,13 +552,5 @@ void PlayerClass::Die() {
 
 	
 	App->render->find_player = true;
-	/*current_animation = &death;
-
-	CurrentAnimationRect = current_animation->GetCurrentFrame();
-
-	data.dead = true;
-
-	if (!(current_animation->Finished())) {
-		App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &CurrentAnimationRect, 1, data.yvel, SDL_FLIP_HORIZONTAL, 1, 1, 1.0);
-	}	*/
+	
 }
