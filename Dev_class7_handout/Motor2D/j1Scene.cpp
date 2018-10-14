@@ -59,11 +59,23 @@ bool j1Scene::Update(float dt)
 	if(App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)			//Save game
 		App->SaveGame("save_game.xml");
 
-	if (App->input->GetKey(SDL_SCANCODE_H) == KEY_DOWN)			//Load game
-		LoadLevel(level1);
+	if (App->input->GetKey(SDL_SCANCODE_H) == KEY_DOWN) {//Load game
+	/*	LoadLevel(level1);*/
+		LoadLevel1NOW = true;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_J) == KEY_DOWN)	//Load game
+		LoadLevel2NOW = true;
+		
+	
 
-	if (App->input->GetKey(SDL_SCANCODE_J) == KEY_DOWN)			//Load game
+	if (LoadLevel1NOW && App->player->jumping) {
+		LoadLevel(level1);
+		LoadLevel1NOW = false;
+	}
+	if (LoadLevel2NOW && App->player->jumping) {
 		LoadLevel(level2);
+		LoadLevel2NOW = false;
+	}
 
 	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 		LoadLevel(level1);
@@ -75,7 +87,7 @@ bool j1Scene::Update(float dt)
 
 		App->render->CenterCamera();
 	}
-	
+
 
 	//Draw the map
 	current_map->Draw();				
