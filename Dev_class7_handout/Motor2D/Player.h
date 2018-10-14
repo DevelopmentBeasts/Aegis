@@ -121,6 +121,8 @@ public:
 	bool activateleftmovement = false;
 	bool activaterightmovement = false;
 
+	bool UpdatePlayer; //update player start
+
 	
 
 public:
@@ -151,6 +153,7 @@ public:
 	bool SCANCODE_S = false;
 	bool LastDirectionLeft = false;
 	bool LastDirectionRight = false;
+
 public:
 	Collider *PlayerCollider;
 	Collider *TheWallCollider;  // the collider that we are interacting with in each moment
