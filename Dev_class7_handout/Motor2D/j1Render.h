@@ -49,6 +49,9 @@ public:
 	SDL_Rect		camera;
 	SDL_Rect		viewport;
 	SDL_Color		background;
+
+private:
+	bool debug=false;	//In debug mode we will be able to move the camera as we want
 };
 
 #endif // __j1RENDER_H__

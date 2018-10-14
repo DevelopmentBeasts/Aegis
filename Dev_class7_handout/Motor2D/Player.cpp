@@ -14,7 +14,7 @@ PlayerClass::~PlayerClass() {
 
 }
 PlayerClass::PlayerClass() {   //DO PUSHBACKS WITH XML
-	this->name = 'a';
+	name.create("player");
 
 	pugi::xml_parse_result result = AnimsDoc.load_file("PlayerAnims.xml");
 
@@ -66,6 +66,8 @@ bool PlayerClass::Start() {
 	data.PlayerOnTop = PlayerXmlNode.attribute("PlayerOnTop").as_bool();
 	data.PlayerColliding = PlayerXmlNode.attribute("PlayerColliding").as_bool();
 
+	
+
 	playerrect.w = PlayerXmlNode.child("playerrect").attribute("w").as_int(); //the rect that contains the player in wich we blit()
 	playerrect.h = PlayerXmlNode.child("playerrect").attribute("h").as_int();
 
@@ -105,16 +107,22 @@ bool PlayerClass::Start() {
 
 
 bool PlayerClass::Update(float dt) {
-	
-	MovePlayer();
-	MovePlayerCollider();
-	PlayerAnims();
+
+
+	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
+		godmode_activated = !godmode_activated;
+
+	if (godmode_activated == false) {
+		MovePlayer();
+    MovePlayerCollider();
+		PlayerAnims();
+	}
+	else
+		GodMode();
 	
 	return true;
 
 }
-
-
 
 void PlayerClass::MovePlayer() {
 	
@@ -150,7 +158,7 @@ void PlayerClass::MovePlayer() {
 
 	}
 	
-	if (!data.PlayerColliding && !fall_atack/*||data.PlayerOnLeft||data.PlayerOnRight*/) { //descomentar esto cuando estén hechas las colisiones laterales
+	if (!data.PlayerColliding && !fall_atack/*||data.PlayerOnLeft||data.PlayerOnRight*/) { //descomentar esto cuando estï¿½n hechas las colisiones laterales
 		jumping = true;
 		data.PlayerOnTop = false;
 	}
@@ -218,6 +226,7 @@ void PlayerClass::MovePlayer() {
 
 	//_________________________________________________________________
 
+
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN) { //ONLY USED FOR THE FALL ATACK
 		if (data.yvel > -6 && jumping) {
 			if (StaminaRect.w >= 121) {
@@ -279,7 +288,22 @@ void PlayerClass::MovePlayer() {
 
 }
 
+bool PlayerClass::Save(pugi::xml_node& node)const{
+	
+	pugi::xml_node pos = node.append_child("position");
 
+	pos.append_attribute("x") = data.xpos;
+	pos.append_attribute("y") = data.ypos;
+
+	return true;
+}
+
+bool PlayerClass::Load(pugi::xml_node& node) {
+
+	data.xpos = node.child("position").attribute("x").as_int();
+	data.ypos = node.child("position").attribute("y").as_int();
+	return true;
+}
 
 void PlayerClass::PlayerAnims() {
 
@@ -337,7 +361,7 @@ void PlayerClass::PlayerAnims() {
 
 	if (!jumping && (data.yvel < 0) && !movingleft && !movingright && !automatic_left && !automatic_right) { //looking the left
 		current_animation = &run_left;
-
+    
 		CurrentAnimationRect = current_animation->GetCurrentFrame();
 
 		App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &CurrentAnimationRect, 1, 90, SDL_FLIP_HORIZONTAL, 1, 1, 1.0);
@@ -446,4 +470,27 @@ void PlayerClass::OnCollision(Collider *c1, Collider *c2) {
 		TheWallCollider->rect.w = c2->rect.w;
 		TheWallCollider->rect.h = c2->rect.h;
 	}
+//	App->render->DrawQuad(playerrect, 0, 255, 0, 100); //used for debugging player positions, DO NOT ERASE PLEASE!!!!!!!!!
+
+	App->render->DrawQuad(StaminaRect, 0, 0, 255, 100);
+}
+
+void PlayerClass::GodMode() {									//The player flies and ignores collisions
+	
+	current_animation = &idle_left;
+
+	if (App->input->GetKey(SDL_SCANCODE_A)==KEY_REPEAT)
+		data.xpos -= data.xvel;
+
+	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
+		data.xpos += data.xvel;
+
+	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
+		data.ypos -= data.xvel;
+
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
+		data.ypos += data.xvel;
+
+	App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &current_animation->GetCurrentFrame(), 1, 0, SDL_FLIP_NONE, 1, 1, 1.0);
+
 }

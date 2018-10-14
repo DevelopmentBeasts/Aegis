@@ -38,8 +38,9 @@ struct PlayerData {
 class PlayerClass : public j1Module {
 
 public:
-	char name;
 	PlayerClass();
+
+	SDL_Rect aux_rect = { 50,50,0,0 };
 
 	//destructor
 	virtual ~PlayerClass();
@@ -49,16 +50,23 @@ public:
 	//bool CleanUp();
 
 	// Load / Save
-	//bool Load(pugi::xml_node&);
-	//bool Save(pugi::xml_node&) const;
+
+	bool Load(pugi::xml_node&);
+	bool Save(pugi::xml_node&) const;
 	
-	
+	iPoint MapToWorld(int x, int y) const;
+	iPoint WorldToMap(int x, int y) const;
+
 
 	bool Update(float dt);
 	void MovePlayer();
 	void MovePlayerCollider();
 	void PlayerAnims();
 	void OnCollision(Collider *c1, Collider *c2);
+
+
+	void GodMode();
+
 private:
 
 	/*bool LoadPlayer();
@@ -87,6 +95,8 @@ public:
 	SDL_Rect CurrentAnimationRect;
 
 public:
+	bool godmode_activated = false;				//God Mode will allow the player to fly around the map ignoring collisions
+
 	bool map_loaded;
 
 	bool jumping = false;  //bool to know when is jumping 
