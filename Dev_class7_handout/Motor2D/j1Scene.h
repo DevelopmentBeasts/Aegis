@@ -7,6 +7,7 @@ struct SDL_Texture;
 class j1Map;
 
 
+
 class j1Scene : public j1Module
 {
 public:
@@ -58,6 +59,11 @@ public:
 	float playerinity;
 	float screeninitx;
 	float screeninity;
+
+
+public:
+	bool LoadLevel1NOW;
+	bool LoadLevel2NOW;
 };
 
 #endif // __j1SCENE_H__

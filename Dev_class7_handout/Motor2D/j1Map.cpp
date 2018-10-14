@@ -46,11 +46,17 @@ void j1Map::Draw()
 					if (tileset != nullptr) {
 						SDL_Rect r = tileset->GetTileRect(tile_id);
 						iPoint pos = MapToWorld(x, y);
+						if (layer->name != "BackGround") {
+							//create a define for App->render->camera.z for better legibility
+							if (pos.x<(-(App->render->camera.x) + App->render->camera.w + 1200) && pos.x >(-(App->render->camera.x) - 100)) {//
+								App->render->Blit(tileset->texture, pos.x, pos.y, &r);
+						    }
 
-						//create a define for App->render->camera.z for better legibility
-						if (pos.x<(-(App->render->camera.x)+App->render->camera.w+1200) && pos.x >(-(App->render->camera.x)-100)) {//
-							App->render->Blit(tileset->texture, pos.x, pos.y, &r);
 						}
+						else if (layer->name == "BackGround") {
+							App->render->Blit(tileset->texture, pos.x-1000, pos.y-700, &r,0.3);
+						}
+
 						
 					}
 				}
@@ -152,6 +158,7 @@ bool j1Map::CleanUp()
 
 	while(item != NULL)
 	{
+		App->tex->UnLoad(item->data->texture);
 		RELEASE(item->data);
 		item = item->next;
 	}
