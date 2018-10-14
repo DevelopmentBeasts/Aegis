@@ -31,7 +31,9 @@ bool j1Scene::Awake()
 // Called before the first frame
 bool j1Scene::Start()
 {
-	App->map->Load("AEGIS_MAP1.tmx");
+	App->map->Load("AEGIS_RUN.tmx");
+	App->render->camera.x = App->player->data.xpos - 500;
+	App->render->camera.y = App->player->data.ypos - 1000;
 	//here we take the initial player pos to make camera do the same movements
 	/*playerinitx = App->player->data.xpos;
 	playerinity = App->player->data.ypos;
@@ -64,7 +66,6 @@ bool j1Scene::Update(float dt)
 	if(App->input->GetKey(SDL_SCANCODE_F4) == KEY_DOWN)
 		App->SaveGame("save_game.xml");
 
-	
 
 	App->map->Draw();
 

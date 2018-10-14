@@ -3,7 +3,7 @@
 <!-- Config file for the game -->
 
 <config>
-  <player xpos ="700" ypos ="500" type ="0" yvel="0" xvel ="5">
+  <player xpos ="901" ypos ="1300" type ="0" yvel="1" xvel ="5" PlayerOnTop="false" PlayerColliding="false">
     <playerrect w="32" h="32"/>
     <StaminaRect w ="13" h="40" x="30" y="700"/>
   </player>/>
