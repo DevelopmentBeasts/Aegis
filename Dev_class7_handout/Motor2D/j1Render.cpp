@@ -5,7 +5,6 @@
 #include "j1Render.h"
 #include "player.h"
 #include "j1Input.h"
-
 #define VSYNC true
 #define RIGHT_BORDER	500
 #define LEFT_BORDER		200

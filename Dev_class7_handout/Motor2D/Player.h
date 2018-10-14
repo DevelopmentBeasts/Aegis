@@ -9,7 +9,7 @@
 
 
 struct SDL_Texture;
-
+struct Collider;
 
 enum PlayerTypes {
 	FIRE_WISP = 0,
@@ -26,6 +26,12 @@ struct PlayerData {
 	float xvel;
 	float yvel2;
 	PlayerTypes type;
+	bool PlayerOnTop;
+	bool PlayerOnBot;  //CONTROL IF THE PLAYER IS COLLISIONING WITH A COLLIDER AND WHERE IS THE PLAYER RESPECT THE COLLIDER
+	bool PlayerOnLeft;
+	bool PlayerOnRight;
+	bool PlayerColliding; //CONTROL IF PLAYER IS COLLIDING
+	
 };
 
 
@@ -41,11 +47,10 @@ public:
 	bool Start();
 	//bool Awake(pugi::xml_node &config);
 
-	void Draw();
-
 	//bool CleanUp();
 
 	// Load / Save
+
 	bool Load(pugi::xml_node&);
 	bool Save(pugi::xml_node&) const;
 	
@@ -55,7 +60,10 @@ public:
 
 	bool Update(float dt);
 	void MovePlayer();
+	void MovePlayerCollider();
 	void PlayerAnims();
+	void OnCollision(Collider *c1, Collider *c2);
+
 
 	void GodMode();
 
@@ -91,14 +99,14 @@ public:
 
 	bool map_loaded;
 
-	bool jumping = false;
+	bool jumping = false;  //bool to know when is jumping 
 	bool bot_reached = false;
 	bool top_reached = false;
 	uint yposaux;
-	bool automatic_right = false;
+	bool automatic_right = false;  //two bools on left and right to know if the player is moving in the air(xdirection) automatically after stop pressing A or D
 	bool automatic_left = false;
-	bool fall_atack = false;
-	bool movingright = false;
+	bool fall_atack = false; //bool to know if the fall attack is being done
+	bool movingright = false;  //usefool for the idle left or idle right anims
 	bool movingleft = false;
 	bool activateleftmovement = false;
 	bool activaterightmovement = false;
@@ -130,6 +138,9 @@ public:
 	bool SCANCODE_S = false;
 	bool LastDirectionLeft = false;
 	bool LastDirectionRight = false;
+public:
+	Collider *PlayerCollider;
+	Collider *TheWallCollider;  // the collider that we are interacting with in each moment
 };
 
 #endif

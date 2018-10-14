@@ -27,6 +27,7 @@ PlayerClass::PlayerClass() {   //DO PUSHBACKS WITH XML
 	AnimsNode = AnimsDoc.child("config").child("AnimsCoords").child("run_left");
 	run_left.LoadPushbacks(AnimsNode);
 }
+
 bool PlayerClass::Start() {
 	
 	bool ret = true;
@@ -62,6 +63,8 @@ bool PlayerClass::Start() {
 	data.ypos = PlayerXmlNode.attribute("ypos").as_uint(); 
 	data.yvel = PlayerXmlNode.attribute("yvel").as_uint(); //player stats
 	data.xvel = PlayerXmlNode.attribute("xvel").as_uint();
+	data.PlayerOnTop = PlayerXmlNode.attribute("PlayerOnTop").as_bool();
+	data.PlayerColliding = PlayerXmlNode.attribute("PlayerColliding").as_bool();
 
 	
 
@@ -91,17 +94,27 @@ bool PlayerClass::Start() {
 
 	current_animation = &idle_left;
 
+	LOG("CREATING PLAYER COLLIDER");
+	PlayerCollider = App->collision->AddCollider({ data.xpos, data.ypos, playerrect.w, playerrect.h }, COLLIDER_PLAYER, this);
+
+
+
+	//a collider that needs to be initialized and its values are redefinited in ONCOLLISION FUNCTION
+	TheWallCollider = App->collision->AddCollider({ NULL, NULL, NULL, NULL }, COLLIDER_NONE, this);
+	
 	return ret;
 }
 
 
 bool PlayerClass::Update(float dt) {
 
+
 	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
 		godmode_activated = !godmode_activated;
 
 	if (godmode_activated == false) {
 		MovePlayer();
+    MovePlayerCollider();
 		PlayerAnims();
 	}
 	else
@@ -113,27 +126,90 @@ bool PlayerClass::Update(float dt) {
 
 void PlayerClass::MovePlayer() {
 	
-	//by default you are not moving (usefull bools for anim system)
+	//where is the player respect the collider?
+
+	
+	if (data.PlayerColliding) {
+		
+		if (playerrect.x || (playerrect.x + playerrect.w) > (TheWallCollider->rect.x + 10) && (playerrect.x || (playerrect.x + playerrect.w) < (TheWallCollider->rect.x + TheWallCollider->rect.w))) {
+			if ((playerrect.y + playerrect.h) < (TheWallCollider->rect.y +10)) {
+				data.PlayerOnTop = true;
+			}			
+		}
+		
+		if ((playerrect.y > (TheWallCollider->rect.y + 10)) || ((playerrect.y + playerrect.h) > (TheWallCollider->rect.y + 10))) {
+			if (playerrect.x < TheWallCollider->rect.x) {
+				data.PlayerOnLeft = true;
+			}
+		}
+		
+		if ((playerrect.y > (TheWallCollider->rect.y + 10)) || ((playerrect.y + playerrect.h) > (TheWallCollider->rect.y + 10))) {
+			if (playerrect.x > TheWallCollider->rect.x + (TheWallCollider->rect.w-5)) {
+				data.PlayerOnRight = true;
+			}
+		}
+
+		if (playerrect.x || (playerrect.x + playerrect.w) > (TheWallCollider->rect.x + 10) && (playerrect.x || (playerrect.x + playerrect.w) < (TheWallCollider->rect.x + TheWallCollider->rect.w))) {
+			if (playerrect.y > (TheWallCollider->rect.y - 10)) {
+				data.PlayerOnBot = true;
+			}
+		}
+
+
+	}
+	
+	if (!data.PlayerColliding && !fall_atack/*||data.PlayerOnLeft||data.PlayerOnRight*/) { //descomentar esto cuando est�n hechas las colisiones laterales
+		jumping = true;
+		data.PlayerOnTop = false;
+	}
+
+	//lets make the player fall down by default
+	if (!data.PlayerOnTop && !jumping ) {
+		data.yvel +=0.3;
+		data.ypos += data.yvel;		
+	}
+	//conditions depending on the collision pos
+	if (data.PlayerOnTop) {  //HERE NEEDS TO STOP THE Y MOVEMENT (NOT DONE YET)
+		data.PlayerOnLeft = false;
+		data.PlayerOnRight = false;
+		data.yvel = 0;
+		data.ypos = TheWallCollider->rect.y - (playerrect.h - 1);
+		jumping = false;
+		fall_atack = false;
+		data.PlayerColliding = false;
+	}
+	if (data.PlayerOnLeft) {
+		automatic_right = false;
+	}
+	if (data.PlayerOnRight) {
+		automatic_left = false;
+	}
+	
+
+	//usefull for idl anim
 	movingleft = false;
 	movingright = false;
 
-	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) {
+	//_______________________________________________________________
+
+	if ((App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) && !data.PlayerOnLeft) {
 		movingleft = false;
 		movingright = true;
-		automatic_left = false;
+		automatic_left = false; 
 		if (!automatic_right) {
 			data.xpos += data.xvel;
 		}
 		if (jumping) {
-			automatic_right = true; //automatic left or right is a bool that allows you to stop pressing "D" in the air without stoping the x movement of the character.
+			automatic_right = true;
 		}
 	}
 	if (automatic_right) {
-		data.xpos += (data.xvel + 3); // a little boost of the speed in the air to make the jump more interesting in a plataformer game
-
+		data.xpos += (data.xvel + 3); 
 	}
-	
-	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) { // the same as "D"
+
+	//________________________________________________________________
+
+	if ((App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) && !data.PlayerOnRight) {
 		movingleft = true;
 		movingright = false;
 		automatic_right = false;
@@ -148,79 +224,68 @@ void PlayerClass::MovePlayer() {
 		data.xpos -= (data.xvel + 3);
 	}
 
-	if (data.ypos == yposaux) {  //if the y position touches the ground stops the automatic left and right of the jump
-		automatic_right = false;
-		automatic_left = false;
-	}
+	//_________________________________________________________________
 
-	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN) {
-		
-		if (data.yvel > -3 && jumping) { // if you are in the top of your jump you can press "S" to fall down doing a smash in the ground
-			if (StaminaRect.w >= 121) { 
-				StaminaRect.w -= 120; // the stamina bar have 300p and every time you press "S" in the air you use 120p
-				if (jumping) {
-					fall_atack = true;
-					jumping = false;
-					automatic_left = false;  
-					automatic_right = false;
 
-				}
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN) { //ONLY USED FOR THE FALL ATACK
+		if (data.yvel > -6 && jumping) {
+			if (StaminaRect.w >= 121) {
+				StaminaRect.w -= 120;
+				fall_atack = true;
+				jumping = false;
+				automatic_left = false;
+				automatic_right = false;
 			}
+
 		}
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) {
+	if (fall_atack && !data.PlayerOnTop) {
+		data.yvel = 15;
+		data.ypos += data.yvel;
+		data.yvel += 2;
+	}
 
-		if (jumping == false) { //this is here because we don't want the player to press w in the air and jump again if it is not allowed
-			//data.yvel = 1.0;
-			bot_reached = false;
-			top_reached = false;
+	//_________________________________________________________________
+
+	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN) {
+		if (!jumping) {
+			data.PlayerOnTop = false;
+			data.PlayerColliding = false;
 			jumping = true;
-			data.yvel = 10;  //initial y speed
-			yposaux = data.ypos;
+			data.yvel = 9;
+			//yposaux = data.ypos; never gonna use this again erase when stop editing player movement
 		}
 	}
+
 	if (jumping) {
-		data.ypos -= data.yvel; //this makes the y speed decrease and become negative to turn back in the top ending up falling down to the ground
-		data.yvel -= 0.4;	
-		/*playerrect.w = 60;*/
-		if (data.ypos >= yposaux) {
-			data.ypos = yposaux;
+		data.ypos -= data.yvel;
+		if (!data.PlayerOnLeft && !data.PlayerOnRight) {
+			data.yvel -= 0.3;
+		}
+		if (data.PlayerOnLeft || data.PlayerOnRight) {
+			data.yvel -= 0.6;
+		}
+		
+		if (data.PlayerOnTop && data.PlayerColliding) {
+			data.ypos = TheWallCollider->rect.y - playerrect.h;
 			jumping = false;
 		}
+		//data.PlayerOnTop = false; //hhhhhhhhhhh
 	}
-	if (!jumping) {
-		data.yvel = 0.0;
-	/*	playerrect.w = 32;*/
-		if (StaminaRect.w <= 300) {  // here the stamina rect grows its points if you don't jump bc you are "in rest"
+
+	if (!jumping) { //STAMINA AMOUNT CONTROL
+		automatic_left = false;
+		automatic_right = false;
+		if (StaminaRect.w <= 300) {
 			StaminaRect.w += 1;
 		}
 	}
-	if (fall_atack && !jumping) { // a big boost of the speed when you want to fall down with a smash to make it more impressive
-		data.yvel = 25.0;
-		data.ypos += data.yvel;
-		data.yvel += 2;
-		if (data.ypos >= yposaux) {
-			fall_atack = false;
-			data.ypos = yposaux;
-		}
-	}
 
-	playerrect.x = data.xpos;  //here we put the SDL_Rect where we print the sprites in the player position.
+	//PLAYER RECT POSITION USED FOR USEFULL THINGS IS BEIG ACTUALIZED
+	playerrect.x = data.xpos;
 	playerrect.y = data.ypos;
 
-	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT) {
-		StaminaRect.y -= 2;
-	}
-	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT) {
-		StaminaRect.y += 2;
-	}
-	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) {
-		StaminaRect.x -= 2;
-	}
-	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT) {
-		StaminaRect.x += 2;
-	}
 }
 
 bool PlayerClass::Save(pugi::xml_node& node)const{
@@ -289,7 +354,6 @@ void PlayerClass::PlayerAnims() {
 
 		CurrentAnimationRect = current_animation->GetCurrentFrame();
 
-
 		App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &CurrentAnimationRect, 1, 90.0, SDL_FLIP_HORIZONTAL, 1, 1, 1.0);
 	}
 
@@ -297,6 +361,7 @@ void PlayerClass::PlayerAnims() {
 
 	if (!jumping && (data.yvel < 0) && !movingleft && !movingright && !automatic_left && !automatic_right) { //looking the left
 		current_animation = &run_left;
+    
 		CurrentAnimationRect = current_animation->GetCurrentFrame();
 
 		App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &CurrentAnimationRect, 1, 90, SDL_FLIP_HORIZONTAL, 1, 1, 1.0);
@@ -372,6 +437,39 @@ void PlayerClass::PlayerAnims() {
 		App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &CurrentAnimationRect, 1, data.yvel * (-4), SDL_FLIP_HORIZONTAL, 1, 1, 1.0);
 	}
 
+	//App->render->DrawQuad(playerrect, 0, 255, 0, 100); //used for debugging player positions, DO NOT ERASE PLEASE!!!!!!!!!
+
+	App->render->DrawQuad(StaminaRect, 0, 0, 255, 100);
+}
+
+void PlayerClass::MovePlayerCollider() {
+	PlayerCollider->rect.x = data.xpos;
+	PlayerCollider->rect.y = data.ypos;
+	PlayerCollider->rect.w = playerrect.w;
+	PlayerCollider->rect.h = playerrect.h;
+}
+
+void PlayerClass::OnCollision(Collider *c1, Collider *c2) {
+
+	if ((c1->type == COLLIDER_TYPE::COLLIDER_WALL  &&  c2->type == COLLIDER_TYPE::COLLIDER_WALL ) || (c1->type == COLLIDER_PLAYER && c2->type==COLLIDER_TYPE::COLLIDER_WALL)) {
+		data.PlayerColliding = true;
+	}
+	else if (!((c1->type == COLLIDER_TYPE::COLLIDER_WALL  &&  c2->type == COLLIDER_TYPE::COLLIDER_PLAYER) || (c1->type == COLLIDER_PLAYER  && c2->type == COLLIDER_TYPE::COLLIDER_WALL))) {
+		data.PlayerColliding = false;
+	}
+		
+	if (c1->type == COLLIDER_TYPE::COLLIDER_WALL) { //HERE WE PASS THE COLLIDER INFO TO THE COLLIDER DECLARED IN PLAYER.H AS "TheWallCollider
+		TheWallCollider->rect.x = c1->rect.x;
+		TheWallCollider->rect.y = c1->rect.y;
+		TheWallCollider->rect.w = c1->rect.w;
+		TheWallCollider->rect.h = c1->rect.h;
+	}
+	if (c2->type == COLLIDER_TYPE::COLLIDER_WALL) {
+		TheWallCollider->rect.x = c2->rect.x;
+		TheWallCollider->rect.y = c2->rect.y;
+		TheWallCollider->rect.w = c2->rect.w;
+		TheWallCollider->rect.h = c2->rect.h;
+	}
 //	App->render->DrawQuad(playerrect, 0, 255, 0, 100); //used for debugging player positions, DO NOT ERASE PLEASE!!!!!!!!!
 
 	App->render->DrawQuad(StaminaRect, 0, 0, 255, 100);
@@ -394,4 +492,5 @@ void PlayerClass::GodMode() {									//The player flies and ignores collisions
 		data.ypos += data.xvel;
 
 	App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &current_animation->GetCurrentFrame(), 1, 0, SDL_FLIP_NONE, 1, 1, 1.0);
+
 }
