@@ -52,7 +52,6 @@ void j1Map::Draw()
 								App->render->Blit(tileset->texture, pos.x, pos.y, &r);
 						    }
 
-					
 						}
 						else if (layer->name == "BackGround") {
 							App->render->Blit(tileset->texture, pos.x-1000, pos.y-700, &r,0.3);
@@ -159,6 +158,7 @@ bool j1Map::CleanUp()
 
 	while(item != NULL)
 	{
+		App->tex->UnLoad(item->data->texture);
 		RELEASE(item->data);
 		item = item->next;
 	}
