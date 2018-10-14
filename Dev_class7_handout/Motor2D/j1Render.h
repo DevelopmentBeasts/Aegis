@@ -39,6 +39,19 @@ public:
 	bool DrawQuad(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uint8 a = 255, bool filled = true, bool use_camera = true) const;
 	bool DrawLine(int x1, int y1, int x2, int y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a = 255, bool use_camera = true) const;
 	bool DrawCircle(int x1, int y1, int redius, Uint8 r, Uint8 g, Uint8 b, Uint8 a = 255, bool use_camera = true) const;
+	
+	//Instantly moves the camera to the player position
+	void CenterCamera();	
+	
+	//Allows the camera to move freely
+	void FreeMovement();
+
+	//Moves the camera depending on where the player goes
+	void FollowPlayer();
+
+	//Moves the camera to the player position in a short period of time
+	//Works like FollowPlayer() but faster
+	void FindPlayer();
 
 	// Set background color
 	void SetBackgroundColor(SDL_Color color);
@@ -50,7 +63,18 @@ public:
 	SDL_Rect		viewport;
 	SDL_Color		background;
 
+
+	//We make this true in order to use the function FindPlayer()
+	bool find_player=false;
+
 private:
+
+	//Borders to move the camera depending on the player position
+	int top_border;
+	int bot_border;
+	int left_border;
+	int right_border;
+
 	bool debug=false;	//In debug mode we will be able to move the camera as we want
 };
 

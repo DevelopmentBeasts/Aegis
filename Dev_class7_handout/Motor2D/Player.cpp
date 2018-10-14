@@ -26,6 +26,8 @@ PlayerClass::PlayerClass() {   //DO PUSHBACKS WITH XML
 	idle_left.LoadPushbacks(AnimsNode);
 	AnimsNode = AnimsDoc.child("config").child("AnimsCoords").child("run_left");
 	run_left.LoadPushbacks(AnimsNode);
+	AnimsNode = AnimsDoc.child("config").child("AnimsCoords").child("death");
+	death.LoadPushbacks(AnimsNode);
 }
 
 bool PlayerClass::Start() {
@@ -101,23 +103,34 @@ bool PlayerClass::Start() {
 	//a collider that needs to be initialized and its values are redefinited in ONCOLLISION FUNCTION
 	TheWallCollider = App->collision->AddCollider({ NULL, NULL, NULL, NULL }, COLLIDER_NONE, this);
 	
+	//make the player fisics start
+	UpdatePlayer = true;
+
 	return ret;
 }
 
 
 bool PlayerClass::Update(float dt) {
 
+	if (!(data.ypos > 2250)) {
+		if (App->input->GetKey(SDL_SCANCODE_F10) == KEY_DOWN)
+			godmode_activated = !godmode_activated;
 
-	if (App->input->GetKey(SDL_SCANCODE_F10) == KEY_DOWN)
-		godmode_activated = !godmode_activated;
-
-	if (godmode_activated == false) {
-		MovePlayer();
-    MovePlayerCollider();
-		PlayerAnims();
+		if (godmode_activated == false) {
+			MovePlayer();
+			MovePlayerCollider();
+			PlayerAnims();
+		}
+		else
+			GodMode();
 	}
 	else
-		GodMode();
+		Die();
+
+
+
+
+	
 	
 	return true;
 
@@ -172,7 +185,7 @@ void PlayerClass::MovePlayer() {
 		}
 		
 			if ((Px > Cx) && (Px < (Cx + Cw))/*Px inside Cw*/ || (((Px + Pw) > Cx) && ((Px + Pw) < (Cx + Cw)))/*(Px+Pw) inside Cw*/) {
-				if ((Py + Ph) < (Cy + 20)/*if (Py+Ph) is inside the C but not more than 20p*/ && !((Py< (Cy + 20))&&(Py>(Cy+Ch)))) {
+				if ((Py + Ph) < (Cy + 30)/*if (Py+Ph) is inside the C but not more than 20p*/ && !((Py< (Cy + 20))&&(Py>(Cy+Ch)))) {
 					if (!data.PlayerOnLeft && !data.PlayerOnRight) {
 						data.PlayerOnTop = true;
 						LOG("PLAYER ON TOP");
@@ -189,14 +202,14 @@ void PlayerClass::MovePlayer() {
 				}
 
 			}
-		/*if (playerrect.x || (playerrect.x + playerrect.w) > (TheWallCollider->rect.x + 10) && (playerrect.x || (playerrect.x + playerrect.w) < (TheWallCollider->rect.x + TheWallCollider->rect.w))) {
-			if (playerrect.y > (TheWallCollider->rect.y - 10)) {
-				data.PlayerOnBot = true;
-			}
-		}*/
-
+		
 	}
-	
+	if (UpdatePlayer) {
+		data.Falling = true;
+		current_animation = &idle_left;
+		UpdatePlayer = false;
+	}
+
 	if (data.PlayerOnTop) {
 		jumping = false;
 		data.Falling = false;
@@ -225,15 +238,16 @@ void PlayerClass::MovePlayer() {
 		data.Falling = true;
 		jumping = false;
 	}
+
 	if (Cx != NULL && Cy != NULL && Cw != NULL && Ch != NULL) {
-		if (((data.xpos < (Cx - Pw))/*if player wants to fall in the left side*/ || (Px > (Cx + Cw)) )&&!jumping) {
+		if (((data.xpos < (Cx - Pw))/*if player wants to fall in the left side*/ || (Px > (Cx + Cw))/*if player wants to fall in the Right side*/ )&&!jumping) {
 			data.PlayerOnTop = false;
 			data.Falling = true;
 		}
 	}
 	if (data.Falling) {
 		data.ypos += data.yvel;
-		data.yvel += 0.6;
+		data.yvel += 0.3;
 	}
 
 //___________________________________________________________________________________________________________________________________________________
@@ -303,7 +317,7 @@ void PlayerClass::MovePlayer() {
 	
 	
 
-	//PLAYER RECT POSITION USED FOR USEFULL THINGS IS BEIG ACTUALIZED
+	//PLAYER RECT POSITION USED FOR USEFULL THINGS AS KNOWING PLAYER COLLIDER SICE AND POS IS BEIG ACTUALIZED EVERY FRAME
 	playerrect.x = data.xpos;
 	playerrect.y = data.ypos;
 
@@ -360,7 +374,14 @@ void PlayerClass::PlayerAnims() {
 	}
 
 	//ANIMS BASED ON LAST DIRECTION RECORD
+	//IDL AT THE START
+	if (!jumping && !movingleft && !movingright && !automatic_left && !automatic_right && (current_animation==&idle_left) && !(data.Falling) ) {
+		current_animation = &idle_left;
 
+		CurrentAnimationRect = current_animation->GetCurrentFrame();
+
+		App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &CurrentAnimationRect, 1, 0.0, SDL_FLIP_NONE, 1, 1, 1.0);
+	}
 
 	// JUMP UP STRAIGHT (going up)
 
@@ -518,4 +539,18 @@ void PlayerClass::GodMode() {									//The player flies and ignores collisions
 
 	App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &current_animation->GetCurrentFrame(), 1, 0, SDL_FLIP_NONE, 1, 1, 1.0);
 
+}
+
+void PlayerClass::Die() {
+
+	data.yvel = 0;
+
+	current_animation = &death;
+
+	CurrentAnimationRect = current_animation->GetCurrentFrame();
+
+
+	if (!(current_animation->Finished())) {
+		App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &CurrentAnimationRect, 1, data.yvel, SDL_FLIP_HORIZONTAL, 1, 1, 1.0);
+	}	
 }
