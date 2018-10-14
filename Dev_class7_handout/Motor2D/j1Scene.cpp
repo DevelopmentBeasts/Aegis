@@ -32,6 +32,8 @@ bool j1Scene::Awake()
 bool j1Scene::Start()
 {
 	App->map->Load("AEGIS_RUN.tmx");
+	App->render->camera.x = App->player->data.xpos - 500;
+	App->render->camera.y = App->player->data.ypos - 1000;
 	//here we take the initial player pos to make camera do the same movements
 	/*playerinitx = App->player->data.xpos;
 	playerinity = App->player->data.ypos;
