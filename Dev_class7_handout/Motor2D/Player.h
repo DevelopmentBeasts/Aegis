@@ -36,6 +36,7 @@ struct PlayerData {
 
 	bool Falling; // IT IS NOT THE SAME TO JUST FALL THAN TO BE IN A JUMPING PRABOLA
 	
+	bool dead;
 };
 
 

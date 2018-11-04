@@ -6,11 +6,11 @@
 	<audio />
 	<scene level="AEGIS_RUN.tmx" />
 	<player>
-		<position x="1540" y="1391" />
+		<position x="2412" y="1478" />
 	</player>
 	<map />
 	<:anonymous />
 	<renderer>
-		<camera x="-1004" y="-1082" />
+		<camera x="-1884" y="-1137" />
 	</renderer>
 </game_state>
