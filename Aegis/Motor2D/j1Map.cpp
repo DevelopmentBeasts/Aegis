@@ -167,7 +167,7 @@ bool j1Map::CleanUp()
 	// Remove all layers
 	p2List_item<MapLayer*>* item2;
 	item2 = data.layers.start;
-
+	data.wincondition = 100000;
 	while(item2 != NULL)
 	{
 		RELEASE(item2->data);
@@ -246,15 +246,18 @@ bool j1Map::Load(const char* file_name)
 			data.start_position.y = objectgroup.child("object").attribute("y").as_int();
 			
 		}
-
+		if(objectname == "Win") {
+			data.wincondition = objectgroup.child("object").attribute("x").as_int();
+		}
 		if (objectname == "Colliders") {
 			LoadColliders(objectgroup, &data.colliders);
 			break;
 		}
+		
 
 		
 	}
-
+	
 	if(ret == true)
 	{
 		LOG("Successfully parsed map XML file: %s", file_name);

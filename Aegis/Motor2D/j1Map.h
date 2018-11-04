@@ -89,6 +89,7 @@ struct MapData
 	p2List<MapLayer*>	layers;
 	ColliderData		colliders;
 	iPoint				start_position = {0,0};
+	int                 wincondition = 100000;  // Large number so the player doesn't get there if we don't give it a value
 
 };
 

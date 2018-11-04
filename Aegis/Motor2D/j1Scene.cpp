@@ -66,8 +66,6 @@ bool j1Scene::Update(float dt)
 	if (App->input->GetKey(SDL_SCANCODE_F4) == KEY_DOWN)	//Load game
 		LoadLevel2NOW = true;
 		
-	
-
 	if (LoadLevel1NOW && App->player->jumping) {
 		LoadLevel(level1);
 		LoadLevel1NOW = false;
@@ -77,8 +75,6 @@ bool j1Scene::Update(float dt)
 		LoadLevel2NOW = false;
 	}
 
-	
-
 	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)			//Load game
 	{
 		App->player->data.xpos = App->map->data.start_position.x;
@@ -87,6 +83,10 @@ bool j1Scene::Update(float dt)
 		App->render->CenterCamera();
 	}
 
+	if (App->player->data.xpos >= App->map->data.wincondition) {
+
+		LoadLevel(level2);
+	}
 
 	//Draw the map
 	current_map->Draw();				

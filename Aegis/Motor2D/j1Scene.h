@@ -44,13 +44,15 @@ public:
 
 private:
 	
-	const char* level1="AEGIS_RUN_TUTORIAL.tmx";	//Level 1
-	const char* level2="AEGIS_RUN.tmx";			//Level 2
+	//const char* level1="AEGIS_RUN_TUTORIAL.tmx";	//Level 1
+	//const char* level2="AEGIS_RUN.tmx";			//Level 2
 	
 	//Level that is loaded at the moment
 	p2SString current_level;
 
 public:
+	const char* level1 = "AEGIS_RUN_TUTORIAL.tmx";	//Level 1
+	const char* level2 = "AEGIS_RUN.tmx";			//Level 2
 
 	////Pointer to the current map
 	j1Map* current_map=nullptr;
