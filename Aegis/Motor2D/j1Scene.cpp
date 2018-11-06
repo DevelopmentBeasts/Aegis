@@ -39,7 +39,6 @@ bool j1Scene::Start()
 	current_map = App->map;
 	
 	current_map->DrawColliders();
-
 	return true;
 }
 
@@ -66,24 +65,24 @@ bool j1Scene::Update(float dt)
 	if (App->input->GetKey(SDL_SCANCODE_F4) == KEY_DOWN)	//Load game
 		LoadLevel2NOW = true;
 		
-	if (LoadLevel1NOW && App->player->jumping) {
+	/*if (LoadLevel1NOW && App->player->jumping) {
 		LoadLevel(level1);
 		LoadLevel1NOW = false;
 	}
 	if (LoadLevel2NOW && App->player->jumping) {
 		LoadLevel(level2);
 		LoadLevel2NOW = false;
-	}
+	}*/
 
 	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)			//Load game
 	{
-		App->player->data.xpos = App->map->data.start_position.x;
-		App->player->data.ypos = App->map->data.start_position.y;
+		App->player->position.x = App->map->data.start_position.x;
+		App->player->position.y = App->map->data.start_position.y;
 
 		App->render->CenterCamera();
 	}
 
-	if (App->player->data.xpos >= App->map->data.wincondition) {
+	if (App->player->position.x >= App->map->data.wincondition) {
 
 		LoadLevel(level2);
 	}
@@ -149,8 +148,8 @@ void j1Scene::LoadLevel(const char* leveltoload) {
 		App->map->DrawColliders();
 		current_level = leveltoload;
 
-		App->player->data.xpos = App->map->data.start_position.x;
-		App->player->data.ypos = App->map->data.start_position.y;
+		App->player->position.x = App->map->data.start_position.x;
+		App->player->position.y = App->map->data.start_position.y;
 
 		App->render->CenterCamera();
 

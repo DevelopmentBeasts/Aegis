@@ -44,17 +44,17 @@ void j1Map::Draw()
 				if (tile_id > 0) {
 					TileSet* tileset = GetTilesetFromTileId(tile_id);
 					if (tileset != nullptr) {
-						SDL_Rect r = tileset->GetTileRect(tile_id);
+						SDL_Rect rect = tileset->GetTileRect(tile_id);
 						iPoint pos = MapToWorld(x, y);
 						if (layer->name != "BackGround") {
 							//create a define for App->render->camera.z for better legibility
-							if (pos.x<(-(App->render->camera.x) + App->render->camera.w + 1200) && pos.x >(-(App->render->camera.x) - 100)) {//
-								App->render->Blit(tileset->texture, pos.x, pos.y, &r);
+							if (pos.x<(-(App->render->camera.x) + App->render->camera.w ) && pos.x >(-(App->render->camera.x) -50)) {//
+								App->render->Blit(tileset->texture, pos.x, pos.y, &rect);
 						    }
 
 						}
 						else if (layer->name == "BackGround") {
-							App->render->Blit(tileset->texture, pos.x-1000, pos.y-700, &r,0.3);
+							App->render->Blit(tileset->texture, pos.x-1000, pos.y-700, &rect,0.3);
 						}
 
 						
