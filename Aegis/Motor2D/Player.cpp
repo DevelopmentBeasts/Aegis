@@ -92,6 +92,12 @@ bool PlayerClass::Start() {
 
 bool PlayerClass::Update(float dt) {
 
+	if (ExternalInput(inputs))
+	{
+		//InternalInput(inputs);
+		process_fsm(inputs);
+	}
+
 	//Move the player
 	position += velocity;
 
@@ -135,25 +141,86 @@ bool PlayerClass::ExternalInput(p2Queue<player_inputs> &inputs) {
 
 	SDL_Event event;
 
+	
 	while (SDL_PollEvent(&event) != 0) {
 		//A key is pressed
 		if (event.type == SDL_KEYDOWN && event.key.repeat == 0) {
 			switch (event.key.keysym.sym){
-				case SDL_SCANCODE_UP:
+				case SDLK_w:
+					inputs.Push(IN_JUMP);
 					up = true;
+					break;
+				case SDLK_a:
+					left = true;
+					break;
+				case SDLK_d:
+					right = true;
+					break;
 			}
 		}
 		//A key is released
 		if (event.type == SDL_KEYUP && event.key.repeat == 0) {	
 			switch (event.key.keysym.sym)
 			{
-				case SDL_SCANCODE_UP:
-					up = false;
+			case SDLK_a:
+				inputs.Push(IN_LEFT_UP);
+				left = false;
+				break;
+			case SDLK_d:
+				inputs.Push(IN_RIGHT_UP);
+				right = false;
+				break;
 			}
 		}
-		
-
 	}
+	if (left && right)
+		inputs.Push(IN_LEFT_AND_IRGHT);
+	else {
+		if (left)
+			inputs.Push(IN_LEFT_DOWN);
+		if (right)
+			inputs.Push(IN_RIGHT_DOWN);
+	}
+	return true;
+}
+
+player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
+	static player_states state = ST_IDLE;
+	player_inputs last_input;
+	
+	while (inputs.Pop(last_input))
+	{
+		switch (state)
+		{
+		case ST_IDLE:
+			velocity = { 0,0 };
+			switch (last_input)
+			{
+			case IN_RIGHT_DOWN:state = ST_WALK_FORWARD; break;
+			case IN_LEFT_DOWN:state = ST_WALK_BACKWARD; break;
+			case IN_JUMP:state = ST_JUMP_NEUTRAL; break;
+			}
+			break;
+		case ST_WALK_FORWARD:
+			switch (last_input)
+			{
+			case IN_RIGHT_DOWN:state = ST_IDLE; break;
+			}
+			break;
+		case ST_WALK_BACKWARD:
+			break;
+		case ST_JUMP_NEUTRAL:
+			break;
+		case ST_JUMP_FORWARD:
+			break;
+		case ST_JUMP_BACKWARD:
+			break;
+		default:
+			break;
+		}
+	}
+		
+	return state;
 }
 
 void PlayerClass::OnCollision(Collider *c1, Collider *c2) {
