@@ -36,7 +36,7 @@ enum player_inputs {
 	IN_LEFT_DOWN, 
 	IN_RIGHT_UP,
 	IN_RIGHT_DOWN, 
-	IN_LEFT_AND_IRGHT,
+	IN_LEFT_AND_RIGHT,
 	IN_JUMP,
 	IN_JUMP_FINISH
 };
@@ -80,7 +80,7 @@ public:
 	//Player data
 	iPoint position;		///position in X & Y axis
 	iPoint velocity;		///velocity in X & Y axis
-	float rotation;		///rotation for blit
+	float rotation;			///rotation for blit
 	PlayerTypes avatar;		///current character
 	SDL_RendererFlip flip;	///animation flip
 	

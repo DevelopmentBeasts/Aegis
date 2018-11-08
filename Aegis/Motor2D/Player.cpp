@@ -86,6 +86,8 @@ bool PlayerClass::Start() {
 	LOG("CREATING PLAYER COLLIDER");
 	player_collider = App->collision->AddCollider({ position.x, position.y, player_rect.w, player_rect.h }, COLLIDER_PLAYER, this);
 
+	velocity = { 0,0 };
+
 	return ret;
 }
 
@@ -141,9 +143,8 @@ bool PlayerClass::ExternalInput(p2Queue<player_inputs> &inputs) {
 
 	SDL_Event event;
 
-	
 	while (SDL_PollEvent(&event) != 0) {
-		//A key is pressed
+		// key is pressed
 		if (event.type == SDL_KEYDOWN && event.key.repeat == 0) {
 			switch (event.key.keysym.sym){
 				case SDLK_w:
@@ -158,7 +159,8 @@ bool PlayerClass::ExternalInput(p2Queue<player_inputs> &inputs) {
 					break;
 			}
 		}
-		//A key is released
+
+		// key is released
 		if (event.type == SDL_KEYUP && event.key.repeat == 0) {	
 			switch (event.key.keysym.sym)
 			{
@@ -173,41 +175,52 @@ bool PlayerClass::ExternalInput(p2Queue<player_inputs> &inputs) {
 			}
 		}
 	}
-	if (left && right)
-		inputs.Push(IN_LEFT_AND_IRGHT);
-	else {
-		if (left)
+	if (left && right) 
+		inputs.Push(IN_LEFT_AND_RIGHT);
+	
+	else{
+		if (left) 
 			inputs.Push(IN_LEFT_DOWN);
+		
 		if (right)
 			inputs.Push(IN_RIGHT_DOWN);
 	}
+
 	return true;
 }
 
 player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
+	
 	static player_states state = ST_IDLE;
 	player_inputs last_input;
-	
+
 	while (inputs.Pop(last_input))
 	{
 		switch (state)
 		{
 		case ST_IDLE:
-			velocity = { 0,0 };
 			switch (last_input)
 			{
-			case IN_RIGHT_DOWN:state = ST_WALK_FORWARD; break;
-			case IN_LEFT_DOWN:state = ST_WALK_BACKWARD; break;
+			case IN_RIGHT_DOWN:state = ST_WALK_FORWARD;	velocity.x = 3;	break;
+			case IN_LEFT_DOWN:state = ST_WALK_BACKWARD;	velocity.x =- 3;	break;
 			case IN_JUMP:state = ST_JUMP_NEUTRAL; break;
 			}
 			break;
+		
 		case ST_WALK_FORWARD:
 			switch (last_input)
 			{
-			case IN_RIGHT_DOWN:state = ST_IDLE; break;
+			case IN_RIGHT_UP:state = ST_IDLE; break;
+			case IN_LEFT_AND_RIGHT:state = ST_IDLE; break;
 			}
 			break;
+
 		case ST_WALK_BACKWARD:
+			switch (last_input)
+			{
+			case IN_LEFT_UP:state = ST_IDLE; break;
+			case IN_LEFT_AND_RIGHT:state = ST_IDLE;  break;
+			}
 			break;
 		case ST_JUMP_NEUTRAL:
 			break;
@@ -219,7 +232,7 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 			break;
 		}
 	}
-		
+
 	return state;
 }
 
