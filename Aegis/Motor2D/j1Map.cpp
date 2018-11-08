@@ -28,43 +28,81 @@ bool j1Map::Awake(pugi::xml_node& config)
 
 void j1Map::Draw()
 {
-	if (map_loaded == false)
+	//if (map_loaded == false)
+	//	return;
+
+	//p2List_item <MapLayer*>*layer_item = data.layers.start;
+	//MapLayer* layer;
+	//
+	//while (layer_item != nullptr) {
+	//	layer = layer_item->data;
+
+	//	for (int y = 0; y < data.height; y++) {
+	//		for (int x = 0; x < data.width; x++) {
+	//			int tile_id = layer->Get(x, y);
+	//			
+	//			if (tile_id > 0) {
+	//				TileSet* tileset = GetTilesetFromTileId(tile_id);
+	//				if (tileset != nullptr) {
+	//					SDL_Rect r = tileset->GetTileRect(tile_id);
+	//					iPoint pos = MapToWorld(x, y);
+	//					if (layer->name != "BackGround") {
+	//						//create a define for App->render->camera.z for better legibility
+	//						if (pos.x<(-(App->render->camera.x) + App->render->camera.w + 655) && pos.x >(-(App->render->camera.x) - 100)) {//
+	//							App->render->Blit(tileset->texture, pos.x, pos.y, &r);
+	//					    }
+
+	//					}else if (layer->name == "BackGround") {
+	//						App->render->Blit(tileset->texture, pos.x-1000, pos.y-700, &r,0.3);
+	//					}			
+	//				}
+	//			}
+	//		}
+	//	}		
+	//		layer_item = layer_item->next;
+
+	//}
+	if (map_loaded == false) {
 		return;
+	}
+	p2List_item<MapLayer*>* item = data.layers.start;
 
-	p2List_item <MapLayer*>*layer_item = data.layers.start;
-	MapLayer* layer;
-	
-	while (layer_item != nullptr) {
-		layer = layer_item->data;
+	for (; item != NULL; item = item->next) 
+	{
 
-		for (int y = 0; y < data.height; y++) {
-			for (int x = 0; x < data.width; x++) {
+		MapLayer* layer = item->data;
+
+		for (int y = 0; y < data.height; ++y)
+		{
+			for (int x = 0; x < data.width; ++x)
+			{
 				int tile_id = layer->Get(x, y);
-				
-				if (tile_id > 0) {
+				if (tile_id > 0)
+				{
 					TileSet* tileset = GetTilesetFromTileId(tile_id);
-					if (tileset != nullptr) {
-						SDL_Rect r = tileset->GetTileRect(tile_id);
-						iPoint pos = MapToWorld(x, y);
-						if (layer->name != "BackGround") {
-							//create a define for App->render->camera.z for better legibility
-							if (pos.x<(-(App->render->camera.x) + App->render->camera.w + 1200) && pos.x >(-(App->render->camera.x) - 100)) {//
-								App->render->Blit(tileset->texture, pos.x, pos.y, &r);
-						    }
 
-						}
-						else if (layer->name == "BackGround") {
-							App->render->Blit(tileset->texture, pos.x-1000, pos.y-700, &r,0.3);
-						}
+					SDL_Rect rect = tileset->GetTileRect(tile_id);
+					iPoint pos = MapToWorld(x, y);
+					float Paralax = layer->properties.Get("Paralax");
 
-						
-					}
+					App->render->Blit(tileset->texture, pos.x, pos.y, &rect,Paralax);
+					//if (layer->properties.Get("Paralax") == 1.0)
+					//{
+					//	//create a define for App->render->camera.z for better legibility
+					//	if (pos.x<(-(App->render->camera.x) + App->render->camera.w + 500) && pos.x >(-(App->render->camera.x) - 100)) {//
+					//		App->render->Blit(tileset->texture, pos.x, pos.y, &rect);
+					//	}
+					//	App->render->Blit(tileset->texture, pos.x, pos.y, &rect);
+					//}
 				}
 			}
-		}		
-			layer_item = layer_item->next;
+		}
 
 	}
+
+
+
+
 }
 
 TileSet* j1Map::GetTilesetFromTileId(int id) const
@@ -476,4 +514,17 @@ void j1Map::DrawColliders() {
 	while (i < data.colliders.collider_rects.count()) {
 		data.colliders.collider_list.add( App->collision->AddCollider(data.colliders.collider_rects[i++], COLLIDER_WALL));
 	}
+}
+int Properties::Get(const char* value, int default_value) const
+{
+	p2List_item<Property*>* item = list.start;
+
+	while (item)
+	{
+		if (item->data->name == value)
+			return item->data->value;
+		item = item->next;
+	}
+
+	return default_value;
 }

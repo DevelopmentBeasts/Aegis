@@ -203,7 +203,6 @@ void PlayerClass::MovePlayer() {
 					LOG("PLAYER ON BOT");
 					data.PlayerColliding = false;
 				}
-
 			}
 		
 	}

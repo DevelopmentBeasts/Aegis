@@ -26,12 +26,41 @@ struct ColliderData {
 };
 
 // ----------------------------------------------------
+struct Properties
+{
+	struct Property
+	{
+		p2SString name;
+		int value;
+	};
+
+	~Properties()
+	{
+		p2List_item<Property*>* item;
+		item = list.start;
+
+		while (item != NULL)
+		{
+			RELEASE(item->data);
+			item = item->next;
+		}
+
+		list.clear();
+	}
+
+	int Get(const char* name, int default_value = 0) const;
+
+	p2List<Property*>	list;
+};
+
+// ----------------------------------------------------
 struct MapLayer
 {
 	p2SString	name;
 	int			width;
 	int			height;
 	uint*		data;
+	Properties	properties;
 
 	MapLayer() : data(NULL)
 	{}
