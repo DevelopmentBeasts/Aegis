@@ -86,7 +86,7 @@ bool PlayerClass::Start() {
 	LOG("CREATING PLAYER COLLIDER");
 	player_collider = App->collision->AddCollider({ position.x, position.y, player_rect.w, player_rect.h }, COLLIDER_PLAYER, this);
 
-	velocity = { 0,0 };
+	//velocity = { 0,0 };
 
 	return ret;
 }
@@ -141,40 +141,31 @@ bool PlayerClass::ExternalInput(p2Queue<player_inputs> &inputs) {
 	static bool down = false;
 	static bool up = false;
 
-	SDL_Event event;
+	
 
-	while (SDL_PollEvent(&event) != 0) {
-		// key is pressed
-		if (event.type == SDL_KEYDOWN && event.key.repeat == 0) {
-			switch (event.key.keysym.sym){
-				case SDLK_w:
-					inputs.Push(IN_JUMP);
-					up = true;
-					break;
-				case SDLK_a:
-					left = true;
-					break;
-				case SDLK_d:
-					right = true;
-					break;
-			}
-		}
-
-		// key is released
-		if (event.type == SDL_KEYUP && event.key.repeat == 0) {	
-			switch (event.key.keysym.sym)
-			{
-			case SDLK_a:
-				inputs.Push(IN_LEFT_UP);
-				left = false;
-				break;
-			case SDLK_d:
-				inputs.Push(IN_RIGHT_UP);
-				right = false;
-				break;
-			}
-		}
+	// key is pressed
+	if (App->input->GetKey(SDL_SCANCODE_W) == j1KeyState::KEY_DOWN) {
+		inputs.Push(IN_JUMP);
+		up = true;
 	}
+	if (App->input->GetKey(SDL_SCANCODE_A) == j1KeyState::KEY_DOWN) {
+		left = true;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_D) == j1KeyState::KEY_DOWN) {
+		right = true;
+	}
+
+	// key is released
+	if (App->input->GetKey(SDL_SCANCODE_A)== j1KeyState::KEY_UP) {
+		inputs.Push(IN_LEFT_UP);
+		left = false;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_D)== j1KeyState::KEY_UP) {
+		inputs.Push(IN_RIGHT_UP);
+		right = false;
+	}
+			
+	
 	if (left && right) 
 		inputs.Push(IN_LEFT_AND_RIGHT);
 	
@@ -191,7 +182,7 @@ bool PlayerClass::ExternalInput(p2Queue<player_inputs> &inputs) {
 
 player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 	
-	static player_states state = ST_IDLE;
+	static player_states state = ST_WALK_FORWARD;
 	player_inputs last_input;
 
 	while (inputs.Pop(last_input))
@@ -199,15 +190,17 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 		switch (state)
 		{
 		case ST_IDLE:
+			
 			switch (last_input)
 			{
-			case IN_RIGHT_DOWN:state = ST_WALK_FORWARD;	velocity.x = 3;	break;
-			case IN_LEFT_DOWN:state = ST_WALK_BACKWARD;	velocity.x =- 3;	break;
+			case IN_RIGHT_DOWN:state = ST_WALK_FORWARD;	break;
+			case IN_LEFT_DOWN:state = ST_WALK_BACKWARD;	break;
 			case IN_JUMP:state = ST_JUMP_NEUTRAL; break;
 			}
 			break;
 		
 		case ST_WALK_FORWARD:
+			velocity.x = 3;
 			switch (last_input)
 			{
 			case IN_RIGHT_UP:state = ST_IDLE; break;
@@ -216,6 +209,7 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 			break;
 
 		case ST_WALK_BACKWARD:
+			velocity.x = -3;
 			switch (last_input)
 			{
 			case IN_LEFT_UP:state = ST_IDLE; break;
@@ -232,7 +226,9 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 			break;
 		}
 	}
-
+	if (state == ST_IDLE)
+		velocity.x -= 3;
+	
 	return state;
 }
 
