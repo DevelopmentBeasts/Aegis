@@ -86,7 +86,8 @@ bool PlayerClass::Start() {
 	LOG("CREATING PLAYER COLLIDER");
 	player_collider = App->collision->AddCollider({ position.x, position.y, player_rect.w, player_rect.h }, COLLIDER_PLAYER, this);
 
-	//velocity = { 0,0 };
+	velocity = { 0,0 };
+	current_animation = &idle;
 
 	return ret;
 }
@@ -182,7 +183,7 @@ bool PlayerClass::ExternalInput(p2Queue<player_inputs> &inputs) {
 
 player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 	
-	static player_states state = ST_WALK_FORWARD;
+	static player_states state = ST_IDLE;
 	player_inputs last_input;
 
 	while (inputs.Pop(last_input))
@@ -190,30 +191,27 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 		switch (state)
 		{
 		case ST_IDLE:
-			
 			switch (last_input)
 			{
-			case IN_RIGHT_DOWN:state = ST_WALK_FORWARD;	break;
-			case IN_LEFT_DOWN:state = ST_WALK_BACKWARD;	break;
+			case IN_RIGHT_DOWN:state = ST_WALK_FORWARD; velocity = {5,0 };		flip = SDL_FLIP_HORIZONTAL; current_animation = &move;	break;
+			case IN_LEFT_DOWN:state = ST_WALK_BACKWARD;	velocity = { -3,0 };	flip = SDL_FLIP_NONE;		current_animation = &move; break;
 			case IN_JUMP:state = ST_JUMP_NEUTRAL; break;
 			}
 			break;
 		
 		case ST_WALK_FORWARD:
-			velocity.x = 3;
 			switch (last_input)
 			{
-			case IN_RIGHT_UP:state = ST_IDLE; break;
-			case IN_LEFT_AND_RIGHT:state = ST_IDLE; break;
+			case IN_RIGHT_UP:state = ST_IDLE;		velocity = { 0,0 }; current_animation = &idle; break;
+			case IN_LEFT_AND_RIGHT:state = ST_IDLE; velocity={ 0,0 };	current_animation = &idle; break;
 			}
 			break;
 
 		case ST_WALK_BACKWARD:
-			velocity.x = -3;
 			switch (last_input)
 			{
-			case IN_LEFT_UP:state = ST_IDLE; break;
-			case IN_LEFT_AND_RIGHT:state = ST_IDLE;  break;
+			case IN_LEFT_UP:state = ST_IDLE;		velocity = { 0,0 }; current_animation = &idle; break;
+			case IN_LEFT_AND_RIGHT:state = ST_IDLE; velocity={ 0,0 };	current_animation = &idle; break;
 			}
 			break;
 		case ST_JUMP_NEUTRAL:
@@ -226,8 +224,7 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 			break;
 		}
 	}
-	if (state == ST_IDLE)
-		velocity.x -= 3;
+	
 	
 	return state;
 }
