@@ -28,7 +28,8 @@ enum player_states {
 	ST_WALK_BACKWARD,
 	ST_JUMP_NEUTRAL,
 	ST_JUMP_FORWARD,
-	ST_JUMP_BACKWARD
+	ST_JUMP_BACKWARD,
+	ST_FALL_ATTACK
 };
 
 enum player_inputs {
@@ -37,8 +38,9 @@ enum player_inputs {
 	IN_RIGHT_UP,
 	IN_RIGHT_DOWN, 
 	IN_LEFT_AND_RIGHT,
-	IN_JUMP,
-	IN_JUMP_FINISH
+	IN_JUMP_DOWN,
+	IN_JUMP_UP,
+	IN_FALL_ATTACK
 };
 
 class PlayerClass : public j1Module {
@@ -62,6 +64,7 @@ public:
 	void InternalInput(p2Queue<player_inputs>&inputs);			///Add internal inputs to the list
 	player_states process_fsm(p2Queue<player_inputs>&inputs);	///Act depending on the inputs
 
+	void Jump();
 	void Die();
 
 	//God Mode will allow the player to fly around the map ignoring collisions
@@ -72,6 +75,14 @@ public:
 
 	bool map_loaded;
 
+	bool jump = false;
+	bool deceleration = false;
+
+	bool left = false;
+	bool right = false;
+	bool down = false;
+	bool up = false;
+
 	SDL_Texture* player_texture = nullptr;
 
 	//Colliders
@@ -79,17 +90,19 @@ public:
 
 	//Player data
 	iPoint position;		///position in X & Y axis
-	iPoint velocity;		///velocity in X & Y axis
+	fPoint velocity;
+	fPoint jumpvelocity = {0.0,-6.0};    ///velocity in X & Y axis
 	float rotation;			///rotation for blit
 	PlayerTypes avatar;		///current character
 	SDL_RendererFlip flip;	///animation flip
 	
+	SDL_Rect CurrentAnimationRect;
 private:
 
 	//Call godmode if true	
 	bool godmode_activated = false;			
 
-	//Animations
+	//Animationss
 	Animation* current_animation = nullptr;	///Animation being shown at the moment
 	Animation idle;							///In all the animations the character is facing the left side 
 	Animation move;

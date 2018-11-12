@@ -86,9 +86,9 @@ bool PlayerClass::Start() {
 	LOG("CREATING PLAYER COLLIDER");
 	player_collider = App->collision->AddCollider({ position.x, position.y, player_rect.w, player_rect.h }, COLLIDER_PLAYER, this);
 
-	velocity = { 0,0 };
+	velocity = { 0.0,0.0 };
 	current_animation = &idle;
-
+	
 	return ret;
 }
 
@@ -102,14 +102,24 @@ bool PlayerClass::Update(float dt) {
 	}
 
 	//Move the player
-	position += velocity;
+	
+		position.x += velocity.x;
+		
+	
 
 	//Move the collider
 	player_collider->SetPos(position.x, position.y);
 
 	//Draw the player
-	App->render->Blit(player_texture,position.x,position.y,&current_animation->GetCurrentFrame(),1,rotation,flip);
+	player_rect.x = position.x-879;
+	player_rect.y = position.y-550;
+	CurrentAnimationRect = current_animation->GetCurrentFrame();
+	if (flip != SDL_FLIP_HORIZONTAL) {
+		rotation *=-1;
+	}
+	SDL_RenderCopyEx(App->render->renderer, player_texture, &CurrentAnimationRect, &player_rect/*podemos controlar el tamaño*/, rotation * 10, 0, flip);
 
+	//App->render->Blit(player_texture,position.x,position.y,&current_animation->GetCurrentFrame(),1,/*rotation is equal to jumpvelocity.y*/rotation * 10,flip,0,0,1);
 	return true;
 }
 
@@ -137,16 +147,11 @@ bool PlayerClass::Load(pugi::xml_node& node) {
 
 bool PlayerClass::ExternalInput(p2Queue<player_inputs> &inputs) {
 	
-	static bool left = false;
-	static bool right = false;
-	static bool down = false;
-	static bool up = false;
-
 	
 
 	// key is pressed
 	if (App->input->GetKey(SDL_SCANCODE_W) == j1KeyState::KEY_DOWN) {
-		inputs.Push(IN_JUMP);
+		inputs.Push(IN_JUMP_DOWN);
 		up = true;
 	}
 	if (App->input->GetKey(SDL_SCANCODE_A) == j1KeyState::KEY_DOWN) {
@@ -154,6 +159,18 @@ bool PlayerClass::ExternalInput(p2Queue<player_inputs> &inputs) {
 	}
 	if (App->input->GetKey(SDL_SCANCODE_D) == j1KeyState::KEY_DOWN) {
 		right = true;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_S) == j1KeyState::KEY_DOWN) {
+		if (jump) {
+			deceleration = true;
+		}
+	}
+	if (App->input->GetKey(SDL_SCANCODE_F) == j1KeyState::KEY_DOWN) {
+		//CODE TO MAKE MEGA FALL
+		if (jump) {
+			LOG("MEGA FALL ATTACK");
+			inputs.Push(IN_FALL_ATTACK);
+		}
 	}
 
 	// key is released
@@ -165,7 +182,6 @@ bool PlayerClass::ExternalInput(p2Queue<player_inputs> &inputs) {
 		inputs.Push(IN_RIGHT_UP);
 		right = false;
 	}
-			
 	
 	if (left && right) 
 		inputs.Push(IN_LEFT_AND_RIGHT);
@@ -185,57 +201,195 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 	
 	static player_states state = ST_IDLE;
 	player_inputs last_input;
-
+	if (velocity.x == 0) {
+		goto provisional;
+	}
 	while (inputs.Pop(last_input))
 	{
 		switch (state)
 		{
 		case ST_IDLE:
+			LOG("IM FUCKING IDL MEN");
+			
 			switch (last_input)
 			{
-			case IN_RIGHT_DOWN:state = ST_WALK_FORWARD; velocity = {5,0 };		flip = SDL_FLIP_HORIZONTAL; current_animation = &move;	break;
-			case IN_LEFT_DOWN:state = ST_WALK_BACKWARD;	velocity = { -3,0 };	flip = SDL_FLIP_NONE;		current_animation = &move; break;
-			case IN_JUMP:state = ST_JUMP_NEUTRAL; break;
+			case IN_RIGHT_DOWN:
+				state = ST_WALK_FORWARD;
+				velocity = { 5,0 };
+				flip = SDL_FLIP_HORIZONTAL;
+				current_animation = &move;
+				//LOG("INPUT----->FROM IDL TO WALK RIGHT");
+				break;
+			case IN_LEFT_DOWN:
+				state = ST_WALK_BACKWARD;
+				velocity = { -5,0 };
+				flip = SDL_FLIP_NONE;
+				current_animation = &move;
+				//LOG("INPUT----->FROM IDL TO WALK LEFT");
+				break;
+			case IN_JUMP_DOWN:
+				if (!jump) {
+					state = ST_JUMP_NEUTRAL;
+					jump = true;
+					//LOG("INPUT----->JUMP_DOWN");
+					current_animation = &move;
+				}		
+				break;
 			}
+
 			break;
-		
+
 		case ST_WALK_FORWARD:
+			//LOG("WALKING RIGHT");
 			switch (last_input)
 			{
-			case IN_RIGHT_UP:state = ST_IDLE;		velocity = { 0,0 }; current_animation = &idle; break;
-			case IN_LEFT_AND_RIGHT:state = ST_IDLE; velocity={ 0,0 };	current_animation = &idle; break;
+			case IN_RIGHT_UP:
+				//LOG("STOP WALKING RIGHT");
+				provisional:
+				state = ST_IDLE;
+				if (!jump) {
+					velocity = { 0,0 };
+					current_animation = &idle;
+				}
+				break;
+			case IN_LEFT_AND_RIGHT:
+				//LOG("WTF LEFT AND RIGHT WALKING ");
+				state = ST_IDLE;
+				velocity = { 0,0 };
+				current_animation = &idle;
+				break;
+			case IN_JUMP_DOWN:	
+				if (!jump) {
+					state = ST_JUMP_FORWARD;
+					//LOG("INPUT----->JUMP_DOWN");
+					current_animation = &move;
+					jump = true;
+				}
+				break;
 			}
 			break;
 
 		case ST_WALK_BACKWARD:
+			//LOG("WALKING LEFT");
 			switch (last_input)
 			{
-			case IN_LEFT_UP:state = ST_IDLE;		velocity = { 0,0 }; current_animation = &idle; break;
-			case IN_LEFT_AND_RIGHT:state = ST_IDLE; velocity={ 0,0 };	current_animation = &idle; break;
+			case IN_LEFT_UP:
+				//LOG("STOP WALKING LEFT");
+				state = ST_IDLE;
+				if (!jump) {
+					velocity = { 0,0 };
+					current_animation = &idle;
+				}
+				break;
+			case IN_LEFT_AND_RIGHT:
+				//LOG("WTF LEFT AND RIGHT WALKING ");
+				state = ST_IDLE;
+				velocity = { 0,0 };
+				current_animation = &idle;
+				break;
+			case IN_JUMP_DOWN:
+				if (!jump) {
+					state = ST_JUMP_BACKWARD;
+					//LOG("INPUT----->JUMP_DOWN");
+					current_animation = &move;
+					jump = true;
+				}		
+				break;
 			}
 			break;
 		case ST_JUMP_NEUTRAL:
-			break;
+			//LOG("THE JUMP IS NEUTRAL");
+			if (!jump) {
+				//LOG("CHANGING TO IDL");
+				state = ST_IDLE;
+			}
+			switch (last_input)
+			{
+			case IN_RIGHT_DOWN:
+				state = ST_WALK_FORWARD;
+				velocity = { 5,0 };
+				flip = SDL_FLIP_HORIZONTAL;
+				current_animation = &move;
+				//LOG("INPUT----->JUMPING RIGHT ------");
+				break;
+			case IN_LEFT_DOWN:
+				state = ST_WALK_BACKWARD;
+				velocity = { -5,0 };
+				flip = SDL_FLIP_NONE;
+				current_animation = &move;
+				//LOG("INPUT----->JUMPING LEFT ------");
+				break;
+			}
+
 		case ST_JUMP_FORWARD:
+			LOG("THE JUMP IS FORWARD");
+			if (!jump) {
+				//LOG("CHANGING TO IDL");
+				state = ST_IDLE;
+			}
+			switch (last_input)
+			{
+			case IN_RIGHT_DOWN:
+				state = ST_WALK_FORWARD;
+				velocity = { 5,0 };
+				flip = SDL_FLIP_HORIZONTAL;
+				current_animation = &move;
+				//LOG("INPUT----->JUMPING RIGHT ------ ");
+				break;
+			case IN_LEFT_DOWN:
+				state = ST_WALK_BACKWARD;
+				velocity = { -5,0 };
+				flip = SDL_FLIP_NONE;
+				current_animation = &move;
+				//LOG("INPUT----->JUMPING LEFT ------ ");
+				break;
+			}
 			break;
 		case ST_JUMP_BACKWARD:
+			//LOG("THE JUMP IS BACKWARD");
+			if (!jump) {
+				//LOG("CHANGING TO IDL");
+				state = ST_IDLE;
+			}
+			switch (last_input)
+			{
+			case IN_RIGHT_DOWN:
+				state = ST_WALK_FORWARD;
+				velocity = { 5,0 };
+				flip = SDL_FLIP_HORIZONTAL;
+				current_animation = &move;
+				//LOG("INPUT----->JUMPING RIGHT ------ ");
+				break;
+			case IN_LEFT_DOWN:
+				state = ST_WALK_BACKWARD;
+				velocity = { -5,0 };
+				flip = SDL_FLIP_NONE;
+				current_animation = &move;
+				//LOG("INPUT----->JUMPING LEFT ------ ");
+				break;
+			}
+			break;
+		case ST_FALL_ATTACK:
+			LOG("NEED CODE FOR FALL ATTACK");
 			break;
 		default:
 			break;
 		}
 	}
-	
-	
+	if (jump == true) {
+		Jump();
+	}
+
 	return state;
 }
 
 void PlayerClass::OnCollision(Collider *c1, Collider *c2) {
+	//if(c1->type == player_collider)
 
-	
 }
 
 void PlayerClass::GodMode() {
-	
+
 	/*current_animation = &idle;
 
 	if (App->input->GetKey(SDL_SCANCODE_A)==KEY_REPEAT)
@@ -256,9 +410,49 @@ void PlayerClass::GodMode() {
 
 void PlayerClass::Die() {
 
-	
+
 	App->player->position.x = App->map->data.start_position.x;
 	App->player->position.y = App->map->data.start_position.y;
 
 	App->render->find_player = true;
+}
+void PlayerClass::Jump() {
+
+	if (App->player->position.y < 851) {
+		if (deceleration) {
+			if (-1 * velocity.x < 0) { // if velocity is positive
+				velocity.x -= 0.2;
+			}
+			if (-1 * velocity.x > 0) { // if velocity is negative
+				velocity.x += 0.2;
+			}
+		}
+		jumpvelocity.y += 0.2;
+		rotation = jumpvelocity.y;
+		App->player->position.y += jumpvelocity.y;
+		if (App->player->position.y > 848 ) {
+			if (right) {
+				velocity.x = 5;
+			}
+			else if (left) {
+				velocity.x = -5;
+			}
+			else if ((!left) && (!right)) {
+				velocity.x = 0;
+			}
+			rotation = 0;
+		}
+		LOG("velocity.X       %f", velocity.x);
+
+	}else if (App->player->position.y >= 851) {
+		App->player->position.y = 850;
+		//velocity.x = 0;
+		jumpvelocity.y = -6;
+		jump = false;
+		deceleration = false;
+		current_animation = &move;
+
+	}
+	
+	
 }
