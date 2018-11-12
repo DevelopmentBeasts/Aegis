@@ -83,6 +83,13 @@ public:
 	bool down = false;
 	bool up = false;
 
+	bool ToLeft = false;
+	bool ToRight = false;
+
+	bool Gravity = false;
+
+	int YPositionAtJump;
+
 	SDL_Texture* player_texture = nullptr;
 
 	//Colliders
@@ -90,7 +97,7 @@ public:
 
 	//Player data
 	iPoint position;		///position in X & Y axis
-	fPoint velocity;
+	fPoint velocity = { 0,-6.0 };
 	fPoint jumpvelocity = {0.0,-6.0};    ///velocity in X & Y axis
 	float rotation;			///rotation for blit
 	PlayerTypes avatar;		///current character

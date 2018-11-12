@@ -4,7 +4,7 @@
 
 <config>
   <player xpos ="901" ypos ="1370" type ="0" yvel="1" xvel ="10" PlayerOnTop="false" PlayerColliding="false">
-    <playerrect w="42" h="42"/>
+    <playerrect w="32" h="32"/>
     <StaminaRect w ="13" h="40" x="30" y="700"/>
   </player>/>
  

@@ -104,22 +104,30 @@ bool PlayerClass::Update(float dt) {
 	//Move the player
 	
 		position.x += velocity.x;
-		
+		if (Gravity && !jump) {
+			velocity.y += 2;
+			position.y += velocity.y;
+		}
+		if(Gravity)
+		LOG("GRAVITY ENABLED");
+
+		if (jump)
+		LOG("JUMPING NOW");
 	
 
 	//Move the collider
 	player_collider->SetPos(position.x, position.y);
 
 	//Draw the player
-	player_rect.x = position.x-879;
-	player_rect.y = position.y-550;
+	/*player_rect.x = position.x-879;
+	player_rect.y = position.y-550;*/
 	CurrentAnimationRect = current_animation->GetCurrentFrame();
 	if (flip != SDL_FLIP_HORIZONTAL) {
 		rotation *=-1;
 	}
-	SDL_RenderCopyEx(App->render->renderer, player_texture, &CurrentAnimationRect, &player_rect/*podemos controlar el tamaño*/, rotation * 10, 0, flip);
+	//SDL_RenderCopyEx(App->render->renderer, player_texture, &CurrentAnimationRect, &player_rect/*podemos controlar el tamaño*/, rotation * 10, 0, flip);
 
-	//App->render->Blit(player_texture,position.x,position.y,&current_animation->GetCurrentFrame(),1,/*rotation is equal to jumpvelocity.y*/rotation * 10,flip,0,0,1);
+	App->render->Blit(player_texture,position.x,position.y,&current_animation->GetCurrentFrame(),1,/*rotation is equal to jumpvelocity.y*/rotation * 10,flip);
 	return true;
 }
 
@@ -148,17 +156,27 @@ bool PlayerClass::Load(pugi::xml_node& node) {
 bool PlayerClass::ExternalInput(p2Queue<player_inputs> &inputs) {
 	
 	
-
+	if (App->input->GetKey(SDL_SCANCODE_G) == j1KeyState::KEY_DOWN) {
+		Gravity = true;
+	}
 	// key is pressed
-	if (App->input->GetKey(SDL_SCANCODE_W) == j1KeyState::KEY_DOWN) {
+	if (App->input->GetKey(SDL_SCANCODE_W) == j1KeyState::KEY_REPEAT) {
 		inputs.Push(IN_JUMP_DOWN);
 		up = true;
 	}
 	if (App->input->GetKey(SDL_SCANCODE_A) == j1KeyState::KEY_DOWN) {
 		left = true;
+		//DIRECTIONAL BOOLS FOR COLLIDERS
+		ToLeft = true;
+		ToRight = false;
+		LOG("TOLEFT = TRUE  /   TORIGHT = FALSE");
 	}
 	if (App->input->GetKey(SDL_SCANCODE_D) == j1KeyState::KEY_DOWN) {
 		right = true;
+		//DIRECTIONAL BOOLS FOR COLLIDERS
+		ToLeft = false;
+		ToRight = true;
+		LOG("TOLEFT = FALSE  /   TORIGHT = TRUE");
 	}
 	if (App->input->GetKey(SDL_SCANCODE_S) == j1KeyState::KEY_DOWN) {
 		if (jump) {
@@ -166,7 +184,6 @@ bool PlayerClass::ExternalInput(p2Queue<player_inputs> &inputs) {
 		}
 	}
 	if (App->input->GetKey(SDL_SCANCODE_F) == j1KeyState::KEY_DOWN) {
-		//CODE TO MAKE MEGA FALL
 		if (jump) {
 			LOG("MEGA FALL ATTACK");
 			inputs.Push(IN_FALL_ATTACK);
@@ -209,13 +226,16 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 		switch (state)
 		{
 		case ST_IDLE:
-			LOG("IM FUCKING IDL MEN");
+			//LOG("IM FUCKING IDL MEN");
 			
 			switch (last_input)
 			{
 			case IN_RIGHT_DOWN:
 				state = ST_WALK_FORWARD;
 				velocity = { 5,0 };
+				if (Gravity) {
+					velocity = { 5,10 };
+				}
 				flip = SDL_FLIP_HORIZONTAL;
 				current_animation = &move;
 				//LOG("INPUT----->FROM IDL TO WALK RIGHT");
@@ -223,6 +243,9 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 			case IN_LEFT_DOWN:
 				state = ST_WALK_BACKWARD;
 				velocity = { -5,0 };
+				if (Gravity) {
+					velocity = { -5,10 };
+				}
 				flip = SDL_FLIP_NONE;
 				current_animation = &move;
 				//LOG("INPUT----->FROM IDL TO WALK LEFT");
@@ -232,6 +255,8 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 					state = ST_JUMP_NEUTRAL;
 					jump = true;
 					//LOG("INPUT----->JUMP_DOWN");
+					LOG(" YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump CON VALOR");
+					YPositionAtJump = position.y;
 					current_animation = &move;
 				}		
 				break;
@@ -262,6 +287,8 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 				if (!jump) {
 					state = ST_JUMP_FORWARD;
 					//LOG("INPUT----->JUMP_DOWN");
+					LOG(" YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump CON VALOR");
+					YPositionAtJump = position.y;
 					current_animation = &move;
 					jump = true;
 				}
@@ -291,6 +318,8 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 				if (!jump) {
 					state = ST_JUMP_BACKWARD;
 					//LOG("INPUT----->JUMP_DOWN");
+					LOG(" YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump CON VALOR");
+					YPositionAtJump = position.y;
 					current_animation = &move;
 					jump = true;
 				}		
@@ -322,7 +351,7 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 			}
 
 		case ST_JUMP_FORWARD:
-			LOG("THE JUMP IS FORWARD");
+			//LOG("THE JUMP IS FORWARD");
 			if (!jump) {
 				//LOG("CHANGING TO IDL");
 				state = ST_IDLE;
@@ -347,6 +376,7 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 			break;
 		case ST_JUMP_BACKWARD:
 			//LOG("THE JUMP IS BACKWARD");
+
 			if (!jump) {
 				//LOG("CHANGING TO IDL");
 				state = ST_IDLE;
@@ -377,6 +407,7 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 		}
 	}
 	if (jump == true) {
+		//Gravity = false;
 		Jump();
 	}
 
@@ -385,7 +416,51 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 
 void PlayerClass::OnCollision(Collider *c1, Collider *c2) {
 	//if(c1->type == player_collider)
+	//Checking collision with walls
 
+	if (c2->type == COLLIDER_WALL) {
+
+		//Calculating an error margin of collision to avoid problems with colliders corners
+		int error_margin = 0;
+
+		if (ToRight) {
+			error_margin = (c1->rect.x + c1->rect.w) - c2->rect.x;
+		}	
+		else if (ToLeft) {
+			error_margin = (c2->rect.x + c2->rect.w) - c1->rect.x;
+		}
+			
+		//If the player falls less than a pixel over a collider, it falls (and it looks ok)
+		if (error_margin > 1) {
+
+			//Checking Y Axis Collisions
+			if (c1->rect.y <= c2->rect.y + c2->rect.h && c1->rect.y >= c2->rect.y + c2->rect.h - velocity.y) { //Colliding down (jumping)
+
+				velocity.y = 0;
+				position.y = c1->rect.y + c2->rect.h - (c1->rect.y - c2->rect.y) + 3;
+			}
+			else if (c1->rect.y + c1->rect.h >= c2->rect.y && c1->rect.y + c1->rect.h <= c2->rect.y + velocity.y) { //Colliding Up (falling)
+
+				jump = false;
+				velocity.y = 0;
+				position.y = c1->rect.y - ((c1->rect.y + c1->rect.h) - c2->rect.y);
+			}
+		}
+
+		//Checking X Axis Collisions
+		if (c1->rect.x + c1->rect.w >= c2->rect.x && c1->rect.x + c1->rect.w <= c2->rect.x + velocity.x) { //Colliding Left (going right)
+
+			velocity.x = 0;
+			position.x -= (c1->rect.x + c1->rect.w) - c2->rect.x + 4;
+
+		}
+		else if (c1->rect.x <= c2->rect.x + c2->rect.w && c1->rect.x >= c2->rect.x + c2->rect.w - velocity.x) { //Colliding Right (going left)
+
+			velocity.x = 0;
+			position.x += (c2->rect.x + c2->rect.w) - c1->rect.x + 4;
+
+		}
+	}
 }
 
 void PlayerClass::GodMode() {
@@ -416,21 +491,22 @@ void PlayerClass::Die() {
 
 	App->render->find_player = true;
 }
+
 void PlayerClass::Jump() {
 
-	if (App->player->position.y < 851) {
+	if (App->player->position.y <= YPositionAtJump) {
 		if (deceleration) {
 			if (-1 * velocity.x < 0) { // if velocity is positive
-				velocity.x -= 0.2;
+				velocity.x -= 0.3;
 			}
 			if (-1 * velocity.x > 0) { // if velocity is negative
-				velocity.x += 0.2;
+				velocity.x += 0.3;
 			}
 		}
 		jumpvelocity.y += 0.2;
 		rotation = jumpvelocity.y;
 		App->player->position.y += jumpvelocity.y;
-		if (App->player->position.y > 848 ) {
+		if (App->player->position.y > YPositionAtJump-2) {
 			if (right) {
 				velocity.x = 5;
 			}
@@ -442,14 +518,14 @@ void PlayerClass::Jump() {
 			}
 			rotation = 0;
 		}
-		LOG("velocity.X       %f", velocity.x);
+		//LOG("velocity.X       %f", velocity.x);
 
-	}else if (App->player->position.y >= 851) {
-		App->player->position.y = 850;
-		//velocity.x = 0;
+	}else if (App->player->position.y >= YPositionAtJump) {
+		App->player->position.y = YPositionAtJump;
 		jumpvelocity.y = -6;
 		jump = false;
 		deceleration = false;
+		Gravity = true;
 		current_animation = &move;
 
 	}
