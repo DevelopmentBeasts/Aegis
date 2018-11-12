@@ -108,11 +108,11 @@ bool PlayerClass::Update(float dt) {
 			velocity.y += 2;
 			position.y += velocity.y;
 		}
-		if(Gravity)
+	/*	if(Gravity)
 		LOG("GRAVITY ENABLED");
 
 		if (jump)
-		LOG("JUMPING NOW");
+		LOG("JUMPING NOW");*/
 	
 
 	//Move the collider
@@ -255,7 +255,7 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 					state = ST_JUMP_NEUTRAL;
 					jump = true;
 					//LOG("INPUT----->JUMP_DOWN");
-					LOG(" YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump CON VALOR");
+					//LOG(" YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump CON VALOR");
 					YPositionAtJump = position.y;
 					current_animation = &move;
 				}		
@@ -287,7 +287,7 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 				if (!jump) {
 					state = ST_JUMP_FORWARD;
 					//LOG("INPUT----->JUMP_DOWN");
-					LOG(" YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump CON VALOR");
+					//LOG(" YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump CON VALOR");
 					YPositionAtJump = position.y;
 					current_animation = &move;
 					jump = true;
@@ -318,7 +318,7 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 				if (!jump) {
 					state = ST_JUMP_BACKWARD;
 					//LOG("INPUT----->JUMP_DOWN");
-					LOG(" YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump CON VALOR");
+					//LOG(" YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump CON VALOR");
 					YPositionAtJump = position.y;
 					current_animation = &move;
 					jump = true;
@@ -435,12 +435,13 @@ void PlayerClass::OnCollision(Collider *c1, Collider *c2) {
 
 			//Checking Y Axis Collisions
 			if (c1->rect.y <= c2->rect.y + c2->rect.h && c1->rect.y >= c2->rect.y + c2->rect.h - velocity.y) { //Colliding down (jumping)
-
+				LOG("COLLIDING DOWN");
 				velocity.y = 0;
+				jump = false;
 				position.y = c1->rect.y + c2->rect.h - (c1->rect.y - c2->rect.y) + 3;
 			}
 			else if (c1->rect.y + c1->rect.h >= c2->rect.y && c1->rect.y + c1->rect.h <= c2->rect.y + velocity.y) { //Colliding Up (falling)
-
+				LOG("COLLIDING UP");
 				jump = false;
 				velocity.y = 0;
 				position.y = c1->rect.y - ((c1->rect.y + c1->rect.h) - c2->rect.y);
@@ -449,14 +450,14 @@ void PlayerClass::OnCollision(Collider *c1, Collider *c2) {
 
 		//Checking X Axis Collisions
 		if (c1->rect.x + c1->rect.w >= c2->rect.x && c1->rect.x + c1->rect.w <= c2->rect.x + velocity.x) { //Colliding Left (going right)
-
+			LOG("COLLIDING LEFT");
 			velocity.x = 0;
 			position.x -= (c1->rect.x + c1->rect.w) - c2->rect.x + 4;
 
 		}
 		else if (c1->rect.x <= c2->rect.x + c2->rect.w && c1->rect.x >= c2->rect.x + c2->rect.w - velocity.x) { //Colliding Right (going left)
-
-			velocity.x = 0;
+			LOG("COLLIDING RIGHT");
+			velocity.x = 20;
 			position.x += (c2->rect.x + c2->rect.w) - c1->rect.x + 4;
 
 		}
