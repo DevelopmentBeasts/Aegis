@@ -435,14 +435,17 @@ void PlayerClass::OnCollision(Collider *c1, Collider *c2) {
 		if (error_margin > 1) {
 
 			//Checking Y Axis Collisions
-			if (c1->rect.y <= c2->rect.y + c2->rect.h && c1->rect.y >= c2->rect.y + c2->rect.h - velocity.y) { //Colliding down (jumping)
+			if (c1->rect.y <= c2->rect.y + c2->rect.h && c1->rect.y >= c2->rect.y + c2->rect.h /*- velocity.y*/) { //Colliding down (jumping)
 				LOG("COLLIDING DOWN");
-				velocity.y = 0;
+				/*velocity.y = 0;*/
+				if (velocity.y * -1 > 0) {
+					velocity.y += (velocity.y*-1);
+				}
 				jump = false;
 				position.y = c1->rect.y + c2->rect.h - (c1->rect.y - c2->rect.y) + 3;
 			}
 			else if (c1->rect.y + c1->rect.h >= c2->rect.y && c1->rect.y + c1->rect.h <= c2->rect.y + velocity.y) { //Colliding Up (falling)
-				LOG("COLLIDING UP");
+				//LOG("COLLIDING UP");
 				jump = false;
 				velocity.y = 0;
 				position.y = c1->rect.y - ((c1->rect.y + c1->rect.h) - c2->rect.y);
