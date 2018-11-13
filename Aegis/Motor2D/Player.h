@@ -104,6 +104,7 @@ public:
 	SDL_RendererFlip flip;	///animation flip
 	
 	SDL_Rect CurrentAnimationRect;
+	float PlayerScale;
 private:
 
 	//Call godmode if true	
