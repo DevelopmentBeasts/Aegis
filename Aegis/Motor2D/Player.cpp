@@ -68,7 +68,8 @@ bool PlayerClass::Start() {
 	player_rect.w = PlayerXmlNode.child("playerrect").attribute("w").as_int(); //the rect that contains the player in wich we blit()
 	player_rect.h = PlayerXmlNode.child("playerrect").attribute("h").as_int();
 	PlayerScale = PlayerXmlNode.attribute("scale").as_float();
-
+	GravityValue = PlayerXmlNode.child("worldplayerinteraction").attribute("GravityValue").as_float();
+	JumpForce = PlayerXmlNode.child("worldplayerinteraction").attribute("JumpForce").as_float();
 	LOG("Resseting anims");
 
 	//Reset animations
@@ -103,7 +104,7 @@ bool PlayerClass::Update(float dt) {
 	if (!godmode_activated) {
 		position.x += velocity.x;
 		if (Gravity) {
-			velocity.y += 1;
+			velocity.y += GravityValue;
 			position.y += velocity.y;
 		}
 	}
@@ -513,7 +514,7 @@ void PlayerClass::Die() {
 
 void PlayerClass::Jump() {
 
-	App->player->velocity.y -= 25;
+	App->player->velocity.y -= JumpForce;
 	
 	
 }

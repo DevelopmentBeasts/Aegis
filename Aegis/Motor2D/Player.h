@@ -105,6 +105,8 @@ public:
 	
 	SDL_Rect CurrentAnimationRect;
 	float PlayerScale;
+	float GravityValue;
+	float JumpForce;
 private:
 
 	//Call godmode if true	

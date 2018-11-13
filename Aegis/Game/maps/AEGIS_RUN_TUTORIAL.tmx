@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="200" height="70" tilewidth="32" tileheight="32" nextobjectid="21">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="200" height="70" tilewidth="32" tileheight="32" nextobjectid="25">
  <tileset firstgid="1" name="AEGIS_TILESET" tilewidth="32" tileheight="32" tilecount="290" columns="29">
   <image source="AEGIS_TILESET.png" width="928" height="320"/>
  </tileset>
@@ -70032,7 +70032,7 @@
  <objectgroup name="Win">
   <object id="20" x="3806" y="1086.67" width="35.6667" height="34.6667"/>
  </objectgroup>
- <objectgroup name="Colliders">
+ <objectgroup name="Colliders" offsetx="0" offsety="-1">
   <object id="5" x="1038" y="958.667" width="449.333" height="90.6667"/>
   <object id="6" x="1486" y="736" width="38" height="26.6667"/>
   <object id="7" x="1799.33" y="960" width="138" height="87.3333"/>
@@ -70045,5 +70045,9 @@
   <object id="17" x="2878" y="1226" width="713.333" height="782"/>
   <object id="18" x="3395.33" y="928" width="42" height="29.3333"/>
   <object id="19" x="2212" y="736" width="26" height="31.3333"/>
+  <object id="21" x="1163" y="698" width="309" height="147"/>
+  <object id="22" x="1562" y="845" width="174" height="164"/>
+  <object id="23" x="1375" y="1116" width="188" height="173"/>
+  <object id="24" x="1328" y="1330" width="516" height="84"/>
  </objectgroup>
 </map>
