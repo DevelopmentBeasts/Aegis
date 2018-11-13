@@ -104,8 +104,8 @@ bool PlayerClass::Update(float dt) {
 	//Move the player
 	
 		position.x += velocity.x;
-		if (Gravity && !jump) {
-			velocity.y += 2;
+		if (Gravity) {
+			velocity.y +=1;
 			position.y += velocity.y;
 		}
 	/*	if(Gravity)
@@ -125,9 +125,15 @@ bool PlayerClass::Update(float dt) {
 	if (flip != SDL_FLIP_HORIZONTAL) {
 		rotation *=-1;
 	}
+	if (JumpRotation) {
+		rotation = velocity.y;
+	}
+	else if (!JumpRotation) {
+		rotation = 0;
+	}
 	//SDL_RenderCopyEx(App->render->renderer, player_texture, &CurrentAnimationRect, &player_rect/*podemos controlar el tamaño*/, rotation * 10, 0, flip);
 
-	App->render->Blit(player_texture,position.x,position.y,&current_animation->GetCurrentFrame(),1,/*rotation is equal to jumpvelocity.y*/rotation * 10,flip);
+	App->render->Blit(player_texture,position.x,position.y,&current_animation->GetCurrentFrame(),1,/*rotation is equal to jumpvelocity.y*/rotation * 3,flip);
 	return true;
 }
 
@@ -159,9 +165,13 @@ bool PlayerClass::ExternalInput(p2Queue<player_inputs> &inputs) {
 	if (App->input->GetKey(SDL_SCANCODE_G) == j1KeyState::KEY_DOWN) {
 		Gravity = true;
 	}
+	if (App->input->GetKey(SDL_SCANCODE_J) == j1KeyState::KEY_DOWN) {
+		jump = false;
+	}
 	// key is pressed
-	if (App->input->GetKey(SDL_SCANCODE_W) == j1KeyState::KEY_REPEAT) {
+	if (App->input->GetKey(SDL_SCANCODE_W) == j1KeyState::KEY_DOWN) {
 		inputs.Push(IN_JUMP_DOWN);
+		JumpRotation = true;
 		up = true;
 	}
 	if (App->input->GetKey(SDL_SCANCODE_A) == j1KeyState::KEY_DOWN) {
@@ -232,9 +242,9 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 			{
 			case IN_RIGHT_DOWN:
 				state = ST_WALK_FORWARD;
-				velocity = { 5,0 };
+				velocity.x = 7;
 				if (Gravity) {
-					velocity = { 5,10 };
+					velocity = {7,10 };
 				}
 				flip = SDL_FLIP_HORIZONTAL;
 				current_animation = &move;
@@ -242,9 +252,9 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 				break;
 			case IN_LEFT_DOWN:
 				state = ST_WALK_BACKWARD;
-				velocity = { -5,0 };
+				velocity.x = -7;
 				if (Gravity) {
-					velocity = { -5,10 };
+					velocity = { -7,10 };
 				}
 				flip = SDL_FLIP_NONE;
 				current_animation = &move;
@@ -255,9 +265,6 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 					state = ST_JUMP_NEUTRAL;
 					jump = true;
 					//LOG("INPUT----->JUMP_DOWN");
-					//LOG(" YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump CON VALOR");
-					YPositionAtJump = position.y;
-					current_animation = &move;
 				}		
 				break;
 			}
@@ -273,23 +280,20 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 				provisional:
 				state = ST_IDLE;
 				if (!jump) {
-					velocity = { 0,0 };
+					velocity.x = 0;
 					current_animation = &idle;
 				}
 				break;
 			case IN_LEFT_AND_RIGHT:
 				//LOG("WTF LEFT AND RIGHT WALKING ");
 				state = ST_IDLE;
-				velocity = { 0,0 };
+				velocity.x = 0;
 				current_animation = &idle;
 				break;
 			case IN_JUMP_DOWN:	
 				if (!jump) {
 					state = ST_JUMP_FORWARD;
 					//LOG("INPUT----->JUMP_DOWN");
-					//LOG(" YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump CON VALOR");
-					YPositionAtJump = position.y;
-					current_animation = &move;
 					jump = true;
 				}
 				break;
@@ -304,23 +308,20 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 				//LOG("STOP WALKING LEFT");
 				state = ST_IDLE;
 				if (!jump) {
-					velocity = { 0,0 };
+					velocity.x = 0;
 					current_animation = &idle;
 				}
 				break;
 			case IN_LEFT_AND_RIGHT:
 				//LOG("WTF LEFT AND RIGHT WALKING ");
 				state = ST_IDLE;
-				velocity = { 0,0 };
+				velocity.x = 0;
 				current_animation = &idle;
 				break;
 			case IN_JUMP_DOWN:
 				if (!jump) {
 					state = ST_JUMP_BACKWARD;
 					//LOG("INPUT----->JUMP_DOWN");
-					//LOG(" YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump YPositionAtJump CON VALOR");
-					YPositionAtJump = position.y;
-					current_animation = &move;
 					jump = true;
 				}		
 				break;
@@ -336,14 +337,14 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 			{
 			case IN_RIGHT_DOWN:
 				state = ST_WALK_FORWARD;
-				velocity = { 5,0 };
+				velocity.x = 7;
 				flip = SDL_FLIP_HORIZONTAL;
 				current_animation = &move;
 				//LOG("INPUT----->JUMPING RIGHT ------");
 				break;
 			case IN_LEFT_DOWN:
 				state = ST_WALK_BACKWARD;
-				velocity = { -5,0 };
+				velocity.x = -7;
 				flip = SDL_FLIP_NONE;
 				current_animation = &move;
 				//LOG("INPUT----->JUMPING LEFT ------");
@@ -360,14 +361,14 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 			{
 			case IN_RIGHT_DOWN:
 				state = ST_WALK_FORWARD;
-				velocity = { 5,0 };
+				velocity.x = 7;
 				flip = SDL_FLIP_HORIZONTAL;
 				current_animation = &move;
 				//LOG("INPUT----->JUMPING RIGHT ------ ");
 				break;
 			case IN_LEFT_DOWN:
 				state = ST_WALK_BACKWARD;
-				velocity = { -5,0 };
+				velocity.x = -7;
 				flip = SDL_FLIP_NONE;
 				current_animation = &move;
 				//LOG("INPUT----->JUMPING LEFT ------ ");
@@ -385,14 +386,14 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 			{
 			case IN_RIGHT_DOWN:
 				state = ST_WALK_FORWARD;
-				velocity = { 5,0 };
+				velocity.x = 7;
 				flip = SDL_FLIP_HORIZONTAL;
 				current_animation = &move;
 				//LOG("INPUT----->JUMPING RIGHT ------ ");
 				break;
 			case IN_LEFT_DOWN:
 				state = ST_WALK_BACKWARD;
-				velocity = { -5,0 };
+				velocity.x = -7;
 				flip = SDL_FLIP_NONE;
 				current_animation = &move;
 				//LOG("INPUT----->JUMPING LEFT ------ ");
@@ -407,8 +408,8 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 		}
 	}
 	if (jump == true) {
-		//Gravity = false;
 		Jump();
+		jump = false;
 	}
 
 	return state;
@@ -419,7 +420,7 @@ void PlayerClass::OnCollision(Collider *c1, Collider *c2) {
 	//Checking collision with walls
 
 	if (c2->type == COLLIDER_WALL) {
-
+		JumpRotation = false;
 		//Calculating an error margin of collision to avoid problems with colliders corners
 		int error_margin = 0;
 
@@ -457,7 +458,7 @@ void PlayerClass::OnCollision(Collider *c1, Collider *c2) {
 		}
 		else if (c1->rect.x <= c2->rect.x + c2->rect.w && c1->rect.x >= c2->rect.x + c2->rect.w - velocity.x) { //Colliding Right (going left)
 			LOG("COLLIDING RIGHT");
-			velocity.x = 20;
+			velocity.x = 0;
 			position.x += (c2->rect.x + c2->rect.w) - c1->rect.x + 4;
 
 		}
@@ -495,41 +496,48 @@ void PlayerClass::Die() {
 
 void PlayerClass::Jump() {
 
-	if (App->player->position.y <= YPositionAtJump) {
-		if (deceleration) {
-			if (-1 * velocity.x < 0) { // if velocity is positive
-				velocity.x -= 0.3;
-			}
-			if (-1 * velocity.x > 0) { // if velocity is negative
-				velocity.x += 0.3;
-			}
-		}
-		jumpvelocity.y += 0.2;
-		rotation = jumpvelocity.y;
-		App->player->position.y += jumpvelocity.y;
-		if (App->player->position.y > YPositionAtJump-2) {
-			if (right) {
-				velocity.x = 5;
-			}
-			else if (left) {
-				velocity.x = -5;
-			}
-			else if ((!left) && (!right)) {
-				velocity.x = 0;
-			}
-			rotation = 0;
-		}
-		//LOG("velocity.X       %f", velocity.x);
+	App->player->velocity.y -= 15;
+	
 
-	}else if (App->player->position.y >= YPositionAtJump) {
-		App->player->position.y = YPositionAtJump;
-		jumpvelocity.y = -6;
-		jump = false;
-		deceleration = false;
-		Gravity = true;
-		current_animation = &move;
 
-	}
+
+
+
+	//if (App->player->position.y <= YPositionAtJump) {
+	//	if (deceleration) {
+	//		if (-1 * velocity.x < 0) { // if velocity is positive
+	//			velocity.x -= 0.3;
+	//		}
+	//		if (-1 * velocity.x > 0) { // if velocity is negative
+	//			velocity.x += 0.3;
+	//		}
+	//	}
+	//	jumpvelocity.y += 0.2;
+	//	rotation = jumpvelocity.y;
+	//	App->player->position.y += jumpvelocity.y;
+	//	if (App->player->position.y > YPositionAtJump-2) {
+	//		if (right) {
+	//			velocity.x = 5;
+	//		}
+	//		else if (left) {
+	//			velocity.x = -5;
+	//		}
+	//		else if ((!left) && (!right)) {
+	//			velocity.x = 0;
+	//		}
+	//		rotation = 0;
+	//	}
+	//	//LOG("velocity.X       %f", velocity.x);
+
+	//}else if (App->player->position.y >= YPositionAtJump) {
+	//	App->player->position.y = YPositionAtJump;
+	//	jumpvelocity.y = -6;
+	//	jump = false;
+	//	deceleration = false;
+	//	Gravity = true;
+	//	current_animation = &move;
+
+	//}
 	
 	
 }

@@ -6,7 +6,7 @@
 	<audio />
 	<scene level="AEGIS_RUN_TUTORIAL.tmx" />
 	<player>
-		<position x="1079" y="850" />
+		<position x="1249" y="850" />
 	</player>
 	<map />
 	<:anonymous />

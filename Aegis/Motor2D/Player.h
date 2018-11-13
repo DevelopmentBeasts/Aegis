@@ -76,6 +76,7 @@ public:
 	bool map_loaded;
 
 	bool jump = false;
+	bool JumpRotation = false;
 	bool deceleration = false;
 
 	bool left = false;
@@ -88,7 +89,6 @@ public:
 
 	bool Gravity = false;
 
-	int YPositionAtJump;
 
 	SDL_Texture* player_texture = nullptr;
 
@@ -97,7 +97,7 @@ public:
 
 	//Player data
 	iPoint position;		///position in X & Y axis
-	fPoint velocity = { 0,-6.0 };
+	fPoint velocity = { 0,-3.0 };
 	fPoint jumpvelocity = {0.0,-6.0};    ///velocity in X & Y axis
 	float rotation;			///rotation for blit
 	PlayerTypes avatar;		///current character
