@@ -150,13 +150,14 @@ bool PlayerClass::Load(pugi::xml_node& node) {
 
 bool PlayerClass::ExternalInput(p2Queue<player_inputs> &inputs) {
 	
+
+	if (App->input->GetKey(SDL_SCANCODE_F10) == j1KeyState::KEY_DOWN) {
+		godmode_activated = !godmode_activated;
+	}
 	if (!godmode_activated) {
 
 		if (App->input->GetKey(SDL_SCANCODE_G) == j1KeyState::KEY_DOWN) {
 			Gravity = true;
-		}
-		if (App->input->GetKey(SDL_SCANCODE_F10) == j1KeyState::KEY_DOWN) {
-			godmode_activated = true;
 		}
 		if (App->input->GetKey(SDL_SCANCODE_J) == j1KeyState::KEY_DOWN) {
 			jump = false;
@@ -416,10 +417,10 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 void PlayerClass::OnCollision(Collider *c1, Collider *c2) {
 	//if(c1->type == player_collider)
 	//Checking collision with walls
-	if (!godmode_activated) {
+	/*if (!godmode_activated) {*/
 
 		if (c2->type == COLLIDER_WALL) {
-			JumpRotation = false;
+		
 			//Calculating an error margin of collision to avoid problems with colliders corners
 			int error_margin = 0;
 
@@ -434,17 +435,17 @@ void PlayerClass::OnCollision(Collider *c1, Collider *c2) {
 			if (error_margin > 1) {
 
 				//Checking Y Axis Collisions
-				if (c1->rect.y <= c2->rect.y + c2->rect.h && c1->rect.y >= c2->rect.y + c2->rect.h /*- velocity.y*/) { //Colliding down (jumping)
+				if (c1->rect.y <= c2->rect.y + c2->rect.h && c1->rect.y >= c2->rect.y + c2->rect.h - velocity.y) { //Colliding down (jumping)
 					LOG("COLLIDING DOWN");
 					/*velocity.y = 0;*/
-					if (velocity.y * -1 > 0) {
+					if (velocity.y * -1 < 0) {
 						velocity.y += (velocity.y*-1);
 					}
 					jump = false;
 					position.y = c1->rect.y + c2->rect.h - (c1->rect.y - c2->rect.y) + 3;
 				}
 				else if (c1->rect.y + c1->rect.h >= c2->rect.y && c1->rect.y + c1->rect.h <= c2->rect.y + velocity.y) { //Colliding Up (falling)
-					//LOG("COLLIDING UP");
+					LOG("COLLIDING UP");
 					jump = false;
 					velocity.y = 0;
 					position.y = c1->rect.y - ((c1->rect.y + c1->rect.h) - c2->rect.y);
@@ -465,7 +466,7 @@ void PlayerClass::OnCollision(Collider *c1, Collider *c2) {
 
 			}
 		}
-	}
+	/*}*/
 }
 
 void PlayerClass::GodMode() {
@@ -474,26 +475,26 @@ void PlayerClass::GodMode() {
 	
 	
 	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) {
-		LOG("<----GODMODE");
-		velocity.x = 10;
-		position.x -= velocity.x;
+		    //LOG("<----GODMODE");
+		    velocity.x = 10;
+		    position.x -= velocity.x;
 	}
 	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) {
-			LOG("GODMODE---->");
+		    //LOG("GODMODE---->");
 			velocity.x = 10;
 			position.x += velocity.x;
 	}
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) {
-		LOG("GODMODE UP");
-		velocity.y = 10;
-		position.y -= velocity.x;
+		    //LOG("GODMODE UP");
+		    velocity.y = 10;
+		    position.y -= velocity.x;
 	}
 		
 
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) {
-		LOG("GODMODE DOWN");
-		velocity.y = 10;
-		position.y += velocity.x;
+		    //LOG("GODMODE DOWN");
+		    velocity.y = 10;
+		    position.y += velocity.x;
 	}
 		
 
