@@ -88,7 +88,7 @@ public:
 	bool ToRight = false;
 
 	bool Gravity = false;
-
+	
 
 	SDL_Texture* player_texture = nullptr;
 
@@ -107,6 +107,7 @@ public:
 	float PlayerScale;
 	float GravityValue;
 	float JumpForce;
+	
 private:
 
 	//Call godmode if true	

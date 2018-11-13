@@ -174,14 +174,14 @@ bool PlayerClass::ExternalInput(p2Queue<player_inputs> &inputs) {
 			//DIRECTIONAL BOOLS FOR COLLIDERS
 			ToLeft = true;
 			ToRight = false;
-			LOG("TOLEFT = TRUE  /   TORIGHT = FALSE");
+			//LOG("TOLEFT = TRUE  /   TORIGHT = FALSE");
 		}
 		if (App->input->GetKey(SDL_SCANCODE_D) == j1KeyState::KEY_DOWN) {
 			right = true;
 			//DIRECTIONAL BOOLS FOR COLLIDERS
 			ToLeft = false;
 			ToRight = true;
-			LOG("TOLEFT = FALSE  /   TORIGHT = TRUE");
+			//LOG("TOLEFT = FALSE  /   TORIGHT = TRUE");
 		}
 		if (App->input->GetKey(SDL_SCANCODE_S) == j1KeyState::KEY_DOWN) {
 			if (jump) {
@@ -237,7 +237,7 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 			{
 			case ST_IDLE:
 				//LOG("IM FUCKING IDL MEN");
-
+				
 				switch (last_input)
 				{
 				case IN_RIGHT_DOWN:
@@ -407,6 +407,9 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 				break;
 			}
 		}
+		if (velocity.y != 0) {
+			current_animation = &move;
+		}
 		if (jump == true) {
 			Jump();
 			jump = false;
@@ -436,21 +439,28 @@ void PlayerClass::OnCollision(Collider *c1, Collider *c2) {
 			if (error_margin > 1) {
 
 				//Checking Y Axis Collisions
-				if (c1->rect.y <= c2->rect.y + c2->rect.h && c1->rect.y >= c2->rect.y + c2->rect.h - velocity.y) { //Colliding down (jumping)
-					LOG("COLLIDING DOWN");
+				if (c1->rect.y <= c2->rect.y + c2->rect.h && c1->rect.y >= c2->rect.y + c2->rect.h -20/*- ((velocity.y*-1)-velocity.y)*/) { //Colliding down (jumping)
+					LOG("BOOL COLLIDING DOWN TRUE");
 					/*velocity.y = 0;*/
-					if (velocity.y * -1 < 0) {
+					if (velocity.y * -1 < 0 ) {
 						velocity.y += (velocity.y*-1);
+						
 					}
 					jump = false;
-					position.y = c1->rect.y + c2->rect.h - (c1->rect.y - c2->rect.y) + 3;
+					position.y = c2->rect.y + c2->rect.h + 1;
+					velocity.y = 0;/*c1->rect.y + c2->rect.h - (c1->rect.y - c2->rect.y) + 3;*/
 				}
-				else if (c1->rect.y + c1->rect.h >= c2->rect.y && c1->rect.y + c1->rect.h <= c2->rect.y + velocity.y) { //Colliding Up (falling)
-					LOG("COLLIDING UP");
+				
+				
+			
+				if (c1->rect.y + c1->rect.h >= c2->rect.y && c1->rect.y + c1->rect.h <= c2->rect.y + velocity.y) { //Colliding Up (falling)
+					//LOG("COLLIDING UP");
+					//LOG("BOOL COLLIDING UP TRUE");
 					jump = false;
 					velocity.y = 0;
 					position.y = c1->rect.y - ((c1->rect.y + c1->rect.h) - c2->rect.y);
 				}
+				
 			}
 
 			//Checking X Axis Collisions
@@ -460,7 +470,7 @@ void PlayerClass::OnCollision(Collider *c1, Collider *c2) {
 				position.x -= (c1->rect.x + c1->rect.w) - c2->rect.x + 4;
 
 			}
-			else if (c1->rect.x <= c2->rect.x + c2->rect.w && c1->rect.x >= c2->rect.x + c2->rect.w - velocity.x) { //Colliding Right (going left)
+			else if (c1->rect.x <= c2->rect.x + c2->rect.w && c1->rect.x >= c2->rect.x + c2->rect.w - ((velocity.x*-1) - velocity.x)) { //Colliding Right (going left)
 				LOG("COLLIDING RIGHT");
 				velocity.x = 0;
 				position.x += (c2->rect.x + c2->rect.w) - c1->rect.x + 4;

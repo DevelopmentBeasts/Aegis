@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="200" height="70" tilewidth="32" tileheight="32" nextobjectid="25">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="200" height="70" tilewidth="32" tileheight="32" nextobjectid="48">
  <tileset firstgid="1" name="AEGIS_TILESET" tilewidth="32" tileheight="32" tilecount="290" columns="29">
   <image source="AEGIS_TILESET.png" width="928" height="320"/>
  </tileset>
@@ -70045,9 +70045,26 @@
   <object id="17" x="2878" y="1226" width="713.333" height="782"/>
   <object id="18" x="3395.33" y="928" width="42" height="29.3333"/>
   <object id="19" x="2212" y="736" width="26" height="31.3333"/>
-  <object id="21" x="1163" y="698" width="309" height="147"/>
-  <object id="22" x="1562" y="845" width="174" height="164"/>
-  <object id="23" x="1375" y="1116" width="188" height="173"/>
-  <object id="24" x="1328" y="1330" width="516" height="84"/>
+  <object id="25" x="930" y="1259" width="612" height="82"/>
+  <object id="26" x="1277" y="1019" width="56" height="167"/>
+  <object id="27" x="828" y="939" width="31" height="513"/>
+  <object id="28" x="945" y="1445" width="198" height="187"/>
+  <object id="29" x="717" y="1710" width="491" height="109"/>
+  <object id="30" x="1381.82" y="1461.61" width="96.9697" height="803.03"/>
+  <object id="31" x="757.576" y="2079.79" width="796.97" height="142.424"/>
+  <object id="32" x="327.273" y="1958.58" width="272.727" height="330.303"/>
+  <object id="33" x="563.636" y="2419.18" width="1412.12" height="121.212"/>
+  <object id="34" x="1781.82" y="2185.85" width="260.606" height="148.485"/>
+  <object id="35" x="1960.61" y="1913.12" width="203.03" height="145.455"/>
+  <object id="36" x="1566.67" y="1473.73" width="493.939" height="109.091"/>
+  <object id="37" x="1687.88" y="1643.42" width="54.5455" height="369.697"/>
+  <object id="39" x="1778.79" y="2625.24" width="1296.97" height="115.152"/>
+  <object id="41" x="3093.94" y="2240.39" width="724.242" height="154.545"/>
+  <object id="42" x="3766.67" y="2619.18" width="463.636" height="106.061"/>
+  <object id="43" x="2706.06" y="3007.06" width="442.424" height="112.121"/>
+  <object id="44" x="3842.42" y="3001" width="524.242" height="112.121"/>
+  <object id="45" x="3039.39" y="3294.94" width="1090.91" height="60.6061"/>
+  <object id="46" x="3351.52" y="3070.7" width="178.788" height="127.273"/>
+  <object id="47" x="3218.18" y="2749.48" width="175.758" height="148.485"/>
  </objectgroup>
 </map>
