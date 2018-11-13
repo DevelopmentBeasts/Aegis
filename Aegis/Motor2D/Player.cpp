@@ -273,6 +273,7 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 
 			case ST_WALK_FORWARD:
 				//LOG("WALKING RIGHT");
+				velocity.x = 7;
 				switch (last_input)
 				{
 				case IN_RIGHT_UP:
@@ -328,7 +329,7 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 				}
 				break;
 			case ST_JUMP_NEUTRAL:
-				//LOG("THE JUMP IS NEUTRAL");
+				LOG("THE JUMP IS NEUTRAL");
 				if (!jump) {
 					//LOG("CHANGING TO IDL");
 					state = ST_IDLE;
@@ -352,7 +353,7 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 				}
 
 			case ST_JUMP_FORWARD:
-				//LOG("THE JUMP IS FORWARD");
+				LOG("THE JUMP IS FORWARD");
 				if (!jump) {
 					//LOG("CHANGING TO IDL");
 					state = ST_IDLE;
@@ -376,7 +377,7 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 				}
 				break;
 			case ST_JUMP_BACKWARD:
-				//LOG("THE JUMP IS BACKWARD");
+				LOG("THE JUMP IS BACKWARD");
 
 				if (!jump) {
 					//LOG("CHANGING TO IDL");
