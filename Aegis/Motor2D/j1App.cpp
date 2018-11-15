@@ -14,7 +14,7 @@
 #include "j1App.h"
 #include "Player.h"
 #include "j1Collision.h"
-
+#include "SDL/Brofiler/Brofiler.h"
 // Constructor
 j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 {
@@ -189,7 +189,7 @@ void j1App::FinishUpdate()
 	float frames_on_last_update = prev_last_sec_frame_count;
 	
 	static char title[256];
-	sprintf_s(title, 256, "Av.FPS: %.2f Last Frame Ms: %02u Last sec frames: %i  Time since startup: %.3f Frame Count: %lu ",avg_fps, last_frame_ms, frames_on_last_update, seconds_since_startup, frame_count);
+	sprintf_s(title, 256, "Av.FPS: %f Last Frame Ms:  %f Last sec frames:  %f  Time since startup:  %f Frame Count:  %f ",avg_fps, last_frame_ms, frames_on_last_update, seconds_since_startup, frame_count);
 	App->win->SetTitle(title);
 
 }

@@ -5,6 +5,7 @@
 #include "j1Textures.h"
 #include "j1Map.h"
 #include <math.h>
+#include "SDL/Brofiler/Brofiler.h"
 
 j1Map::j1Map() : j1Module(), map_loaded(false)
 {
@@ -55,7 +56,9 @@ void j1Map::Draw()
 
 						}
 						else if (layer->name == "BackGround") {
-							App->render->Blit(tileset->texture, pos.x-1000, pos.y-700, &rect,0.3);
+							if (pos.x<(-(App->render->camera.x) + App->render->camera.w + 1900) && pos.x >(-(App->render->camera.x) )) {
+								App->render->Blit(tileset->texture, pos.x - 300, pos.y - 200, &rect, 1.2);
+							}
 						}
 
 						
