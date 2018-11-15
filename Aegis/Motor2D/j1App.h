@@ -94,6 +94,7 @@ private:
 	p2List<j1Module*>	modules;
 	double              frame_count = 0;
 	uint				frames;
+	uint                framerate_cap;
 	MasterTimer			Mtimer;
 	Timer               frame_time;
 	Timer               startup_time;

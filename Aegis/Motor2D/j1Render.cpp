@@ -5,7 +5,7 @@
 #include "j1Render.h"
 #include "player.h"
 #include "j1Input.h"
-
+#include "Brofiler/Brofiler.h"
 j1Render::j1Render() : j1Module()
 {
 	name.create("renderer");
@@ -76,6 +76,7 @@ bool j1Render::PreUpdate()
 
 bool j1Render::Update(float dt)
 {
+	BROFILER_CATEGORY("Update(); - Render;", Profiler::Color::IndianRed);
 	if (App->input->GetKey(SDL_SCANCODE_F8)==KEY_DOWN)
 		debug=!debug;
 

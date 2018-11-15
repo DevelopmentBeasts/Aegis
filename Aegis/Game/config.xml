@@ -9,6 +9,7 @@
   <renderer>
     <borders top="300" bot="300" left="200" right="500"/>
     <vsync value="false"/>
+    <framerate_cap value = "30"/>
   </renderer>
 
   <window>

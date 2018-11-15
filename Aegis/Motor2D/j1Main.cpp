@@ -3,14 +3,14 @@
 #include "p2Defs.h"
 #include "p2Log.h"
 #include "j1App.h"
-#include "SDL/Brofiler/Brofiler.h"
+#include "Brofiler/Brofiler.h"
 // This is needed here because SDL redefines main function
 // do not add any other libraries here, instead put them in their modules
 
 #include "SDL/include/SDL.h"
 #pragma comment( lib, "SDL/libx86/SDL2.lib" )
 #pragma comment( lib, "SDL/libx86/SDL2main.lib" )
-#pragma comment(lib, "SDL/Brofiler/ProfilerCore32.lib")
+#pragma comment(lib, "Brofiler/ProfilerCore32.lib")
 
 
 enum MainState
@@ -75,6 +75,7 @@ int main(int argc, char* args[])
 			}
 			else
 			{
+
 				state = FAIL;
 				LOG("ERROR: Start failed");
 			}
@@ -86,7 +87,7 @@ int main(int argc, char* args[])
 			// TODO 2: Add the Brofiler Macro to trigger a frame
 
 
-			BROFILER_FRAME("BrofilerSystem");
+			BROFILER_FRAME("GameUpdate();");
 
 
 			if (App->Update() == false)
@@ -99,6 +100,7 @@ int main(int argc, char* args[])
 			LOG("CLEANUP PHASE ===============================");
 			if (App->CleanUp() == true)
 			{
+				BROFILER_CATEGORY("GameCleanUp();", Profiler::Color::Yellow)
 				RELEASE(App);
 				result = EXIT_SUCCESS;
 				state = EXIT;

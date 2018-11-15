@@ -8,7 +8,7 @@
 #include <math.h>
 #include "j1Input.h"
 #include "j1Scene.h"
-
+#include "Brofiler/Brofiler.h"
 //Destructor
 
 PlayerClass::~PlayerClass() {
@@ -93,7 +93,7 @@ bool PlayerClass::Start() {
 
 
 bool PlayerClass::Update(float dt) {
-
+	BROFILER_CATEGORY("PlayerUpdate();", Profiler::Color::Green);
 	if (ExternalInput(inputs))
 	{
 		//InternalInput(inputs);
@@ -107,6 +107,7 @@ bool PlayerClass::Update(float dt) {
 			velocity.y += GravityValue;
 			position.y += velocity.y;
 		}
+
 	}
 	//Move the collider
 	player_collider->SetPos(position.x, position.y);
@@ -244,9 +245,9 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 				{
 				case IN_RIGHT_DOWN:
 					state = ST_WALK_FORWARD;
-					velocity.x = 7;
+					velocity.x = 12;
 					if (Gravity) {
-						velocity.x =  7;
+						velocity.x =  12;
 					}
 					flip = SDL_FLIP_HORIZONTAL;
 					current_animation = &move;
@@ -254,9 +255,9 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 					break;
 				case IN_LEFT_DOWN:
 					state = ST_WALK_BACKWARD;
-					velocity.x = -7;
+					velocity.x = -12;
 					if (Gravity) {
-						velocity.x = -7;
+						velocity.x = -12;
 					}
 					flip = SDL_FLIP_NONE;
 					current_animation = &move;
@@ -275,7 +276,7 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 
 			case ST_WALK_FORWARD:
 				//LOG("WALKING RIGHT");
-				velocity.x = 7;
+				velocity.x = 12;
 				switch (last_input)
 				{
 				case IN_RIGHT_UP:
@@ -340,14 +341,14 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 				{
 				case IN_RIGHT_DOWN:
 					state = ST_WALK_FORWARD;
-					velocity.x = 7;
+					velocity.x = 12;
 					flip = SDL_FLIP_HORIZONTAL;
 					current_animation = &move;
 					//LOG("INPUT----->JUMPING RIGHT ------");
 					break;
 				case IN_LEFT_DOWN:
 					state = ST_WALK_BACKWARD;
-					velocity.x = -7;
+					velocity.x = -12;
 					flip = SDL_FLIP_NONE;
 					current_animation = &move;
 					//LOG("INPUT----->JUMPING LEFT ------");
@@ -364,14 +365,14 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 				{
 				case IN_RIGHT_DOWN:
 					state = ST_WALK_FORWARD;
-					velocity.x = 7;
+					velocity.x = 12;
 					flip = SDL_FLIP_HORIZONTAL;
 					current_animation = &move;
 					//LOG("INPUT----->JUMPING RIGHT ------ ");
 					break;
 				case IN_LEFT_DOWN:
 					state = ST_WALK_BACKWARD;
-					velocity.x = -7;
+					velocity.x = -12;
 					flip = SDL_FLIP_NONE;
 					current_animation = &move;
 					//LOG("INPUT----->JUMPING LEFT ------ ");
@@ -389,14 +390,14 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 				{
 				case IN_RIGHT_DOWN:
 					state = ST_WALK_FORWARD;
-					velocity.x = 7;
+					velocity.x = 12;
 					flip = SDL_FLIP_HORIZONTAL;
 					current_animation = &move;
 					//LOG("INPUT----->JUMPING RIGHT ------ ");
 					break;
 				case IN_LEFT_DOWN:
 					state = ST_WALK_BACKWARD;
-					velocity.x = -7;
+					velocity.x = -12;
 					flip = SDL_FLIP_NONE;
 					current_animation = &move;
 					//LOG("INPUT----->JUMPING LEFT ------ ");

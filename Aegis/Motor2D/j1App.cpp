@@ -14,7 +14,7 @@
 #include "j1App.h"
 #include "Player.h"
 #include "j1Collision.h"
-#include "SDL/Brofiler/Brofiler.h"
+#include "Brofiler/Brofiler.h"
 // Constructor
 j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 {
@@ -86,6 +86,7 @@ bool j1App::Awake()
 		app_config = config.child("app");
 		title.create(app_config.child("title").child_value());
 		organization.create(app_config.child("organization").child_value());
+		framerate_cap = config.child("renderer").child("framerate_cap").attribute("value").as_uint();
 	}
 
 	if(ret == true)
@@ -122,6 +123,7 @@ bool j1App::Start()
 // Called each loop iteration
 bool j1App::Update()
 {
+	BROFILER_CATEGORY("AppUpdate();", Profiler::Color::Orchid);
 	bool ret = true;
 	PrepareUpdate();
 
@@ -158,6 +160,8 @@ pugi::xml_node j1App::LoadConfig(pugi::xml_document& config_file) const
 // ---------------------------------------------
 void j1App::PrepareUpdate()
 {
+	
+	
 	frame_count++;
 	last_sec_frame_count++;
 
@@ -168,6 +172,7 @@ void j1App::PrepareUpdate()
 // ---------------------------------------------
 void j1App::FinishUpdate()
 {
+	
 	if(want_to_save == true)
 		SavegameNow();
 
@@ -191,12 +196,25 @@ void j1App::FinishUpdate()
 	static char title[256];
 	sprintf_s(title, 256, "Av.FPS: %f Last Frame Ms:  %f Last sec frames:  %f  Time since startup:  %f Frame Count:  %f ",avg_fps, last_frame_ms, frames_on_last_update, seconds_since_startup, frame_count);
 	App->win->SetTitle(title);
+	//AQUI SE CAPAN LOS FPS?
+	/*double ptime = Mtimer.ReadMs();
+
+	if (last_frame_ms < framerate_cap)
+		SDL_Delay(framerate_cap - last_frame_ms);*/
+	float capped_ms = 1000 / framerate_cap ;
+	if (capped_ms > 0 && last_frame_ms <  capped_ms)
+	{
+		MasterTimer t;
+		SDL_Delay(capped_ms - last_frame_ms);
+		LOG("We waited for %d milliseconds and got back in %f", capped_ms - last_frame_ms, t.ReadMs());
+	}
 
 }
 
 // Call modules before each loop iteration
 bool j1App::PreUpdate()
 {
+	
 	bool ret = true;
 	p2List_item<j1Module*>* item;
 	item = modules.start;
