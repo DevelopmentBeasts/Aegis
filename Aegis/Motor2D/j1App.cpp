@@ -197,16 +197,13 @@ void j1App::FinishUpdate()
 	sprintf_s(title, 256, "Av.FPS: %f Last Frame Ms:  %f Last sec frames:  %f  Time since startup:  %f Frame Count:  %f ",avg_fps, last_frame_ms, frames_on_last_update, seconds_since_startup, frame_count);
 	App->win->SetTitle(title);
 	//AQUI SE CAPAN LOS FPS?
-	/*double ptime = Mtimer.ReadMs();
-
-	if (last_frame_ms < framerate_cap)
-		SDL_Delay(framerate_cap - last_frame_ms);*/
+	
 	float capped_ms = 1000 / framerate_cap ;
 	if (capped_ms > 0 && last_frame_ms <  capped_ms)
 	{
 		MasterTimer t;
 		SDL_Delay(capped_ms - last_frame_ms);
-		LOG("We waited for %d milliseconds and got back in %f", capped_ms - last_frame_ms, t.ReadMs());
+		//LOG("We waited for %d milliseconds and got back in %f", capped_ms - last_frame_ms, t.ReadMs());
 	}
 
 }
