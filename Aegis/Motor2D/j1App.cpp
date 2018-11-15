@@ -14,10 +14,11 @@
 #include "j1App.h"
 #include "Player.h"
 #include "j1Collision.h"
-
+#include "Brofiler/Brofiler.h"
 // Constructor
 j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 {
+	
 	frames = 0;
 	want_to_save = want_to_load = false;
 
@@ -85,6 +86,7 @@ bool j1App::Awake()
 		app_config = config.child("app");
 		title.create(app_config.child("title").child_value());
 		organization.create(app_config.child("organization").child_value());
+		framerate_cap = config.child("renderer").child("framerate_cap").attribute("value").as_uint();
 	}
 
 	if(ret == true)
@@ -114,13 +116,14 @@ bool j1App::Start()
 		ret = item->data->Start();
 		item = item->next;
 	}
-
+	startup_time.Start();
 	return ret;
 }
 
 // Called each loop iteration
 bool j1App::Update()
 {
+	BROFILER_CATEGORY("AppUpdate();", Profiler::Color::Orchid);
 	bool ret = true;
 	PrepareUpdate();
 
@@ -157,21 +160,58 @@ pugi::xml_node j1App::LoadConfig(pugi::xml_document& config_file) const
 // ---------------------------------------------
 void j1App::PrepareUpdate()
 {
+	
+	
+	frame_count++;
+	last_sec_frame_count++;
+
+	//Calculate the dt: differential time since last frame
+	frame_time.Start();
 }
 
 // ---------------------------------------------
 void j1App::FinishUpdate()
 {
+	
 	if(want_to_save == true)
 		SavegameNow();
 
 	if(want_to_load == true)
 		LoadGameNow();
+
+	// Framerate calculations --
+
+	if (last_sec_frame_time.Read() > 1000)
+	{
+		last_sec_frame_time.Start();
+		prev_last_sec_frame_count = last_sec_frame_count;
+		last_sec_frame_count = 0;
+	}
+
+	float avg_fps = float(frame_count) / startup_time.ReadSec();
+	float seconds_since_startup = startup_time.ReadSec();
+	float last_frame_ms = frame_time.Read();
+	float frames_on_last_update = prev_last_sec_frame_count;
+	
+	static char title[256];
+	sprintf_s(title, 256, "Av.FPS: %f Last Frame Ms:  %f Last sec frames:  %f  Time since startup:  %f Frame Count:  %f ",avg_fps, last_frame_ms, frames_on_last_update, seconds_since_startup, frame_count);
+	App->win->SetTitle(title);
+	//AQUI SE CAPAN LOS FPS?
+	
+	float capped_ms = 1000 / framerate_cap ;
+	if (capped_ms > 0 && last_frame_ms <  capped_ms)
+	{
+		MasterTimer t;
+		SDL_Delay(capped_ms - last_frame_ms);
+		//LOG("We waited for %d milliseconds and got back in %f", capped_ms - last_frame_ms, t.ReadMs());
+	}
+
 }
 
 // Call modules before each loop iteration
 bool j1App::PreUpdate()
 {
+	
 	bool ret = true;
 	p2List_item<j1Module*>* item;
 	item = modules.start;
