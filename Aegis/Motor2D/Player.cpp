@@ -173,6 +173,7 @@ bool PlayerClass::ExternalInput(p2Queue<player_inputs> &inputs) {
 			left = true;
 			//DIRECTIONAL BOOLS FOR COLLIDERS
 			ToLeft = true;
+			Gravity = true;
 			ToRight = false;
 			//LOG("TOLEFT = TRUE  /   TORIGHT = FALSE");
 		}
@@ -181,6 +182,7 @@ bool PlayerClass::ExternalInput(p2Queue<player_inputs> &inputs) {
 			//DIRECTIONAL BOOLS FOR COLLIDERS
 			ToLeft = false;
 			ToRight = true;
+			Gravity = true;
 			//LOG("TOLEFT = FALSE  /   TORIGHT = TRUE");
 		}
 		if (App->input->GetKey(SDL_SCANCODE_S) == j1KeyState::KEY_DOWN) {
@@ -225,7 +227,7 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 		GodMode();
 	}
 	if (!godmode_activated) {
-
+	
 		static player_states state = ST_IDLE;
 		player_inputs last_input;
 		if (velocity.x == 0) {
@@ -244,7 +246,7 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 					state = ST_WALK_FORWARD;
 					velocity.x = 7;
 					if (Gravity) {
-						velocity = { 7,10 };
+						velocity.x =  7;
 					}
 					flip = SDL_FLIP_HORIZONTAL;
 					current_animation = &move;
@@ -254,7 +256,7 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
 					state = ST_WALK_BACKWARD;
 					velocity.x = -7;
 					if (Gravity) {
-						velocity = { -7,10 };
+						velocity.x = -7;
 					}
 					flip = SDL_FLIP_NONE;
 					current_animation = &move;

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="200" height="70" tilewidth="32" tileheight="32" nextobjectid="48">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="200" height="70" tilewidth="32" tileheight="32" nextobjectid="49">
  <tileset firstgid="1" name="AEGIS_TILESET" tilewidth="32" tileheight="32" tilecount="290" columns="29">
   <image source="AEGIS_TILESET.png" width="928" height="320"/>
  </tileset>
@@ -70066,5 +70066,6 @@
   <object id="45" x="3039.39" y="3294.94" width="1090.91" height="60.6061"/>
   <object id="46" x="3351.52" y="3070.7" width="178.788" height="127.273"/>
   <object id="47" x="3218.18" y="2749.48" width="175.758" height="148.485"/>
+  <object id="48" x="4269.7" y="3504.03"/>
  </objectgroup>
 </map>

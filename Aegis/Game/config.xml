@@ -8,7 +8,7 @@
 	
   <renderer>
     <borders top="300" bot="300" left="200" right="500"/>
-    <vsync value="true"/>
+    <vsync value="false"/>
   </renderer>
 
   <window>
