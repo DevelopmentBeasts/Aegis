@@ -8,11 +8,6 @@
 #include "j1Collision.h"
 #include "j1App.h"
 
-// TODO 5: Create a generic structure to hold properties
-// TODO 7: Our custom properties should have one method
-// to ask for the value of a custom property
-// ----------------------------------------------------
-
 struct ColliderData {
 	p2List<Collider*>			collider_list;
 	p2List<SDL_Rect>			collider_rects;
@@ -32,6 +27,7 @@ struct MapLayer
 	int			width;
 	int			height;
 	uint*		data;
+	float		parallax=1.0f;
 
 	MapLayer() : data(NULL)
 	{}

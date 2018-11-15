@@ -77,6 +77,7 @@ bool j1Render::PreUpdate()
 bool j1Render::Update(float dt)
 {
 	BROFILER_CATEGORY("Update(); - Render;", Profiler::Color::IndianRed);
+
 	if (App->input->GetKey(SDL_SCANCODE_F8)==KEY_DOWN)
 		debug=!debug;
 
@@ -311,32 +312,41 @@ void j1Render::FollowPlayer() {
 }
 
 void j1Render::FindPlayer() {
-	//int vel = 20;
+	int vel = 20;
 
-	//if ((App->player->data.xpos) > (-camera.x + camera.w - right_border)) {	
+	if ((App->player->data.xpos) > (-camera.x + camera.w - right_border)) {	
 
-	//	if (App->player->automatic_right == true)							
-	//		camera.x -=vel;													
-	//	else
-	//		camera.x -= vel;
-	//}
-	//if ((App->player->data.xpos) < (-camera.x + left_border)) {				
+		if (App->player->automatic_right == true)							
+			camera.x -=vel;													
+		else
+			camera.x -= vel;
+	}
+	if ((App->player->data.xpos) < (-camera.x + left_border)) {				
 
-	//	if (App->player->automatic_left == true)							
-	//		camera.x += vel;												
-	//	else
-	//		camera.x += vel;
-	//}
+		if (App->player->automatic_left == true)							
+			camera.x += vel;												
+		else
+			camera.x += vel;
+	}
 
-	//if ((App->player->data.ypos) < (-camera.y + top_border))				
-	//	camera.y += vel;
+	if ((App->player->data.ypos) < (-camera.y + top_border))				
+		camera.y += vel;
 
-	//if ((App->player->data.ypos) > (-camera.y + camera.h - bot_border))		
-	//	camera.y -= vel;
+	if ((App->player->data.ypos) > (-camera.y + camera.h - bot_border))		
+		camera.y -= vel;
 
-	//if (((App->player->data.xpos) < (-camera.x + camera.w - right_border))		//If we found the player, stop looking for it
-	//	&& ((App->player->data.xpos) > (-camera.x + left_border))
-	//	&& ((App->player->data.ypos) > (-camera.y + top_border))
-	//	&& ((App->player->data.ypos) < (-camera.y + camera.h - bot_border)))
-	//	find_player = false;
+	if (((App->player->data.xpos) < (-camera.x + camera.w - right_border))		//If we found the player, stop looking for it
+		&& ((App->player->data.xpos) > (-camera.x + left_border))
+		&& ((App->player->data.ypos) > (-camera.y + top_border))
+		&& ((App->player->data.ypos) < (-camera.y + camera.h - bot_border)))
+		find_player = false;
+}
+
+
+bool j1Render::InScreen(int x, int y, uint w, uint h, float parallax_speed) const {
+	bool ret = false;
+	
+
+
+	return ret;
 }
