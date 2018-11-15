@@ -6,12 +6,14 @@
 #include "p2Point.h"
 #include "j1Module.h"
 #include "Animation.h"
+#include "p2Queue.h"
 
 
 struct SDL_Texture;
 struct Collider;
 
 enum PlayerTypes {
+
 	FIRE_WISP = 0,
 	WATER_WISP,
 	ROCK_WISP,
@@ -19,141 +21,114 @@ enum PlayerTypes {
 
 };
 
-struct PlayerData {
-	int xpos;
-	int ypos;
-	float yvel;
-	float xvel;
-
-	PlayerTypes type; // used for future adding of types of players
-
-	bool PlayerOnTop;
-	bool PlayerOnBot;  //CONTROL IF THE PLAYER IS COLLISIONING WITH A COLLIDER AND WHERE IS THE PLAYER RESPECT THE COLLIDER
-	bool PlayerOnLeft;
-	bool PlayerOnRight;
-
-	bool PlayerColliding; //CONTROL IF PLAYER IS COLLIDING WITH SOMETHING (TOP,BOT,LEFT OR RIGHT)
-
-	bool Falling; // IT IS NOT THE SAME TO JUST FALL THAN TO BE IN A JUMPING PRABOLA
-	
-	bool dead;
+enum player_states {
+	ST_UNKNOWN, 
+	ST_IDLE,
+	ST_WALK_FORWARD,
+	ST_WALK_BACKWARD,
+	ST_JUMP_NEUTRAL,
+	ST_JUMP_FORWARD,
+	ST_JUMP_BACKWARD,
+	ST_FALL_ATTACK
 };
 
+enum player_inputs {
+	IN_LEFT_UP,
+	IN_LEFT_DOWN, 
+	IN_RIGHT_UP,
+	IN_RIGHT_DOWN, 
+	IN_LEFT_AND_RIGHT,
+	IN_JUMP_DOWN,
+	IN_JUMP_UP,
+	IN_FALL_ATTACK
+};
 
 class PlayerClass : public j1Module {
 
 public:
+
 	PlayerClass();
 
-	SDL_Rect aux_rect = { 50,50,0,0 };
-
-	//destructor
 	virtual ~PlayerClass();
 	bool Start();
-	//bool Awake(pugi::xml_node &config);
-
-	//bool CleanUp();
-
-	// Load / Save
 
 	bool Load(pugi::xml_node&);
 	bool Save(pugi::xml_node&) const;
-	
-	iPoint MapToWorld(int x, int y) const;
-	iPoint WorldToMap(int x, int y) const;
-
 
 	bool Update(float dt);
 	void MovePlayer();
-	void MovePlayerCollider();
-	void PlayerAnims();
 	void OnCollision(Collider *c1, Collider *c2);
 
+	//Player states and behaviour system
+	bool ExternalInput(p2Queue<player_inputs>&inputs);			///Add keyboard inputs to the list
+	void InternalInput(p2Queue<player_inputs>&inputs);			///Add internal inputs to the list
+	player_states process_fsm(p2Queue<player_inputs>&inputs);	///Act depending on the inputs
+
+	void Jump();
 	void Die();
 
+	//God Mode will allow the player to fly around the map ignoring collisions
 	void GodMode();
 
-private:
-
-	/*bool LoadPlayer();
-	bool LoadTilesetDetails(pugi::xml_node& tileset_node, TileSet* set);
-	bool LoadTilesetImage(pugi::xml_node& tileset_node, TileSet* set);
-	bool LoadLayer(pugi::xml_node& node, MapLayer* layer);
-*/
 public:
-
-	//MapData data;
-	PlayerData data;
-
-private:
-
-	pugi::xml_document	PlayerStartFile;
-	pugi::xml_document AnimsDoc;
-	
-	pugi::xml_node AnimsNode;
-	pugi::xml_node PlayerXmlNode;
-	p2SString			folder;
-
-
-public:
-	SDL_Rect playerrect;
-	SDL_Rect StaminaRect;
-	SDL_Rect CurrentAnimationRect;
-
-public:
-	bool godmode_activated = false;				//God Mode will allow the player to fly around the map ignoring collisions
+	SDL_Rect player_rect;
 
 	bool map_loaded;
 
-	bool jumping = false;   //bool to know when there is a jump
+	bool jump = false;
+	bool JumpRotation = false;
+	bool deceleration = false;
+
+	bool left = false;
+	bool right = false;
+	bool down = false;
+	bool up = false;
+
+	bool ToLeft = false;
+	bool ToRight = false;
+
+	bool Gravity = false;
 	
-	bool bot_reached = false;
-	bool top_reached = false;
 
+	SDL_Texture* player_texture = nullptr;
 
-	bool automatic_right = false;  //two bools on left and right to know if the player is moving in the air(xdirection) automatically after stop pressing A or D
-	bool automatic_left = false;
+	//Colliders
+	Collider *player_collider;
 
-	bool fall_atack = false; //bool to know if the fall attack is being USED (still not beig coded)
-
-	bool movingright = false;  //usefool for the idle left or idle right anims
-	bool movingleft = false; 
-
-	bool activateleftmovement = false;
-	bool activaterightmovement = false;
-
-	bool UpdatePlayer; //update player start
-public:
-
-
-	SDL_Texture* Textures = nullptr;
-	SDL_Texture* Texturesflipped = nullptr;
-
-	Animation* current_animation = nullptr;
-
-	Animation idle_left;
+	//Player data
+	iPoint position;		///position in X & Y axis
+	fPoint velocity = { 0,-3.0 };
+	fPoint jumpvelocity = {0.0,-6.0};    ///velocity in X & Y axis
+	float rotation;			///rotation for blit
+	PlayerTypes avatar;		///current character
+	SDL_RendererFlip flip;	///animation flip
 	
-	Animation run_left;
-	Animation jump_right;
-	Animation jump_left;
+	SDL_Rect CurrentAnimationRect;
+	float PlayerScale;
+	float GravityValue;
+	float JumpForce;
 	
-	Animation fall_left;
-	Animation attack_right;
-	Animation attack_left;
+private:
+
+	//Call godmode if true	
+	bool godmode_activated = false;			
+
+	//Animationss
+	Animation* current_animation = nullptr;	///Animation being shown at the moment
+	Animation idle;							///In all the animations the character is facing the left side 
+	Animation move;
 	Animation death;
 
-public:
+	//Inputs list
+	p2Queue<player_inputs> inputs;
 
-	bool SCANCODE_A = false;
-	bool SCANCODE_D = false;
-	bool SCANCODE_W = false;
-	bool SCANCODE_S = false;
-	bool LastDirectionLeft = false;
-	bool LastDirectionRight = false;
+	//XML
+	pugi::xml_document	PlayerStartFile;
+	pugi::xml_document AnimsDoc;
 
-public:
-	Collider *PlayerCollider;
-	Collider *TheWallCollider;  // the collider that we are interacting with in each moment
+	pugi::xml_node AnimsNode;
+	pugi::xml_node PlayerXmlNode;
+	p2SString			folder;
 };
 
 #endif
