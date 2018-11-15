@@ -76,6 +76,14 @@ bool j1Render::PreUpdate()
 
 bool j1Render::Update(float dt)
 {
+
+	if (App->input->GetKey(SDL_SCANCODE_J) == KEY_DOWN) {
+		uint size_x= App->win->screen_surface->w;
+		uint size_y= App->win->screen_surface->h;
+		
+		LOG("%u %u ", size_x, size_y);
+	}
+
 	if (App->input->GetKey(SDL_SCANCODE_F8)==KEY_DOWN)
 		debug=!debug;
 
@@ -338,4 +346,13 @@ void j1Render::FindPlayer() {
 		&& ((App->player->data.ypos) > (-camera.y + top_border))
 		&& ((App->player->data.ypos) < (-camera.y + camera.h - bot_border)))
 		find_player = false;
+}
+
+
+bool j1Render::InScreen(int x, int y, uint w, uint h, float parallax_speed) const {
+	bool ret = false;
+	
+
+
+	return ret;
 }

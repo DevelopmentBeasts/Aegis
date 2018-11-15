@@ -56,6 +56,9 @@ public:
 	// Set background color
 	void SetBackgroundColor(SDL_Color color);
 
+	//Returns true if something is seen by the camera
+	bool InScreen(int x,int y,uint w, uint h, float parallax_speed) const;
+
 public:
 
 	SDL_Renderer*	renderer;
