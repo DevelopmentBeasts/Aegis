@@ -53,7 +53,7 @@ void j1Map::Draw()
 						float parallax = layer->parallax;
 					
 						if (pos.x<(-(App->render->camera.x) + App->render->camera.w ) && pos.x >(-(App->render->camera.x*parallax)-200)) {
-							App->render->Blit(tileset->texture, pos.x, pos.y, &r,parallax);
+							App->render->Blit(tileset->texture, pos.x, pos.y, &rect,parallax);
 						  }
 					}
 				}
