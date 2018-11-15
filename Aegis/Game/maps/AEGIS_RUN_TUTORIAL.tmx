@@ -7,23 +7,10 @@
   <image source="BackGround.png" width="3840" height="2160"/>
  </tileset>
  <layer name="BackGround" width="200" height="70">
+  <properties>
+   <property name="Parallax" type="float" value="0.8"/>
+  </properties>
   <data>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -6927,7 +6914,7 @@
    <tile gid="4220"/>
    <tile gid="4221"/>
    <tile gid="4222"/>
-   <tile gid="290"/>
+   <tile gid="4223"/>
    <tile gid="4224"/>
    <tile gid="4225"/>
    <tile gid="4226"/>
@@ -9170,7 +9157,7 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="5570"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -13755,6 +13742,22 @@
    <tile gid="8328"/>
    <tile gid="8329"/>
    <tile gid="8330"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>

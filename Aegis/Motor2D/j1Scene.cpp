@@ -39,7 +39,6 @@ bool j1Scene::Start()
 	current_map = App->map;
 	
 	current_map->DrawColliders();
-
 	return true;
 }
 
@@ -66,24 +65,24 @@ bool j1Scene::Update(float dt)
 	if (App->input->GetKey(SDL_SCANCODE_F4) == KEY_DOWN)	//Load game
 		LoadLevel2NOW = true;
 		
-	if (LoadLevel1NOW && App->player->jumping) {
+	/*if (LoadLevel1NOW && App->player->jumping) {
 		LoadLevel(level1);
 		LoadLevel1NOW = false;
 	}
 	if (LoadLevel2NOW && App->player->jumping) {
 		LoadLevel(level2);
 		LoadLevel2NOW = false;
-	}
+	}*/
 
 	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)			//Load game
 	{
-		App->player->data.xpos = App->map->data.start_position.x;
-		App->player->data.ypos = App->map->data.start_position.y;
+		App->player->position.x = App->map->data.start_position.x;
+		App->player->position.y = App->map->data.start_position.y;
 
 		App->render->CenterCamera();
 	}
 
-	if (App->player->data.xpos >= App->map->data.wincondition) {
+	if (App->player->position.x >= App->map->data.wincondition) {
 
 		LoadLevel(level2);
 	}
@@ -95,13 +94,14 @@ bool j1Scene::Update(float dt)
 	int x, y;
 	App->input->GetMousePosition(x, y);
 	iPoint map_coordinates = App->map->WorldToMap(x - App->render->camera.x, y - App->render->camera.y);
-	p2SString title("AEGIS Version 0.2"); /*Map:%dx%d Tiles:%dx%d Tilesets:%d Tile:%d,%d",
+	//p2SString title("AEGIS Version 0.2");
+	/*Map:%dx%d Tiles:%dx%d Tilesets:%d Tile:%d,%d",
 		App->map->data.width, App->map->data.height,
 		App->map->data.tile_width, App->map->data.tile_height,
 		App->map->data.tilesets.count(),
 					map_coordinates.x, map_coordinates.y);*/
 
-	App->win->SetTitle(title.GetString());
+	//App->win->SetTitle(title.GetString());
 	return true;
 }
 
@@ -149,8 +149,8 @@ void j1Scene::LoadLevel(const char* leveltoload) {
 		App->map->DrawColliders();
 		current_level = leveltoload;
 
-		App->player->data.xpos = App->map->data.start_position.x;
-		App->player->data.ypos = App->map->data.start_position.y;
+		App->player->position.x = App->map->data.start_position.x;
+		App->player->position.y = App->map->data.start_position.y;
 
 		App->render->CenterCamera();
 

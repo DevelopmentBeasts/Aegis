@@ -5,6 +5,7 @@
 #include "j1Textures.h"
 #include "j1Map.h"
 #include <math.h>
+#include "Brofiler/Brofiler.h"
 
 j1Map::j1Map() : j1Module(), map_loaded(false)
 {
@@ -28,6 +29,7 @@ bool j1Map::Awake(pugi::xml_node& config)
 
 void j1Map::Draw()
 {
+	BROFILER_CATEGORY("Draw();", Profiler::Color::Black);
 	if (map_loaded == false)
 		return;
 
@@ -38,26 +40,21 @@ void j1Map::Draw()
 		layer = layer_item->data;
 
 		for (int y = 0; y < data.height; y++) {
+			
 			for (int x = 0; x < data.width; x++) {
-				int tile_id = layer->Get(x, y);
 				
+				int tile_id = layer->Get(x, y);
 				if (tile_id > 0) {
 					TileSet* tileset = GetTilesetFromTileId(tile_id);
+					
 					if (tileset != nullptr) {
-						SDL_Rect r = tileset->GetTileRect(tile_id);
+						SDL_Rect rect = tileset->GetTileRect(tile_id);
 						iPoint pos = MapToWorld(x, y);
-						if (layer->name != "BackGround") {
-							//create a define for App->render->camera.z for better legibility
-							if (pos.x<(-(App->render->camera.x) + App->render->camera.w + 1200) && pos.x >(-(App->render->camera.x) - 100)) {//
-								App->render->Blit(tileset->texture, pos.x, pos.y, &r);
-						    }
-
-						}
-						else if (layer->name == "BackGround") {
-							App->render->Blit(tileset->texture, pos.x-1000, pos.y-700, &r,0.3);
-						}
-
-						
+						float parallax = layer->parallax;
+					
+						if (pos.x<(-(App->render->camera.x) + App->render->camera.w ) && pos.x >(-(App->render->camera.x*parallax)-200)) {
+							App->render->Blit(tileset->texture, pos.x, pos.y, &r,parallax);
+						  }
 					}
 				}
 			}
@@ -149,8 +146,6 @@ bool j1Map::CleanUp()
 	LOG("Unloading map");
 
 	data.colliders.~ColliderData();
-
-	
 
 	// Remove all tilesets
 	p2List_item<TileSet*>* item;
@@ -425,6 +420,19 @@ bool j1Map::LoadLayer(pugi::xml_node& node, MapLayer* layer)
 	layer->name = node.attribute("name").as_string();
 	layer->width = node.attribute("width").as_int();
 	layer->height = node.attribute("height").as_int();
+
+	//Load properties
+	pugi::xml_node layer_properties = node.child("properties");
+	
+	for (pugi::xml_node property = layer_properties.child("property"); property; property = property.next_sibling("property")) {
+		
+		p2SString property_name= property.attribute("name").as_string();
+		if (property_name == "Parallax") {
+			layer->parallax = property.attribute("value").as_float(1.0);
+		}
+	}
+
+	//Load data
 	pugi::xml_node layer_data = node.child("data");
 
 	if(layer_data == NULL)
