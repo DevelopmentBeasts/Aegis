@@ -62,7 +62,7 @@ public:
 	//Player states and behaviour system
 	bool ExternalInput(p2Queue<player_inputs>&inputs);			///Add keyboard inputs to the list
 	void InternalInput(p2Queue<player_inputs>&inputs);			///Add internal inputs to the list
-	player_states process_fsm(p2Queue<player_inputs>&inputs);	///Act depending on the inputs
+	player_states process_fsm(p2Queue<player_inputs>&inputs,float dt);	///Act depending on the inputs
 
 	void Jump();
 	void Die();
@@ -89,6 +89,7 @@ public:
 
 	bool Gravity = false;
 	
+	bool DoLogic = false;
 
 	SDL_Texture* player_texture = nullptr;
 
@@ -107,6 +108,10 @@ public:
 	float PlayerScale;
 	float GravityValue;
 	float JumpForce;
+
+	float Period;
+	int CurrFrame = 0;
+	float acumulatedtime;
 	
 private:
 
@@ -124,10 +129,12 @@ private:
 
 	//XML
 	pugi::xml_document	PlayerStartFile;
+	pugi::xml_document	PlayerStartFile_;
 	pugi::xml_document AnimsDoc;
 
 	pugi::xml_node AnimsNode;
 	pugi::xml_node PlayerXmlNode;
+	pugi::xml_node PlayerXmlNode_;
 	p2SString			folder;
 };
 

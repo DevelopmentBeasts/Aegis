@@ -93,9 +93,13 @@ private:
 
 	p2List<j1Module*>	modules;
 	double              frame_count = 0;
+	float               last_frame_ms;
+	float               last_frame_ms_;
 	uint				frames;
 	uint                framerate_cap;
+	bool                framerate_cap_activated;
 	MasterTimer			Mtimer;
+	MasterTimer         Mtimerdt;
 	Timer               frame_time;
 	Timer               startup_time;
 	Timer				last_sec_frame_time;
@@ -112,6 +116,12 @@ private:
 	bool				want_to_load;
 	p2SString			load_game;
 	mutable p2SString	save_game;
+
+public:
+
+	pugi::xml_document	config_file;
+	pugi::xml_node		config;
+	pugi::xml_node		app_config;
 };
 
 extern j1App* App; // No student is asking me about that ... odd :-S
