@@ -78,6 +78,15 @@ bool j1Render::Update(float dt)
 {
 	BROFILER_CATEGORY("Update(); - Render;", Profiler::Color::IndianRed);
 
+	if (App->input->GetKey(SDL_SCANCODE_J) == KEY_REPEAT)
+	{
+		uint x, y;
+		App->win->GetWindowSize(x, y);
+		LOG("Window %u %u", x, y);
+		LOG("Camera %u %u ", camera.w, camera.h);
+
+	}
+
 	if (App->input->GetKey(SDL_SCANCODE_F8)==KEY_DOWN)
 		debug=!debug;
 
@@ -331,8 +340,13 @@ void j1Render::FindPlayer() {
 
 bool j1Render::InScreen(int x, int y, uint w, uint h, float parallax_speed) const {
 	bool ret = false;
+	uint window_w, window_h;
+	App->win->GetWindowSize(window_w, window_h);
+
+	if (x < (-camera.x) + window_w &&
+		x>(-camera.x*parallax_speed -50))
+		ret = true;
 	
-
-
+	//(pos.x<(-(App->render->camera.x) + App->render->camera.w) && pos.x >(-(App->render->camera.x*parallax) - 200))
 	return ret;
 }
