@@ -34,8 +34,7 @@ bool j1Scene::Start()
 {
 
 	LoadLevel(level1);
-	
-	
+		
 	current_map = App->map;
 	
 	current_map->DrawColliders();

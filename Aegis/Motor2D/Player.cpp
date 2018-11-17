@@ -117,15 +117,32 @@ bool PlayerClass::Start() {
 bool PlayerClass::Update(float dt) {
 	BROFILER_CATEGORY("PlayerUpdate();", Profiler::Color::Green);
     
+	//FRAMERATE CONTROL
+	if (App->framerate_cap_activated) {
+		dt = 30;
+		idle.speed = 0.22;
+		move.speed = 0.22;
+	}
+	else if (!(App->framerate_cap_activated)) {
+		idle.speed = 0.22;
+		move.speed = 0.22;
+		idle.speed *= (dt / 30);
+		move.speed *= (dt / 30);
+	}
+
+
 	if (App->input->GetKey(SDL_SCANCODE_F10) == j1KeyState::KEY_DOWN) {
 		godmode_activated = !godmode_activated;
 	}
+	 
 
+	
 	if (ExternalInput(inputs))
 	{
 		process_fsm(inputs, dt);
 	}	
-		
+	 
+	
 	//Move the player
 	if (!godmode_activated) {
 			
@@ -301,7 +318,7 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) 
 
 			case ST_WALK_FORWARD:
 				//LOG("WALKING RIGHT");
-				velocity.x = 12;
+				velocity.x = 15;
 				switch (last_input)
 				{
 				case IN_RIGHT_UP:

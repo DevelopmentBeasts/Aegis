@@ -172,7 +172,8 @@ pugi::xml_node j1App::LoadConfig(pugi::xml_document& config_file) const
 void j1App::PrepareUpdate()
 {
 	
-	dt = Mtimerdt.ReadMs();
+    dt = Mtimerdt.ReadMs();
+	
 	frame_count++;
 	last_sec_frame_count++;
 	//LOG("DT = %f", dt);
@@ -215,13 +216,10 @@ void j1App::FinishUpdate()
 	if (capped_ms > 0 && framerate_cap < 60 && last_frame_ms <  capped_ms && framerate_cap_activated)
 	{
 		//MasterTimer t;
-		//SDL_Delay(capped_ms - last_frame_ms);
+		SDL_Delay(capped_ms - last_frame_ms);
 		//LOG("We waited for %d milliseconds and got back in %f", capped_ms - last_frame_ms, t.ReadMs());
 	}
-	//what happens when game goes 60fps? the player shouldn't go faster!
-	if (!framerate_cap_activated) {
-
-	}
+	
 	
 }
 

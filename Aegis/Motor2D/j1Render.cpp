@@ -91,13 +91,13 @@ bool j1Render::Update(float dt)
 		debug=!debug;
 
 	if (find_player)
-		FindPlayer();
+		FindPlayer(dt);
 
 	if (debug == true) {
 		FreeMovement();
 	}
 	else {
-		FollowPlayer();
+		FollowPlayer(dt);
 	}
 
 	return true;
@@ -297,38 +297,38 @@ void j1Render::FreeMovement() {
 		camera.x -= 30;
 }
 
-void j1Render::FollowPlayer() {
+void j1Render::FollowPlayer(float dt) {
 	if ((App->player->position.x) > (-camera.x + camera.w - right_border)) {	//Move the camera to the right if the player is advancing and ahead of the border
 
-			camera.x -= App->player->velocity.x;
+			camera.x -= App->player->velocity.x*(dt / 30);
 	}
 	if ((App->player->position.x) < (-camera.x + left_border)) {				//Move the camera to the left if the player is going back and behnid the left border
 
-			camera.x -= App->player->velocity.x;
+			camera.x -= App->player->velocity.x*(dt / 30);
 	}
 
 	if ((App->player->position.y) < (-camera.y + top_border))					//Move the camera upwards if the player is going up and above the top border
-		camera.y -= App->player->velocity.y;
+		camera.y -= App->player->velocity.y*(dt / 30);
 
 	if ((App->player->position.y) > (-camera.y + camera.h - bot_border))		//Move the camera upwards if the player is going up and above the top border
-		camera.y -= App->player->velocity.y;
+		camera.y -= App->player->velocity.y*(dt / 30);
 }
 
-void j1Render::FindPlayer() {
+void j1Render::FindPlayer(float dt) {
 	int vel = 20;
 
 	if ((App->player->position.x) > (-camera.x + camera.w - right_border))
-			camera.x -= vel;
+			camera.x -= vel*(dt/30);
 	
 	if ((App->player->position.x) < (-camera.x + left_border))
-			camera.x += vel;
+			camera.x += vel * (dt / 30);
 	
 
 	if ((App->player->position.y) < (-camera.y + top_border))
-		camera.y += vel;
+		camera.y += vel * (dt / 30);
 
 	if ((App->player->position.y) > (-camera.y + camera.h - bot_border))
-		camera.y -= vel;
+		camera.y -= vel * (dt / 30);
 
 	if (((App->player->position.x) < (-camera.x + camera.w - right_border))		//If we found the player, stop looking for it
 		&& ((App->player->position.x) > (-camera.x + left_border))
