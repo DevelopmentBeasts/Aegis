@@ -9,7 +9,10 @@
 #include "j1Map.h"
 #include "j1Scene.h"
 #include "Player.h"
-
+#include "EntityManager.h"
+#include "Entity.h"
+#include "Enemy.h"
+#include "EnemyWorm.h"
 
 j1Scene::j1Scene() : j1Module()
 {
@@ -32,9 +35,11 @@ bool j1Scene::Awake()
 // Called before the first frame
 bool j1Scene::Start()
 {
-
-	LoadLevel(level1);
 	
+	iPoint a = { 100,300 };
+	LoadLevel(level1);
+	const char* ap = "path";
+	worm = worm->CreateEnemy(a, FLYER,ap, doc);
 	
 	current_map = App->map;
 	

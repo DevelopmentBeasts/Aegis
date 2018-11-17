@@ -32,7 +32,7 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	map = new j1Map();
 	player = new PlayerClass();
 	collision = new j1Collision();
-	entity_manager = new EntityManager();
+	j1entity_manager = new j1EntityManager();
 
 	// Ordered for awake / Start / Update
 	// Reverse order of CleanUp
@@ -44,7 +44,7 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(player);
 	AddModule(map);
 	AddModule(collision);
-	AddModule(entity_manager);
+	AddModule(j1entity_manager);
 	// render last to swap buffer
 	AddModule(render);
 }
@@ -125,7 +125,7 @@ bool j1App::Start()
 // Called each loop iteration
 bool j1App::Update()
 {
-	BROFILER_CATEGORY("AppUpdate();", Profiler::Color::Orchid);
+	BROFILER_CATEGORY("AppUpdate();", Profiler::Color::Blue);
 	bool ret = true;
 	PrepareUpdate();
 
@@ -171,7 +171,7 @@ pugi::xml_node j1App::LoadConfig(pugi::xml_document& config_file) const
 // ---------------------------------------------
 void j1App::PrepareUpdate()
 {
-	
+
 	dt = Mtimerdt.ReadMs();
 	frame_count++;
 	last_sec_frame_count++;
@@ -184,7 +184,7 @@ void j1App::PrepareUpdate()
 // ---------------------------------------------
 void j1App::FinishUpdate()
 {
-	
+	BROFILER_CATEGORY("AppUpdate();", Profiler::Color::Coral);
 	if(want_to_save == true)
 		SavegameNow();
 
@@ -202,7 +202,7 @@ void j1App::FinishUpdate()
 
 	float avg_fps = float(frame_count) / startup_time.ReadSec();
 	float seconds_since_startup = startup_time.ReadSec();
-	
+	last_frame_ms = frame_time.Read();
 	float frames_on_last_update = prev_last_sec_frame_count;
 	
 	static char title[256];
@@ -219,9 +219,7 @@ void j1App::FinishUpdate()
 		//LOG("We waited for %d milliseconds and got back in %f", capped_ms - last_frame_ms, t.ReadMs());
 	}
 	//what happens when game goes 60fps? the player shouldn't go faster!
-	if (!framerate_cap_activated) {
-
-	}
+	
 	Mtimerdt.Start();
 }
 

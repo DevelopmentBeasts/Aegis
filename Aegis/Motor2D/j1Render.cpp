@@ -76,7 +76,7 @@ bool j1Render::PreUpdate()
 
 bool j1Render::Update(float dt)
 {
-	BROFILER_CATEGORY("Update(); - Render;", Profiler::Color::IndianRed);
+	BROFILER_CATEGORY("Update(); - Render;", Profiler::Color::Orchid);
 
 	if (App->input->GetKey(SDL_SCANCODE_J) == KEY_REPEAT)
 	{

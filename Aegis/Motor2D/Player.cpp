@@ -147,7 +147,7 @@ bool PlayerClass::Update(float dt) {
 				//InternalInput(inputs);
 				process_fsm(inputs, dt);
 				//acumulatedtime -= Period;
-				LOG("YEAH BOI NOW IM EXECUTING THE process_fsm(); FUNCTION");
+				//LOG("YEAH BOI NOW IM EXECUTING THE process_fsm(); FUNCTION");
 			}	
 		
 	

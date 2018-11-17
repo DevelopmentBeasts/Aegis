@@ -2,6 +2,7 @@
 #define __j1SCENE_H__
 
 #include "j1Module.h"
+#include "Enemy.h"
 
 struct SDL_Texture;
 class j1Map;
@@ -61,8 +62,8 @@ public:
 	float playerinity;
 	float screeninitx;
 	float screeninity;
-
-
+	j1EnemyFlyer* worm = nullptr;
+	pugi::xml_document doc;
 public:
 	bool LoadLevel1NOW;
 	bool LoadLevel2NOW;
