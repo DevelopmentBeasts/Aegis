@@ -15,6 +15,7 @@
 #include "Player.h"
 #include "j1Collision.h"
 #include "Brofiler/Brofiler.h"
+#include "EntityManager.h"
 // Constructor
 j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 {
@@ -31,6 +32,7 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	map = new j1Map();
 	player = new PlayerClass();
 	collision = new j1Collision();
+	entity_manager = new EntityManager();
 
 	// Ordered for awake / Start / Update
 	// Reverse order of CleanUp
@@ -42,7 +44,7 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(player);
 	AddModule(map);
 	AddModule(collision);
-
+	AddModule(entity_manager);
 	// render last to swap buffer
 	AddModule(render);
 }
@@ -71,9 +73,7 @@ void j1App::AddModule(j1Module* module)
 // Called before render is available
 bool j1App::Awake()
 {
-	pugi::xml_document	config_file;
-	pugi::xml_node		config;
-	pugi::xml_node		app_config;
+	
 
 	bool ret = false;
 		
@@ -86,7 +86,9 @@ bool j1App::Awake()
 		app_config = config.child("app");
 		title.create(app_config.child("title").child_value());
 		organization.create(app_config.child("organization").child_value());
-		framerate_cap = config.child("renderer").child("framerate_cap").attribute("value").as_uint();
+		framerate_cap_activated = config.child("renderer").child("framerate_cap").attribute("value").as_bool();
+
+		
 	}
 
 	if(ret == true)
@@ -139,6 +141,15 @@ bool j1App::Update()
 	if(ret == true)
 		ret = PostUpdate();
 
+	
+	if (App->input->GetKey(SDL_SCANCODE_K) == j1KeyState::KEY_DOWN) {
+		framerate_cap_activated = !framerate_cap_activated;
+	}
+	if (framerate_cap_activated) {
+		framerate_cap = 30;
+	}
+
+
 	FinishUpdate();
 	return ret;
 }
@@ -161,11 +172,12 @@ pugi::xml_node j1App::LoadConfig(pugi::xml_document& config_file) const
 void j1App::PrepareUpdate()
 {
 	
-	
+	dt = Mtimerdt.ReadMs();
 	frame_count++;
 	last_sec_frame_count++;
-
+	//LOG("DT = %f", dt);
 	//Calculate the dt: differential time since last frame
+	
 	frame_time.Start();
 }
 
@@ -190,22 +202,27 @@ void j1App::FinishUpdate()
 
 	float avg_fps = float(frame_count) / startup_time.ReadSec();
 	float seconds_since_startup = startup_time.ReadSec();
-	float last_frame_ms = frame_time.Read();
+	
 	float frames_on_last_update = prev_last_sec_frame_count;
 	
 	static char title[256];
-	sprintf_s(title, 256, "Av.FPS: %f Last Frame Ms:  %f Last sec frames:  %f  Time since startup:  %f Frame Count:  %f ",avg_fps, last_frame_ms, frames_on_last_update, seconds_since_startup, frame_count);
+	sprintf_s(title, 256, " Aegis  ||  FPS: %f | Av.FPS: %f | Last Frame Ms: %f | Cap: on or off | Vsync: On or off", frames_on_last_update, avg_fps, last_frame_ms);
 	App->win->SetTitle(title);
-	//AQUI SE CAPAN LOS FPS?
 	
+	//when game is cappd at 30 fps this is working
 	float capped_ms = 1000 / framerate_cap ;
-	if (capped_ms > 0 && last_frame_ms <  capped_ms)
+
+	if (capped_ms > 0 && framerate_cap < 60 && last_frame_ms <  capped_ms && framerate_cap_activated)
 	{
-		MasterTimer t;
+		//MasterTimer t;
 		SDL_Delay(capped_ms - last_frame_ms);
 		//LOG("We waited for %d milliseconds and got back in %f", capped_ms - last_frame_ms, t.ReadMs());
 	}
+	//what happens when game goes 60fps? the player shouldn't go faster!
+	if (!framerate_cap_activated) {
 
+	}
+	Mtimerdt.Start();
 }
 
 // Call modules before each loop iteration

@@ -9,6 +9,7 @@
 #include "j1Input.h"
 #include "j1Scene.h"
 #include "Brofiler/Brofiler.h"
+#include "j1App.h"
 //Destructor
 
 PlayerClass::~PlayerClass() {
@@ -47,6 +48,23 @@ bool PlayerClass::Start() {
 	if (PlayerXmlNode == NULL) {
 		LOG("PlayerXmlNode is not reading correctly");
 	}
+
+	//____________________
+
+	pugi::xml_parse_result result_ = PlayerStartFile_.load_file("config.xml");
+	if (result == NULL) {
+		LOG("Could not load config.xml. pugi error: %s", result.description());
+		ret = false;
+	}
+	if (ret == true) {
+		//Load config info
+		LOG("Loading config info in the player update at the start of the game");
+	}
+	PlayerXmlNode_ = PlayerStartFile_.child("config").child("UpdateInfo").child("player");
+	if (PlayerXmlNode_ == NULL) {
+		LOG("config.xml is not reading correctly");
+	}
+
 	//Asigment of the values
 	const char* type1 = PlayerXmlNode.attribute("type").as_string();
 	
@@ -70,16 +88,20 @@ bool PlayerClass::Start() {
 	PlayerScale = PlayerXmlNode.attribute("scale").as_float();
 	GravityValue = PlayerXmlNode.child("worldplayerinteraction").attribute("GravityValue").as_float();
 	JumpForce = PlayerXmlNode.child("worldplayerinteraction").attribute("JumpForce").as_float();
-	LOG("Resseting anims");
+
+	//dt stuff
+	Period = PlayerXmlNode_.attribute("period").as_int();
+
+
 
 	//Reset animations
+	LOG("Resseting anims");
 	idle.Reset();
 	move.Reset();
 
 	LOG("LOADING PLAYER TEXTURES");
 
 	player_texture = App->tex->Load("textures/Fire_Wisp/fireSheet.png");
-
 	current_animation = &move;
 
 	LOG("CREATING PLAYER COLLIDER");
@@ -94,11 +116,43 @@ bool PlayerClass::Start() {
 
 bool PlayerClass::Update(float dt) {
 	BROFILER_CATEGORY("PlayerUpdate();", Profiler::Color::Green);
+    
+	//acumulatedtime += dt;
+	//LOG("waiting");
+	//if (acumulatedtime >= Period) {
+	//	if (ExternalInput(inputs))
+	//	{
+	//		//InternalInput(inputs);
+	//		process_fsm(inputs, dt);
+	//		acumulatedtime -= Period;
+	//		LOG("YEAH BOI NOW IM EXECUTING THE process_fsm(); FUNCTION");
+	//	}
+	//}
+	
+	/*	acumulatedtime += dt;
+		LOG("waiting");
+		if (acumulatedtime >= Period)
+			DoLogic = true;
+
+		if (DoLogic) {
+			process_fsm(inputs, dt);
+			acumulatedtime = 0;
+			DoLogic = false;
+			LOG("YEAH BOI NOW IM EXECUTING THE process_fsm(); FUNCTION");
+		}
+	}*/
+	
 	if (ExternalInput(inputs))
-	{
-		//InternalInput(inputs);
-		process_fsm(inputs);
-	}
+			{
+				//InternalInput(inputs);
+				process_fsm(inputs, dt);
+				//acumulatedtime -= Period;
+				LOG("YEAH BOI NOW IM EXECUTING THE process_fsm(); FUNCTION");
+			}	
+		
+	
+	
+	
 
 	//Move the player
 	if (!godmode_activated) {
@@ -124,6 +178,7 @@ bool PlayerClass::Update(float dt) {
 	if (flip != SDL_FLIP_HORIZONTAL) {
 		rotation *= -1;
 	}
+	
 	App->render->Blit(player_texture,position.x,position.y,&current_animation->GetCurrentFrame(),1,/*rotation is equal to jumpvelocity.y*/rotation * 3,flip,0,0, PlayerScale);
 	return true;
 }
@@ -222,7 +277,7 @@ bool PlayerClass::ExternalInput(p2Queue<player_inputs> &inputs) {
 	return true;
 }
 
-player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs) {
+player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) {
 	
 	if (godmode_activated) {
 		GodMode();

@@ -2,6 +2,7 @@
 #define __P2ANIMATION_H__
 
 #include "SDL/include/SDL_rect.h"
+#include "PugiXml/src/pugixml.hpp"
 #define MAX_FRAMES 100
 
 class Animation
@@ -51,7 +52,7 @@ public:
 		current_frame = 0;
 	}
 
-	void LoadPushbacks(pugi::xml_node node) {
+ 	void LoadPushbacks(pugi::xml_node node) {
 
 		loop = node.attribute("loop").as_bool();
 		speed = node.attribute("speed").as_float();
