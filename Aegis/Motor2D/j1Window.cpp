@@ -104,8 +104,9 @@ void j1Window::SetTitle(const char* new_title)
 
 void j1Window::GetWindowSize(uint& width, uint& height) const
 {
-	width = this->width;
-	height = this->height;
+	SDL_GetWindowSurface(window);
+	width = screen_surface->w;
+	height = screen_surface->h;
 }
 
 uint j1Window::GetScale() const

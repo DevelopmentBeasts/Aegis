@@ -9,7 +9,7 @@
   <renderer>
     <borders top="300" bot="300" left="200" right="500"/>
     <vsync value="false"/>
-    <framerate_cap value = "30"/>
+    <framerate_cap value = "true"/>
   </renderer>
 
   <window>
@@ -19,6 +19,13 @@
     <resizable value="true"/>
     <fullscreen_window value="false"/>
   </window>
+  
+  <UpdateInfo>
+    <player period="3"/>  
+    <Astar>
+      <period value ="10"/>
+    </Astar>
+  </UpdateInfo>
 
   <file_system>
     <path>data.zip</path>
