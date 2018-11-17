@@ -202,6 +202,7 @@ bool PlayerClass::Load(pugi::xml_node& node) {
 
 	position.x = node.child("position").attribute("x").as_int();
 	position.y = node.child("position").attribute("y").as_int();
+
 	return true;
 }
 

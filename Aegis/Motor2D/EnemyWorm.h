@@ -1,26 +1,4 @@
-//#ifndef ENEMYWORM_H
-//#define ENEMYWORM_H
-//
-//#include "Enemy.h"
-//#include "Animation.h"
-//#include "j1Collision.h"
-//#include "p2DynArray.h"
-//
-//class EnemyWorm : public Enemy
-//{
-//public:
-//	EnemyWorm(iPoint pos, pugi::xml_document &EnemiesDocument);
-//	~EnemyWorm();
-//    void OnCollision(Collider *collider);
-//	fPoint shoot;	
-//	Animation example;
-//	SDL_Texture* Normal;
-//	pugi::xml_document doc;
-//	
-//	void Move();
-//};
-//
-//#endif 
+
 #ifndef _J1_ENEMY_FLYER_
 #define _J1_ENEMY_FLYER_
 
@@ -35,7 +13,7 @@ public:
 	j1EnemyFlyer(iPoint pos, const char* path, pugi::xml_document &EnemiesDocument);
 	~j1EnemyFlyer();
 
-	void Update(float dt) override;
+	bool Update(float dt) override;
 
 public:
 

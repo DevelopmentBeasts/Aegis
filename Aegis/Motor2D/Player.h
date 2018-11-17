@@ -116,7 +116,7 @@ public:
 private:
 
 	//Call godmode if true	
-	bool godmode_activated = false;			
+	bool godmode_activated = false;
 
 	//Animationss
 	Animation* current_animation = nullptr;	///Animation being shown at the moment
@@ -130,7 +130,7 @@ private:
 	//XML
 	pugi::xml_document	PlayerStartFile;
 	pugi::xml_document	PlayerStartFile_;
-	pugi::xml_document AnimsDoc;
+	pugi::xml_document	AnimsDoc;
 
 	pugi::xml_node AnimsNode;
 	pugi::xml_node PlayerXmlNode;

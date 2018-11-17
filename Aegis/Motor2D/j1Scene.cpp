@@ -39,7 +39,7 @@ bool j1Scene::Start()
 	iPoint a = { 100,300 };
 	LoadLevel(level1);
 	const char* ap = "path";
-	worm = worm->CreateEnemy(a, FLYER,ap, doc);
+//	worm = worm->CreateEnemy(a, FLYER,ap, doc);
 	
 	current_map = App->map;
 	

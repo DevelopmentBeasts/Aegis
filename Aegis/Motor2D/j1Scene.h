@@ -45,9 +45,6 @@ public:
 
 private:
 	
-	//const char* level1="AEGIS_RUN_TUTORIAL.tmx";	//Level 1
-	//const char* level2="AEGIS_RUN.tmx";			//Level 2
-	
 	//Level that is loaded at the moment
 	p2SString current_level;
 
@@ -62,7 +59,7 @@ public:
 	float playerinity;
 	float screeninitx;
 	float screeninity;
-	j1EnemyFlyer* worm = nullptr;
+
 	pugi::xml_document doc;
 public:
 	bool LoadLevel1NOW;
