@@ -151,11 +151,9 @@ bool PlayerClass::Update(float dt) {
 			velocity.y += GravityValue * (dt / 30);
 			position.y += velocity.y*(dt/30);
 		}
-
 	}
-
 	else
-		GodMode();
+		GodMode(dt);
 	
 	
 	//Move the collider
@@ -526,33 +524,33 @@ void PlayerClass::OnCollision(Collider *c1, Collider *c2) {
 	/*}*/
 }
 
-void PlayerClass::GodMode() {
+void PlayerClass::GodMode(float dt) {
 
 	current_animation = &idle;
 	
 	
 	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) {
 		    //LOG("<----GODMODE");
-		    velocity.x = 10;
-		    position.x -= velocity.x;
+		    velocity.x = 10 ;
+		    position.x -= velocity.x*(dt/30);
 	}
 	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) {
 		    //LOG("GODMODE---->");
-			velocity.x = 10;
-			position.x += velocity.x;
+			velocity.x = 10 ;
+			position.x += velocity.x*(dt / 30);
 	}
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) {
 		    //LOG("GODMODE UP");
-		    velocity.y = -10;
-		    position.y -= velocity.x;
-	}
-		
-
+		    velocity.y = -10 ;
+		    position.y -= velocity.x*(dt / 30);
+	}	
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) {
 		    //LOG("GODMODE DOWN");
-		    velocity.y =10;
-		    position.y += velocity.x;
+		    velocity.y =10 ;
+		    position.y += velocity.x*(dt / 30);
 	}
+	
+	
 	
 }
 

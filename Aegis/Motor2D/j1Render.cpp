@@ -87,8 +87,12 @@ bool j1Render::Update(float dt)
 
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_F8)==KEY_DOWN)
-		debug=!debug;
+	if (App->input->GetKey(SDL_SCANCODE_F8) == KEY_DOWN && debug == false) {
+		debug = !debug;
+	}else if (App->input->GetKey(SDL_SCANCODE_F8) == KEY_DOWN && debug == true) {
+		debug = !debug;
+		find_player = true;
+	}
 
 	if (find_player)
 		FindPlayer(dt);

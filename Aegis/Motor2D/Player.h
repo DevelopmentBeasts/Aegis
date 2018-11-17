@@ -68,7 +68,7 @@ public:
 	void Die();
 
 	//God Mode will allow the player to fly around the map ignoring collisions
-	void GodMode();
+	void GodMode(float dt);
 
 public:
 	SDL_Rect player_rect;
