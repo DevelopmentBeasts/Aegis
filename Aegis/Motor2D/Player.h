@@ -60,8 +60,8 @@ public:
 	void OnCollision(Collider *c1, Collider *c2);
 
 	//Player states and behaviour system
-	bool ExternalInput(p2Queue<player_inputs>&inputs);			///Add keyboard inputs to the list
-	void InternalInput(p2Queue<player_inputs>&inputs);			///Add internal inputs to the list
+	bool ExternalInput(p2Queue<player_inputs>&inputs);					///Add keyboard inputs to the list
+	void InternalInput(p2Queue<player_inputs>&inputs);					///Add internal inputs to the list
 	player_states process_fsm(p2Queue<player_inputs>&inputs,float dt);	///Act depending on the inputs
 
 	void Jump();

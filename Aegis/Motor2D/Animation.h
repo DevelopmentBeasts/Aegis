@@ -2,6 +2,7 @@
 #define __P2ANIMATION_H__
 
 #include "SDL/include/SDL_rect.h"
+#include "PugiXml/src/pugixml.hpp"
 #define MAX_FRAMES 100
 
 class Animation

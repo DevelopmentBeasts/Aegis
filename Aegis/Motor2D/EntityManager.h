@@ -4,7 +4,7 @@
 
 #include "j1Module.h"
 #include "SDL/include/SDL.h"
-#include "Player.h"
+//#include "Player.h"
 //ENTITY MANAGER
 
 #include "Entity.h"

@@ -18,7 +18,7 @@ Enemy* Enemy::CreateEnemy(iPoint pos, ENEMY_TYPES enemyType, const char* path, p
 	switch (enemyType) {
 
 	case ENEMY_TYPES::WORM:
-		Enemy = new EnemyWorm(pos, tmp.GetString(), EnemiesDocument);
+		//Enemy = new EnemyWorm(pos, tmp.GetString(), EnemiesDocument);
 		break;
 	default:
 		break;
