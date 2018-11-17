@@ -90,7 +90,7 @@ bool PlayerClass::Start() {
 	JumpForce = PlayerXmlNode.child("worldplayerinteraction").attribute("JumpForce").as_float();
 
 	//dt stuff
-	Period = PlayerXmlNode_.attribute("period").as_int();
+	//movement_period = PlayerXmlNode_.attribute("period").as_float(33.0f);
 
 
 
@@ -117,52 +117,30 @@ bool PlayerClass::Start() {
 bool PlayerClass::Update(float dt) {
 	BROFILER_CATEGORY("PlayerUpdate();", Profiler::Color::Green);
     
-	//acumulatedtime += dt;
-	//LOG("waiting");
-	//if (acumulatedtime >= Period) {
-	//	if (ExternalInput(inputs))
-	//	{
-	//		//InternalInput(inputs);
-	//		process_fsm(inputs, dt);
-	//		acumulatedtime -= Period;
-	//		LOG("YEAH BOI NOW IM EXECUTING THE process_fsm(); FUNCTION");
-	//	}
-	//}
-	
-	/*	acumulatedtime += dt;
-		LOG("waiting");
-		if (acumulatedtime >= Period)
-			DoLogic = true;
+	if (App->input->GetKey(SDL_SCANCODE_F10) == j1KeyState::KEY_DOWN) {
+		godmode_activated = !godmode_activated;
+	}
 
-		if (DoLogic) {
-			process_fsm(inputs, dt);
-			acumulatedtime = 0;
-			DoLogic = false;
-			LOG("YEAH BOI NOW IM EXECUTING THE process_fsm(); FUNCTION");
-		}
-	}*/
-	
 	if (ExternalInput(inputs))
-			{
-				//InternalInput(inputs);
-				process_fsm(inputs, dt);
-				//acumulatedtime -= Period;
-				LOG("YEAH BOI NOW IM EXECUTING THE process_fsm(); FUNCTION");
-			}	
+	{
+		process_fsm(inputs, dt);
+	}	
 		
-	
-	
-	
-
 	//Move the player
 	if (!godmode_activated) {
-		position.x += velocity.x;
+			
+		position.x += velocity.x*(dt/30);
 		if (Gravity) {
-			velocity.y += GravityValue;
-			position.y += velocity.y;
+			velocity.y += GravityValue * (dt / 30);
+			position.y += velocity.y*(dt/30);
 		}
 
 	}
+
+	else
+		GodMode();
+	
+	
 	//Move the collider
 	player_collider->SetPos(position.x, position.y);
 
@@ -207,12 +185,6 @@ bool PlayerClass::Load(pugi::xml_node& node) {
 
 bool PlayerClass::ExternalInput(p2Queue<player_inputs> &inputs) {
 	
-
-	if (App->input->GetKey(SDL_SCANCODE_F10) == j1KeyState::KEY_DOWN) {
-		godmode_activated = !godmode_activated;
-	}
-	if (!godmode_activated) {
-
 		if (App->input->GetKey(SDL_SCANCODE_G) == j1KeyState::KEY_DOWN) {
 			Gravity = true;
 		}
@@ -273,15 +245,13 @@ bool PlayerClass::ExternalInput(p2Queue<player_inputs> &inputs) {
 			if (right)
 				inputs.Push(IN_RIGHT_DOWN);
 		}
-	}
+	
 	return true;
 }
 
 player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) {
 	
-	if (godmode_activated) {
-		GodMode();
-	}
+	
 	if (!godmode_activated) {
 	
 		static player_states state = ST_IDLE;
@@ -300,9 +270,9 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) 
 				{
 				case IN_RIGHT_DOWN:
 					state = ST_WALK_FORWARD;
-					velocity.x = 12;
+					velocity.x = 10;
 					if (Gravity) {
-						velocity.x =  12;
+						velocity.x =  10;
 					}
 					flip = SDL_FLIP_HORIZONTAL;
 					current_animation = &move;
@@ -310,9 +280,9 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) 
 					break;
 				case IN_LEFT_DOWN:
 					state = ST_WALK_BACKWARD;
-					velocity.x = -12;
+					velocity.x = -10;
 					if (Gravity) {
-						velocity.x = -12;
+						velocity.x = -10;
 					}
 					flip = SDL_FLIP_NONE;
 					current_animation = &move;
@@ -396,14 +366,14 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) 
 				{
 				case IN_RIGHT_DOWN:
 					state = ST_WALK_FORWARD;
-					velocity.x = 12;
+					velocity.x = 10;
 					flip = SDL_FLIP_HORIZONTAL;
 					current_animation = &move;
 					//LOG("INPUT----->JUMPING RIGHT ------");
 					break;
 				case IN_LEFT_DOWN:
 					state = ST_WALK_BACKWARD;
-					velocity.x = -12;
+					velocity.x = -10;
 					flip = SDL_FLIP_NONE;
 					current_animation = &move;
 					//LOG("INPUT----->JUMPING LEFT ------");
@@ -420,14 +390,14 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) 
 				{
 				case IN_RIGHT_DOWN:
 					state = ST_WALK_FORWARD;
-					velocity.x = 12;
+					velocity.x = 10;
 					flip = SDL_FLIP_HORIZONTAL;
 					current_animation = &move;
 					//LOG("INPUT----->JUMPING RIGHT ------ ");
 					break;
 				case IN_LEFT_DOWN:
 					state = ST_WALK_BACKWARD;
-					velocity.x = -12;
+					velocity.x = -10;
 					flip = SDL_FLIP_NONE;
 					current_animation = &move;
 					//LOG("INPUT----->JUMPING LEFT ------ ");
@@ -445,14 +415,14 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) 
 				{
 				case IN_RIGHT_DOWN:
 					state = ST_WALK_FORWARD;
-					velocity.x = 12;
+					velocity.x = 10;
 					flip = SDL_FLIP_HORIZONTAL;
 					current_animation = &move;
 					//LOG("INPUT----->JUMPING RIGHT ------ ");
 					break;
 				case IN_LEFT_DOWN:
 					state = ST_WALK_BACKWARD;
-					velocity.x = -12;
+					velocity.x = -10;
 					flip = SDL_FLIP_NONE;
 					current_animation = &move;
 					//LOG("INPUT----->JUMPING LEFT ------ ");
@@ -556,20 +526,17 @@ void PlayerClass::GodMode() {
 	}
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) {
 		    //LOG("GODMODE UP");
-		    velocity.y = 10;
+		    velocity.y = -10;
 		    position.y -= velocity.x;
 	}
 		
 
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) {
 		    //LOG("GODMODE DOWN");
-		    velocity.y = 10;
+		    velocity.y =10;
 		    position.y += velocity.x;
 	}
-		
-
-	//App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &current_animation->GetCurrentFrame(), 1, 0, SDL_FLIP_NONE, 1, 1, 1.0);
-
+	
 }
 
 void PlayerClass::Die() {

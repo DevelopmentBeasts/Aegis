@@ -177,7 +177,7 @@ void j1App::PrepareUpdate()
 	last_sec_frame_count++;
 	//LOG("DT = %f", dt);
 	//Calculate the dt: differential time since last frame
-	
+	Mtimerdt.Start();
 	frame_time.Start();
 }
 
@@ -202,7 +202,7 @@ void j1App::FinishUpdate()
 
 	float avg_fps = float(frame_count) / startup_time.ReadSec();
 	float seconds_since_startup = startup_time.ReadSec();
-	
+	last_frame_ms = frame_time.Read();
 	float frames_on_last_update = prev_last_sec_frame_count;
 	
 	static char title[256];
@@ -215,14 +215,14 @@ void j1App::FinishUpdate()
 	if (capped_ms > 0 && framerate_cap < 60 && last_frame_ms <  capped_ms && framerate_cap_activated)
 	{
 		//MasterTimer t;
-		SDL_Delay(capped_ms - last_frame_ms);
+		//SDL_Delay(capped_ms - last_frame_ms);
 		//LOG("We waited for %d milliseconds and got back in %f", capped_ms - last_frame_ms, t.ReadMs());
 	}
 	//what happens when game goes 60fps? the player shouldn't go faster!
 	if (!framerate_cap_activated) {
 
 	}
-	Mtimerdt.Start();
+	
 }
 
 // Call modules before each loop iteration

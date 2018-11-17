@@ -109,9 +109,7 @@ public:
 	float GravityValue;
 	float JumpForce;
 
-	float Period;
 	int CurrFrame = 0;
-	float acumulatedtime;
 	
 private:
 
@@ -136,6 +134,8 @@ private:
 	pugi::xml_node PlayerXmlNode;
 	pugi::xml_node PlayerXmlNode_;
 	p2SString			folder;
+
+
 };
 
 #endif

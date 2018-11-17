@@ -1,6 +1,7 @@
 #ifndef ENTITY_H___
 #define ENTITY_H___
 #include "PugiXml/src/pugixml.hpp"
+
 enum EntityType {
 	NONVALID,
 	PLAYER,
@@ -11,7 +12,6 @@ class Entity {
 public:
 	Entity(EntityType Type):Etype(Type) {}
 	~Entity(){}
-
 
 	EntityType Etype;
 
