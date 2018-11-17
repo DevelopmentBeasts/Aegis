@@ -52,9 +52,8 @@ void j1Map::Draw()
 						iPoint pos = MapToWorld(x, y);
 						float parallax = layer->parallax;
 					
-						if (pos.x<(-(App->render->camera.x) + App->render->camera.w ) && pos.x >(-(App->render->camera.x*parallax)-200)) {
+						if (App->render->InScreen(pos.x,pos.y, rect.w, rect.h, parallax))
 							App->render->Blit(tileset->texture, pos.x, pos.y, &rect,parallax);
-						  }
 					}
 				}
 			}
