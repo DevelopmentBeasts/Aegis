@@ -8,6 +8,11 @@
 j1EntityManager::j1EntityManager()
 {
 	name.create("entities");
+
+	//Load the document of all the properties
+	pugi::xml_parse_result result = properties_doc.load_file("EntitiesConfig.xml");
+
+
 }
 
 

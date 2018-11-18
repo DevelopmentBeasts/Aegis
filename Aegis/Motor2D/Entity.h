@@ -38,15 +38,27 @@ public:
 
 public:
 
+	// x & y position
 	iPoint		position;
+	
+	//Type of entity
 	ENTITY_TYPE type;
+
+	//Collider
 	Collider*	collider;
 	fPoint velocity = { 0,-3.0 };
 
+	//Node of the document with the properties
+	pugi::xml_node		properties_node;
+
 public:
 
+	//Texture
 	SDL_Texture *texture;
+	
+	//Animation being shown
 	Animation   *current_animation;
+
 
 };
 

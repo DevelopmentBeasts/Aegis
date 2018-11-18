@@ -34,8 +34,10 @@ struct Collider
 	Collider(SDL_Rect rect, COLLIDER_TYPE type, j1Module *callback = nullptr) :
 		rect(rect), type(type), callback(callback) {}
 
+
 	Collider(SDL_Rect rect, COLLIDER_TYPE type, j1Entity *entcallback = nullptr) :
 		rect(rect), type(type), entity_callback(entcallback) {}
+
 
 	void SetPos(int x, int y)
 	{

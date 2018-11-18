@@ -45,8 +45,6 @@ public:
 	SDL_RendererFlip	flip=SDL_FLIP_NONE;
 	ENEMY_TYPE			enemy_type;
 	
-	pugi::xml_node		EnemySettings;
-	pugi::xml_node		Animation_node;
 };
 
 #endif

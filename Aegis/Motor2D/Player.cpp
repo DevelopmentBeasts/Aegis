@@ -22,12 +22,13 @@ PlayerClass::PlayerClass(iPoint pos) : j1Entity(pos, ENTITY_TYPE::PLAYER)  {   /
 	//name.create("player");
 	position = pos;
 
+
 	pugi::xml_parse_result result = AnimsDoc.load_file("PlayerAnims.xml");
 
 	if (result == NULL ) {
 		LOG("The xml file that contains the pushbacks for the animations is not working.PlayerAnims.xml.  error: %s",result.description());
 	}
-	
+
 	AnimsNode = AnimsDoc.child("config").child("AnimsCoords").child("idle_left");
 	idle.LoadPushbacks(AnimsNode);
 	AnimsNode = AnimsDoc.child("config").child("AnimsCoords").child("move_left");

@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+
+<!-- Config file for the game -->
+
+<properties>
+  <player>
+    <idle_left loop="true" speed="0.22">
+      <PushBack x="19" y="7" w="26" h="30"/>
+      <PushBack x="81" y="9" w="26" h="27"/>
+      <PushBack x="143" y="7" w="26" h="29"/>
+      <PushBack x="206" y="7" w="23" h="28"/>
+    </idle_left>
+
+    <move_left loop="true" speed="0.22">
+      <PushBack x="271" y="15" w="27" h="23"/>
+      <PushBack x="23" y="57" w="27" h="23"/>
+      <PushBack x="85" y="57" w="29" h="24"/>
+      <PushBack x="146" y="57" w="31" h="23"/>
+    </move_left>
+
+    <death loop =" false" speed ="0.5">
+      <PushBack x="215" y="142" w="26" h="27"/>
+      <PushBack x="273" y="140" w="27" h="27"/>
+      <PushBack x="25" y="181" w="25" h="28"/>
+      <PushBack x="91" y="185" w="26" h="27"/>
+      <PushBack x="149" y="183" w="27" h="27"/>
+      <PushBack x="211" y="180 " w="25" h="28"/>
+      <PushBack x="273" y="179" w="25" h="28"/>
+      <PushBack x="25" y="219" w="25" h="28"/>
+      <PushBack x="87" y="219" w="26" h="27"/>
+      <PushBack x="151" y="216" w="24" h="23"/>
+      <PushBack x="195" y="218" w="24" h="23"/>
+    </death>
+  </player>
+
+<worm>
+    <idle loop="true" speed="0.5">
+      <PushBack x="0" y="0" w="40" h="40"/>
+      <PushBack x="40" y="0" w="40" h="40"/>
+      <PushBack x="80" y="0" w="40" h="40"/>
+      <PushBack x="120" y="0" w="40" h="40"/>
+      <PushBack x="80" y="0" w="40" h="40"/>
+      <PushBack x="40" y="0" w="40" h="40"/>
+    </idle>
+
+    <move loop="true" speed="0.5">
+      <PushBack x="0" y="40" w="40" h="40"/>
+      <PushBack x="40" y="40" w="40" h="40"/>
+      <PushBack x="80" y="40" w="40" h="40"/>
+      <PushBack x="120" y="40" w="40" h="40"/>
+    </move>
+  </worm>
+</properties>
