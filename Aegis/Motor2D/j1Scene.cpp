@@ -13,6 +13,7 @@
 #include "Entity.h"
 #include "Enemy.h"
 #include "EnemyWorm.h"
+#include "j1Pathfinding.h"
 
 j1Scene::j1Scene() : j1Module()
 {
@@ -42,7 +43,7 @@ bool j1Scene::Start()
 	
 	current_map->DrawColliders();
 
-	App->j1entity_manager->CreateEnemy(400, 400, ENEMY_TYPE::WORM);
+	App->j1entity_manager->CreateEnemy(1000, 1000, ENEMY_TYPE::WORM);
 	PlayerPt = App->j1entity_manager->CreateEntity(App->map->data.start_position.x, App->map->data.start_position.y, ENTITY_TYPE::PLAYER);
 	
 	return true;
@@ -58,6 +59,14 @@ bool j1Scene::PreUpdate()
 bool j1Scene::Update(float dt)
 {
 	
+	iPoint la(450, 450);
+	iPoint mau(420, 420);
+	App->pathfinding->CreatePath(la,mau);
+	const p2DynArray<iPoint>* path = App->pathfinding->GetLastPath();
+
+
+
+
 	if (SceneLoaded) {
 		PlayerPt->position.x = App->map->data.start_position.x;
 		PlayerPt->position.y = App->map->data.start_position.y;

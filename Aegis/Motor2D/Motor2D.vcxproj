@@ -86,6 +86,7 @@
     <ClCompile Include="j1Audio.cpp" />
     <ClCompile Include="j1Input.cpp" />
     <ClCompile Include="j1Map.cpp" />
+    <ClCompile Include="j1Pathfinding.cpp" />
     <ClCompile Include="j1Scene.cpp" />
     <ClCompile Include="MasterTimer.cpp" />
     <ClCompile Include="p2Log.cpp" />
@@ -104,6 +105,7 @@
     <ClInclude Include="EntityManager.h" />
     <ClInclude Include="j1Collision.h" />
     <ClInclude Include="j1Map.h" />
+    <ClInclude Include="j1Pathfinding.h" />
     <ClInclude Include="j1Scene.h" />
     <ClInclude Include="MasterTimer.h" />
     <ClInclude Include="p2DynArray.h" />

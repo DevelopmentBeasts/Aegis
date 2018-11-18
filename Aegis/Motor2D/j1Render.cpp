@@ -360,6 +360,5 @@ bool j1Render::InScreen(int x, int y, uint w, uint h, float parallax_speed) cons
 		x>(-camera.x*parallax_speed -50))
 		ret = true;
 	
-	//(pos.x<(-(App->render->camera.x) + App->render->camera.w) && pos.x >(-(App->render->camera.x*parallax) - 200))
 	return ret;
 }

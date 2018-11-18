@@ -52,7 +52,7 @@ void j1Map::Draw()
 						iPoint pos = MapToWorld(x, y);
 						float parallax = layer->parallax;
 					
-						if (App->render->InScreen(pos.x,pos.y, rect.w, rect.h, parallax))
+						if (App->render->InScreen(pos.x,pos.y, rect.w, rect.h, parallax) && layer->visible )
 							App->render->Blit(tileset->texture, pos.x, pos.y, &rect,parallax);
 
 					}
@@ -429,6 +429,10 @@ bool j1Map::LoadLayer(pugi::xml_node& node, MapLayer* layer)
 		p2SString property_name= property.attribute("name").as_string();
 		if (property_name == "Parallax") {
 			layer->parallax = property.attribute("value").as_float(1.0);
+		}
+
+		if (property_name == "Visible") {
+			layer->visible = property.attribute("value").as_bool(true);
 		}
 	}
 
