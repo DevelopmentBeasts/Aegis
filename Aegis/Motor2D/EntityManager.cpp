@@ -2,6 +2,8 @@
 #include "p2Log.h"
 #include "Entity.h"
 #include "j1Textures.h"
+#include "EnemyWorm.h"
+#include "j1Render.h"
 
 j1EntityManager::j1EntityManager()
 {
@@ -24,6 +26,13 @@ bool j1EntityManager::Start() {
 	player_texture	= App->tex->Load("textures/Fire_Wisp/fireSheet.png");
 	worm_texture	= App->tex->Load("textures/worm_sprites.png");
 
+
+	//Execute start() of every entity
+	p2List_item<j1Entity*>*item = entities_list.start;
+	for (; item != nullptr; item = item->next) {
+		item->data->Start();
+	}
+
 	return true;
 }
 
@@ -36,8 +45,9 @@ bool j1EntityManager::PreUpdate() {
 bool j1EntityManager::Update(float dt) {
 
 	p2List_item<j1Entity*>*item = entities_list.start;
-	for (; item != nullptr; item = item->next)
+	for (; item != nullptr; item = item->next) {
 		item->data->Update(dt);
+	}
 
 	accumulated_time = 0.0f;
 
@@ -72,21 +82,32 @@ j1Entity *j1EntityManager::CreateEntity(int x, int y, ENTITY_TYPE eType) {
 
 	switch (eType) {
 
-	case ENTITY_TYPE::ENEMY:
-		Entity = new j1Entity(x,y,ENTITY_TYPE::ENEMY);
-		break;
 	case ENTITY_TYPE::PLAYER:
-		Entity = new j1Entity(x,y,ENTITY_TYPE::PLAYER);
+		Entity = new j1Entity(iPoint (x,y),ENTITY_TYPE::PLAYER);
 		break;
 	default:
 		break;
-
 	}
 
 	entities_list.add(Entity);
+	Entity->Start();
 	return Entity;
 }
 
+j1Entity* j1EntityManager::CreateEnemy(int x, int y, ENEMY_TYPE Type) {
+
+	static_assert(ENTITY_TYPE::UNKNOWN == ENTITY_TYPE(2), "UPDATE ENEMIES");
+
+	j1Entity* Entity = nullptr;
+
+	switch (Type) {
+	case ENEMY_TYPE::WORM:
+		Entity = new EnemyWorm(iPoint(x, y));
+	}
+	entities_list.add(Entity);
+	Entity->Start();
+	return Entity;
+}
 
 void j1EntityManager::DestroyEntity(j1Entity *Entity) {
 

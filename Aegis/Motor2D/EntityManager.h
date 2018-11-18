@@ -16,6 +16,7 @@ enum class ENTITY_TYPE {
 
 };
 
+
 class j1EntityManager : public j1Module
 {
 public:
@@ -32,6 +33,7 @@ public:
 	bool CleanUp();
 
 	j1Entity *CreateEntity(int x , int y, ENTITY_TYPE eType);
+	j1Entity *CreateEnemy(int x, int y, ENEMY_TYPE );
 	void DestroyEntity(j1Entity *Entity);
 
 	p2List<j1Entity*> entities_list;

@@ -6,10 +6,12 @@
 #include "Animation.h"
 #include "p2List.h"
 
-enum Enemy_direction {
 
-	EN_RIGHT,
-	EN_LEFT
+enum class ENEMY_TYPE {
+
+	WORM,
+	DUDE,
+	UNKNOWN = 2
 };
 
 class j1Enemy : public j1Entity
@@ -17,33 +19,32 @@ class j1Enemy : public j1Entity
 
 public:
 
-	j1Enemy(iPoint pos);
+	j1Enemy(iPoint pos, ENEMY_TYPE enemy_type);
 	~j1Enemy() {}
+
+	virtual bool Start() { return true; }
+
+	virtual bool Update(float dt) override { return true; }
 
 	void j1Enemy::OnCollision(Collider *c1, Collider *c2) override;
 
+	void Draw();
+
 public:
 
-	bool falling = false;;
+	bool falling = false;
 
-	Enemy_direction Direction = EN_RIGHT;
-
-	iPoint enemy_position;
-	fPoint enemy_velocity;
+	fPoint velocity;
 	iPoint initial_velocity;
 
 	SDL_Rect enemy_rect;
 	SDL_Rect enemy_Collider_rect;
 
-	SDL_Texture* texture;
-
-	//Path texture
-	SDL_Texture *path_tex;
-
 public:
 
-	ENTITY_TYPE type;
-
+	SDL_RendererFlip	flip=SDL_FLIP_NONE;
+	ENEMY_TYPE			enemy_type;
+	
 	pugi::xml_node		EnemySettings;
 	pugi::xml_node		Animation_node;
 };

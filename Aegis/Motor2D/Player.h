@@ -113,13 +113,14 @@ public:
 	int CurrFrame = 0;
 	float acumulatedtime;
 	
+	Animation* current_animation = nullptr;	///Animation being shown at the moment
 private:
 
 	//Call godmode if true	
 	bool godmode_activated = false;
 
 	//Animationss
-	Animation* current_animation = nullptr;	///Animation being shown at the moment
+	
 	Animation idle;							///In all the animations the character is facing the left side 
 	Animation move;
 	Animation death;

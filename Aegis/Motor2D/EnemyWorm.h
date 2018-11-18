@@ -5,15 +5,19 @@
 #include "Enemy.h"
 #include "Animation.h"
 
-class j1EnemyFlyer : public j1Enemy
+
+class EnemyWorm: public j1Enemy
 {
 
 public:
 
-	j1EnemyFlyer(iPoint pos, const char* path, pugi::xml_document &EnemiesDocument);
-	~j1EnemyFlyer();
+	EnemyWorm(iPoint pos);
+	~EnemyWorm();
+
+	bool Start() override;
 
 	bool Update(float dt) override;
+
 
 public:
 
@@ -25,10 +29,8 @@ public:
 
 private:
 
-	Animation* current_animation = nullptr;
-	Animation Idle;
-	Animation Run;
-	Animation Dead;
+	Animation idle;
+	Animation move;
 
 };
 

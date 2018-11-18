@@ -4,16 +4,29 @@
 #include "j1Render.h"
 #include "Player.h"
 #include "p2Defs.h"
+#include "EntityManager.h"
 
 
 
-j1EnemyFlyer::j1EnemyFlyer(iPoint pos, const char* path, pugi::xml_document &EnemiesDocument){
+EnemyWorm::EnemyWorm(iPoint pos): j1Enemy(pos, ENEMY_TYPE::WORM) {
 	
+	current_animation = &idle;
+	idle.PushBack({0,0,500,500});
 }
 
-j1EnemyFlyer::~j1EnemyFlyer() {}
+EnemyWorm::~EnemyWorm() {}
 
-bool j1EnemyFlyer::Update(float dt) {
+bool EnemyWorm::Start() {
 
+	texture= App->j1entity_manager->worm_texture;
 	
+	return true;
+}
+
+bool EnemyWorm::Update(float dt) {
+	
+
+	//texture = App->j1entity_manager->worm_texture;
+	Draw();
+	return true;
 }

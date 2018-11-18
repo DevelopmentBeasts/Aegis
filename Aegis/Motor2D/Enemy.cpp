@@ -8,12 +8,19 @@
 #include "j1Map.h"
 #include "j1Scene.h"
 #include "EntityManager.h"
+#include "Player.h"
+#include "j1Collision.h"
 
 
-j1Enemy::j1Enemy(iPoint pos) : j1Entity(pos.x, pos.y, ENTITY_TYPE::ENEMY){}
+j1Enemy::j1Enemy(iPoint pos, ENEMY_TYPE enemy_type) : enemy_type(enemy_type), j1Entity(pos, ENTITY_TYPE::ENEMY){
+	
+}
 
 void j1Enemy::OnCollision(Collider *c1, Collider *c2) {
-	 
+	
+	int i;
+}
 
-
+void j1Enemy::Draw() {
+	App->render->Blit(texture, position.x, position.y, &current_animation->GetCurrentFrame(), 1.0/*Parallax*/, 0.0/*rotation*/, flip);
 }

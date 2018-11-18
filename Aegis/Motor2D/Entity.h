@@ -19,9 +19,11 @@ class j1Entity {
 
 public:
 
-	j1Entity(int x, int y, ENTITY_TYPE Type);
+	j1Entity(iPoint pos, ENTITY_TYPE Type);
 
 	~j1Entity() {}
+
+	virtual bool Start() { return true; }
 
 	virtual bool Update(float dt) { return true; }
 
@@ -31,7 +33,6 @@ public:
 	virtual bool Save(pugi::xml_node&) { return true; }
 
 	virtual void OnCollision(Collider* c1, Collider* c2) {}
-	virtual void Draw();
 
 public:
 
@@ -39,11 +40,10 @@ public:
 	ENTITY_TYPE type;
 	Collider*	collider;
 
-private:
+public:
 
 	SDL_Texture *texture;
-
-	Animation* current_animation;
+	Animation   *current_animation;
 
 };
 

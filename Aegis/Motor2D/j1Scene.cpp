@@ -44,6 +44,9 @@ bool j1Scene::Start()
 	current_map = App->map;
 	
 	current_map->DrawColliders();
+
+	App->j1entity_manager->CreateEnemy(400, 400, ENEMY_TYPE::WORM);
+
 	return true;
 }
 
