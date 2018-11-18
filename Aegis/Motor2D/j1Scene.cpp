@@ -162,10 +162,6 @@ void j1Scene::LoadLevel(const char* leveltoload) {
 		App->map->DrawColliders();
 		current_level = leveltoload;
 
-	
-		
-		
-
 		App->render->CenterCamera();
 		SceneLoaded = true;
 }
