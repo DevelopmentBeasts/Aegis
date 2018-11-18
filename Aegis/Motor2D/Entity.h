@@ -37,14 +37,26 @@ public:
 
 public:
 
+	// x & y position
 	iPoint		position;
+	
+	//Type of entity
 	ENTITY_TYPE type;
+
+	//Collider
 	Collider*	collider;
+
+	//Node of the document with the properties
+	pugi::xml_node		properties_node;
 
 public:
 
+	//Texture
 	SDL_Texture *texture;
+	
+	//Animation being shown
 	Animation   *current_animation;
+
 
 };
 

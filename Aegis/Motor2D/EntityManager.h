@@ -45,6 +45,9 @@ public:
 
 	bool do_logic;
 
+	//Document with the properties of all the entities
+	pugi::xml_document properties_doc;
+
 	//Textures for the entities
 	SDL_Texture* player_texture;
 	SDL_Texture* worm_texture;

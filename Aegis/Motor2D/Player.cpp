@@ -15,6 +15,7 @@
 PlayerClass::~PlayerClass() {
 
 }
+
 PlayerClass::PlayerClass() {   //DO PUSHBACKS WITH XML
 	name.create("player");
 
@@ -23,7 +24,7 @@ PlayerClass::PlayerClass() {   //DO PUSHBACKS WITH XML
 	if (result == NULL ) {
 		LOG("The xml file that contains the pushbacks for the animations is not working.PlayerAnims.xml.  error: %s",result.description());
 	}
-	
+
 	AnimsNode = AnimsDoc.child("config").child("AnimsCoords").child("idle_left");
 	idle.LoadPushbacks(AnimsNode);
 	AnimsNode = AnimsDoc.child("config").child("AnimsCoords").child("move_left");

@@ -26,6 +26,7 @@ struct Collider
 		rect(rectangle),
 		type(type),
 		callback(callback)
+
 	{}
 
 	void SetPos(int x, int y)
