@@ -19,12 +19,13 @@ EnemyWorm::~EnemyWorm() {}
 bool EnemyWorm::Start() {
 
 	texture= App->j1entity_manager->worm_texture;
-	current_animation = &move;
+	current_animation = &idle;
 	return true;
 }
 
 bool EnemyWorm::Update(float dt) {
 	
 	Draw();
+	
 	return true;
 }

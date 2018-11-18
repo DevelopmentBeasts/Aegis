@@ -5,7 +5,6 @@
 
 #include "j1Module.h"
 #include "SDL/include/SDL.h"
-//#include "Entity.h"
 #include "p2Defs.h"
 #include "p2Log.h"
 #include "p2Point.h"
