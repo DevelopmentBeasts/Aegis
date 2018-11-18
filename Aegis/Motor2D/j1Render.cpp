@@ -325,7 +325,7 @@ void j1Render::FollowPlayer(float dt) {
 }
 
 void j1Render::FindPlayer(float dt) {
-	if (App->scene->PlayerExists) {
+	
 		int vel = 20;
 
 		if ((App->scene->PlayerPt->position.x) > (-camera.x + camera.w - right_border))
@@ -346,7 +346,7 @@ void j1Render::FindPlayer(float dt) {
 			&& ((App->scene->PlayerPt->position.y) > (-camera.y + top_border))
 			&& ((App->scene->PlayerPt->position.y) < (-camera.y + camera.h - bot_border)))
 			find_player = false;
-	}
+	
 	
 }
 
@@ -360,6 +360,5 @@ bool j1Render::InScreen(int x, int y, uint w, uint h, float parallax_speed) cons
 		x>(-camera.x*parallax_speed -50))
 		ret = true;
 	
-	//(pos.x<(-(App->render->camera.x) + App->render->camera.w) && pos.x >(-(App->render->camera.x*parallax) - 200))
 	return ret;
 }

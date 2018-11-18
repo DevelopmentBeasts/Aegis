@@ -7,6 +7,34 @@
 #include "j1Module.h"
 #include "j1Collision.h"
 #include "j1App.h"
+#include "j1Textures.h"
+
+struct Properties
+{
+	struct Property
+	{
+		p2SString name;
+		int value;
+	};
+
+	~Properties()
+	{
+		p2List_item<Property*>* item;
+		item = list.start;
+
+		while (item != NULL)
+		{
+			RELEASE(item->data);
+			item = item->next;
+		}
+
+		list.clear();
+	}
+
+	int Get(const char* name, int default_value = 0) const;
+
+	p2List<Property*>	list;
+};
 
 struct ColliderData {
 	p2List<Collider*>			collider_list;
@@ -28,6 +56,8 @@ struct MapLayer
 	int			height;
 	uint*		data;
 	float		parallax=1.0f;
+	bool		visible = true;
+	Properties	properties;
 
 	MapLayer() : data(NULL)
 	{}
@@ -116,6 +146,8 @@ public:
   
 	iPoint MapToWorld(int x, int y) const;
 	iPoint WorldToMap(int x, int y) const;
+
+	bool CreateWalkabilityMap(int& width, int& height, uchar** buffer) const;
 
 private:
 

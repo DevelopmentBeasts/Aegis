@@ -5,6 +5,7 @@
 #include "EnemyWorm.h"
 #include "j1Render.h"
 #include "Player.h"
+#include "EnemyTribale.h"
 j1EntityManager::j1EntityManager()
 {
 	name.create("entities");
@@ -30,7 +31,8 @@ bool j1EntityManager::Start() {
 	//Load textures
 	player_texture	= App->tex->Load("textures/Fire_Wisp/fireSheet.png");
 	worm_texture	= App->tex->Load("textures/worm_sprites.png");
-
+	tribale_texture = App->tex->Load("textures/tribale_sprites.png");
+	debug_texture	= App->tex->Load(("textures/walkability.png"));
 
 	//Execute start() of every entity
 	p2List_item<j1Entity*>*item = entities_list.start;
@@ -76,6 +78,8 @@ bool j1EntityManager::CleanUp() {
 
 	//Unload textures
 	App->tex->UnLoad(player_texture);
+	App->tex->UnLoad(debug_texture);
+	App->tex->UnLoad(worm_texture);
 	return true;
 }
 
@@ -90,6 +94,7 @@ j1Entity *j1EntityManager::CreateEntity(int x, int y, ENTITY_TYPE eType) {
 	case ENTITY_TYPE::PLAYER:
 		Entity = new PlayerClass(iPoint (x,y));
 		break;
+	
 	default:
 		break;
 	}
@@ -108,6 +113,8 @@ j1Entity* j1EntityManager::CreateEnemy(int x, int y, ENEMY_TYPE Type) {
 	switch (Type) {
 	case ENEMY_TYPE::WORM:
 		Entity = new EnemyWorm(iPoint(x, y));
+	case ENEMY_TYPE::TRIBALE:
+		Entity = new EnemyTribale(iPoint(x, y));
 	}
 	entities_list.add(Entity);
 	Entity->Start();

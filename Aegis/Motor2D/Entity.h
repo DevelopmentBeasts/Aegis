@@ -58,7 +58,7 @@ public:
 	
 	//Animation being shown
 	Animation   *current_animation;
-
+	void Die();
 
 };
 

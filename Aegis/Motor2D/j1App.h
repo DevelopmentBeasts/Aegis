@@ -17,6 +17,7 @@ class j1Map;
 class j1Collision;
 class j1EntityManager;
 class j1EntityManeger;
+class j1PathFinding;
 
 class j1App
 {
@@ -88,6 +89,7 @@ public:
 	j1Scene*			scene;
 	j1Map*				map;
 	j1Collision*		collision;
+	j1PathFinding*		pathfinding;
 	
 	j1EntityManager*    j1entity_manager;
 

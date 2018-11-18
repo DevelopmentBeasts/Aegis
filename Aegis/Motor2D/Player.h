@@ -66,7 +66,7 @@ public:
 	player_states process_fsm(p2Queue<player_inputs>&inputs,float dt);	///Act depending on the inputs
 
 	void Jump();
-	void Die();
+	
 
 	//God Mode will allow the player to fly around the map ignoring collisions
 	void GodMode(float dt);
