@@ -325,7 +325,7 @@ void j1Render::FollowPlayer(float dt) {
 }
 
 void j1Render::FindPlayer(float dt) {
-	if (App->scene->PlayerExists) {
+	
 		int vel = 20;
 
 		if ((App->scene->PlayerPt->position.x) > (-camera.x + camera.w - right_border))
@@ -346,7 +346,7 @@ void j1Render::FindPlayer(float dt) {
 			&& ((App->scene->PlayerPt->position.y) > (-camera.y + top_border))
 			&& ((App->scene->PlayerPt->position.y) < (-camera.y + camera.h - bot_border)))
 			find_player = false;
-	}
+	
 	
 }
 
