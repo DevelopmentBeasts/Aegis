@@ -482,6 +482,7 @@ bool j1Map::LoadColliders(pugi::xml_node& node, ColliderData* collider) {
 void j1Map::DrawColliders() {
 	uint i = 0;
 	while (i < data.colliders.collider_rects.count()) {
+
 		data.colliders.collider_list.add( App->collision->AddCollider(data.colliders.collider_rects[i++], COLLIDER_WALL));
 	}
 }

@@ -4,7 +4,7 @@
 #include "j1Textures.h"
 #include "EnemyWorm.h"
 #include "j1Render.h"
-
+#include "Player.h"
 j1EntityManager::j1EntityManager()
 {
 	name.create("entities");
@@ -83,7 +83,7 @@ j1Entity *j1EntityManager::CreateEntity(int x, int y, ENTITY_TYPE eType) {
 	switch (eType) {
 
 	case ENTITY_TYPE::PLAYER:
-		Entity = new j1Entity(iPoint (x,y),ENTITY_TYPE::PLAYER);
+		Entity = new PlayerClass(iPoint (x,y));
 		break;
 	default:
 		break;

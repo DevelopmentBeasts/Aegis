@@ -34,9 +34,6 @@
     <ClCompile Include="j1Map.cpp">
       <Filter>Desenvolupament  ========\Modules</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Desenvolupament  ========\Modules</Filter>
-    </ClCompile>
     <ClCompile Include="j1Collision.cpp">
       <Filter>Desenvolupament  ========\Modules</Filter>
     </ClCompile>
@@ -56,6 +53,9 @@
       <Filter>Desenvolupament  ========\EntitiesSystem</Filter>
     </ClCompile>
     <ClCompile Include="Enemy.cpp">
+      <Filter>Desenvolupament  ========\EntitiesSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
       <Filter>Desenvolupament  ========\EntitiesSystem</Filter>
     </ClCompile>
   </ItemGroup>
@@ -111,9 +111,6 @@
     <ClInclude Include="j1Map.h">
       <Filter>Desenvolupament  ========\Modules</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Desenvolupament  ========\Modules</Filter>
-    </ClInclude>
     <ClInclude Include="j1Collision.h">
       <Filter>Desenvolupament  ========\Modules</Filter>
     </ClInclude>
@@ -139,6 +136,9 @@
       <Filter>Desenvolupament  ========\EntitiesSystem</Filter>
     </ClInclude>
     <ClInclude Include="Enemy.h">
+      <Filter>Desenvolupament  ========\EntitiesSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
       <Filter>Desenvolupament  ========\EntitiesSystem</Filter>
     </ClInclude>
   </ItemGroup>

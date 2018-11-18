@@ -10,13 +10,17 @@
 #include "j1Scene.h"
 #include "Brofiler/Brofiler.h"
 #include "j1App.h"
+#include "Enemy.h"
+#include "Entity.h"
+#include "EntityManager.h"
 //Destructor
 
 PlayerClass::~PlayerClass() {
 
 }
-PlayerClass::PlayerClass() {   //DO PUSHBACKS WITH XML
-	name.create("player");
+PlayerClass::PlayerClass(iPoint pos) : j1Entity(pos, ENTITY_TYPE::PLAYER)  {   //DO PUSHBACKS WITH XML
+	//name.create("player");
+	position = pos;
 
 	pugi::xml_parse_result result = AnimsDoc.load_file("PlayerAnims.xml");
 
@@ -106,7 +110,7 @@ bool PlayerClass::Start() {
 	current_animation = &move;
 
 	LOG("CREATING PLAYER COLLIDER");
-	player_collider = App->collision->AddCollider({ position.x, position.y, player_rect.w*(int)PlayerScale, player_rect.h*(int)PlayerScale }, COLLIDER_PLAYER, this);
+	player_collider = App->collision->AddEntCollider({ position.x, position.y, player_rect.w*(int)PlayerScale, player_rect.h*(int)PlayerScale }, COLLIDER_PLAYER, this);
 
 	velocity = { 0.0,0.0 };
 	current_animation = &idle;
@@ -136,7 +140,7 @@ bool PlayerClass::Update(float dt) {
 		godmode_activated = !godmode_activated;
 	}
 	 
-	if (!godmode_activated && position.y > 1700) {
+	if (!godmode_activated && position.y > 2300) {
 		Die();
 	}
 	
@@ -163,7 +167,7 @@ bool PlayerClass::Update(float dt) {
 	CurrentAnimationRect = current_animation->GetCurrentFrame();
 	
 	
-	if (JumpRotation && rotation < 20  ) {
+	if (JumpRotation && rotation < 27  ) {
 		rotation = velocity.y;
 	}
 	else if (!JumpRotation) {
@@ -571,16 +575,16 @@ void PlayerClass::GodMode(float dt) {
 }
 
 void PlayerClass::Die() {
-	App->player->position.x = App->map->data.start_position.x;
-	App->player->position.y = App->map->data.start_position.y;
-	current_animation = &death;
-	if(current_animation->Finished())
+	position.x = App->map->data.start_position.x;
+	position.y = App->map->data.start_position.y;
+	//current_animation = &death;
+	//if(current_animation->Finished())
 	App->render->find_player = true;
 }
 
 void PlayerClass::Jump() {
 
-	App->player->velocity.y -= JumpForce;
+	velocity.y -= JumpForce;
 	
 	
 }

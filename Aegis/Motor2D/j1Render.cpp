@@ -6,6 +6,7 @@
 #include "player.h"
 #include "j1Input.h"
 #include "Brofiler/Brofiler.h"
+#include "j1Scene.h"
 j1Render::j1Render() : j1Module()
 {
 	name.create("renderer");
@@ -282,8 +283,11 @@ bool j1Render::DrawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, U
 }
 
 void j1Render::CenterCamera(){
-	camera.x = left_border - App->player->position.x;
-	camera.y = top_border - App->player->position.y;
+	if (App->scene->PlayerExists) {
+		camera.x = left_border - App->scene->PlayerPt->position.x;
+		camera.y = top_border - App->scene->PlayerPt->position.y;
+	}
+	
 		
 }
 
@@ -302,43 +306,48 @@ void j1Render::FreeMovement() {
 }
 
 void j1Render::FollowPlayer(float dt) {
-	if ((App->player->position.x) > (-camera.x + camera.w - right_border)) {	//Move the camera to the right if the player is advancing and ahead of the border
+	if (App->scene->PlayerExists) {
+		if ((App->scene->PlayerPt->position.x) > (-camera.x + camera.w - right_border)) {	//Move the camera to the right if the player is advancing and ahead of the border
 
-			camera.x -= App->player->velocity.x*(dt / 30);
+			camera.x -= App->scene->PlayerPt->velocity.x*(dt / 30);
+		}
+		if ((App->scene->PlayerPt->position.x) < (-camera.x + left_border)) {				//Move the camera to the left if the player is going back and behnid the left border
+
+			camera.x -= App->scene->PlayerPt->velocity.x*(dt / 30);
+		}
+
+		if ((App->scene->PlayerPt->position.y) < (-camera.y + top_border))					//Move the camera upwards if the player is going up and above the top border
+			camera.y -= App->scene->PlayerPt->velocity.y*(dt / 30);
+
+		if ((App->scene->PlayerPt->position.y) > (-camera.y + camera.h - bot_border))		//Move the camera upwards if the player is going up and above the top border
+			camera.y -= App->scene->PlayerPt->velocity.y*(dt / 30);
 	}
-	if ((App->player->position.x) < (-camera.x + left_border)) {				//Move the camera to the left if the player is going back and behnid the left border
-
-			camera.x -= App->player->velocity.x*(dt / 30);
-	}
-
-	if ((App->player->position.y) < (-camera.y + top_border))					//Move the camera upwards if the player is going up and above the top border
-		camera.y -= App->player->velocity.y*(dt / 30);
-
-	if ((App->player->position.y) > (-camera.y + camera.h - bot_border))		//Move the camera upwards if the player is going up and above the top border
-		camera.y -= App->player->velocity.y*(dt / 30);
 }
 
 void j1Render::FindPlayer(float dt) {
-	int vel = 20;
+	if (App->scene->PlayerExists) {
+		int vel = 20;
 
-	if ((App->player->position.x) > (-camera.x + camera.w - right_border))
-			camera.x -= vel*(dt/30);
-	
-	if ((App->player->position.x) < (-camera.x + left_border))
+		if ((App->scene->PlayerPt->position.x) > (-camera.x + camera.w - right_border))
+			camera.x -= vel * (dt / 30);
+
+		if ((App->scene->PlayerPt->position.x) < (-camera.x + left_border))
 			camera.x += vel * (dt / 30);
+
+
+		if ((App->scene->PlayerPt->position.y) < (-camera.y + top_border))
+			camera.y += vel * (dt / 30);
+
+		if ((App->scene->PlayerPt->position.y) > (-camera.y + camera.h - bot_border))
+			camera.y -= vel * (dt / 30);
+
+		if (((App->scene->PlayerPt->position.x) < (-camera.x + camera.w - right_border))		//If we found the player, stop looking for it
+			&& ((App->scene->PlayerPt->position.x) > (-camera.x + left_border))
+			&& ((App->scene->PlayerPt->position.y) > (-camera.y + top_border))
+			&& ((App->scene->PlayerPt->position.y) < (-camera.y + camera.h - bot_border)))
+			find_player = false;
+	}
 	
-
-	if ((App->player->position.y) < (-camera.y + top_border))
-		camera.y += vel * (dt / 30);
-
-	if ((App->player->position.y) > (-camera.y + camera.h - bot_border))
-		camera.y -= vel * (dt / 30);
-
-	if (((App->player->position.x) < (-camera.x + camera.w - right_border))		//If we found the player, stop looking for it
-		&& ((App->player->position.x) > (-camera.x + left_border))
-		&& ((App->player->position.y) > (-camera.y + top_border))
-		&& ((App->player->position.y) < (-camera.y + camera.h - bot_border)))
-		find_player = false;
 }
 
 

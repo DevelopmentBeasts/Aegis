@@ -14,7 +14,6 @@ class j1Textures;
 class j1Audio;
 class j1Scene;
 class j1Map;
-class PlayerClass;
 class j1Collision;
 class j1EntityManager;
 class j1EntityManeger;
@@ -89,7 +88,7 @@ public:
 	j1Scene*			scene;
 	j1Map*				map;
 	j1Collision*		collision;
-	PlayerClass*        player;
+	
 	j1EntityManager*    j1entity_manager;
 
 public:
