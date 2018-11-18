@@ -185,7 +185,7 @@ void j1App::PrepareUpdate()
 // ---------------------------------------------
 void j1App::FinishUpdate()
 {
-	
+	BROFILER_CATEGORY("FinishUpdate(); -- delay!", Profiler::Color::AliceBlue);
 	if(want_to_save == true)
 		SavegameNow();
 
@@ -207,7 +207,7 @@ void j1App::FinishUpdate()
 	float frames_on_last_update = prev_last_sec_frame_count;
 	
 	static char title[256];
-	sprintf_s(title, 256, " Aegis  ||  FPS: %f | Av.FPS: %f | Last Frame Ms: %f | Cap: on or off | Vsync: On or off", frames_on_last_update, avg_fps, last_frame_ms);
+	sprintf_s(title, 256, " Aegis  ||  FPS: %f | Av.FPS: %f | Last Frame Ms: %f | Cap: %i | Vsync: off", frames_on_last_update, avg_fps, last_frame_ms,framerate_cap);
 	App->win->SetTitle(title);
 	
 	//when game is cappd at 30 fps this is working

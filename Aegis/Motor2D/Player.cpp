@@ -20,8 +20,8 @@ PlayerClass::PlayerClass() {   //DO PUSHBACKS WITH XML
 
 	pugi::xml_parse_result result = AnimsDoc.load_file("PlayerAnims.xml");
 
-	if (result == NULL) {
-		LOG("The xml file that contains the pushbacks for the animations is not working.PlayerAnims.xml. error: %s",result.description());
+	if (result == NULL ) {
+		LOG("The xml file that contains the pushbacks for the animations is not working.PlayerAnims.xml.  error: %s",result.description());
 	}
 	
 	AnimsNode = AnimsDoc.child("config").child("AnimsCoords").child("idle_left");
@@ -102,6 +102,7 @@ bool PlayerClass::Start() {
 	LOG("LOADING PLAYER TEXTURES");
 
 	player_texture = App->tex->Load("textures/Fire_Wisp/fireSheet.png");
+
 	current_animation = &move;
 
 	LOG("CREATING PLAYER COLLIDER");
@@ -135,7 +136,9 @@ bool PlayerClass::Update(float dt) {
 		godmode_activated = !godmode_activated;
 	}
 	 
-
+	if (!godmode_activated && position.y > 1700) {
+		Die();
+	}
 	
 	if (ExternalInput(inputs))
 	{
@@ -159,10 +162,11 @@ bool PlayerClass::Update(float dt) {
 	//Move the collider
 	player_collider->SetPos(position.x, position.y);
 
-	//Draw the player
+	//DRAW THE PLAYER
 	CurrentAnimationRect = current_animation->GetCurrentFrame();
 	
-	if (JumpRotation) {
+	
+	if (JumpRotation && rotation < 20  ) {
 		rotation = velocity.y;
 	}
 	else if (!JumpRotation) {
@@ -207,10 +211,11 @@ bool PlayerClass::ExternalInput(p2Queue<player_inputs> &inputs) {
 			jump = false;
 		}
 		// key is pressed
-		if (App->input->GetKey(SDL_SCANCODE_W) == j1KeyState::KEY_DOWN) {
+		if (App->input->GetKey(SDL_SCANCODE_W ) == j1KeyState::KEY_DOWN && !JumpRotation && Gravity == true) {
 			inputs.Push(IN_JUMP_DOWN);
 			JumpRotation = true;
 			up = true;
+			
 		}
 		if (App->input->GetKey(SDL_SCANCODE_A) == j1KeyState::KEY_DOWN) {
 			left = true;
@@ -233,11 +238,12 @@ bool PlayerClass::ExternalInput(p2Queue<player_inputs> &inputs) {
 				deceleration = true;
 			}
 		}
-		if (App->input->GetKey(SDL_SCANCODE_F) == j1KeyState::KEY_DOWN) {
-			if (jump) {
-				LOG("MEGA FALL ATTACK");
-				inputs.Push(IN_FALL_ATTACK);
-			}
+		if (App->input->GetKey(SDL_SCANCODE_E) == j1KeyState::KEY_DOWN) {
+				LOG("FRONT ATTACK");
+				inputs.Push(IN_FRONT_ATTACK);
+				down = true;
+				front_attack = true;
+				
 		}
 
 		// key is released
@@ -279,7 +285,7 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) 
 			switch (state)
 			{
 			case ST_IDLE:
-				//LOG("IM FUCKING IDL MEN");
+				//LOG("IM  IDL ");
 				
 				switch (last_input)
 				{
@@ -310,6 +316,7 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) 
 						//LOG("INPUT----->JUMP_DOWN");
 					}
 					break;
+				
 				}
 
 				break;
@@ -339,6 +346,7 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) 
 						state = ST_JUMP_FORWARD;
 						//LOG("INPUT----->JUMP_DOWN");
 						jump = true;
+				
 					}
 					break;
 				}
@@ -367,7 +375,9 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) 
 						state = ST_JUMP_BACKWARD;
 						//LOG("INPUT----->JUMP_DOWN");
 						jump = true;
+				
 					}
+
 					break;
 				}
 				break;
@@ -393,6 +403,7 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) 
 					current_animation = &move;
 					//LOG("INPUT----->JUMPING LEFT ------");
 					break;
+				
 				}
 
 			case ST_JUMP_FORWARD:
@@ -417,6 +428,7 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) 
 					current_animation = &move;
 					//LOG("INPUT----->JUMPING LEFT ------ ");
 					break;
+				
 				}
 				break;
 			case ST_JUMP_BACKWARD:
@@ -442,11 +454,13 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) 
 					current_animation = &move;
 					//LOG("INPUT----->JUMPING LEFT ------ ");
 					break;
+				case IN_FRONT_ATTACK:
+					state = ST_FRONT_ATTACK;
+					break;
 				}
 				break;
-			case ST_FALL_ATTACK:
-				LOG("NEED CODE FOR FALL ATTACK");
-				break;
+			
+
 			default:
 				break;
 			}
@@ -458,6 +472,10 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) 
 			Jump();
 			jump = false;
 		}
+		/*if (front_attack) {
+			velocity.x += 50;
+			front_attack = false;
+		}*/
 	return state;
 	}
 }
@@ -484,8 +502,7 @@ void PlayerClass::OnCollision(Collider *c1, Collider *c2) {
 
 				//Checking Y Axis Collisions
 				if (c1->rect.y <= c2->rect.y + c2->rect.h && c1->rect.y >= c2->rect.y + c2->rect.h -20/*- ((velocity.y*-1)-velocity.y)*/) { //Colliding down (jumping)
-					LOG("BOOL COLLIDING DOWN TRUE");
-					/*velocity.y = 0;*/
+					//LOG("BOOL COLLIDING DOWN TRUE");
 					if (velocity.y * -1 < 0 ) {
 						velocity.y += (velocity.y*-1);
 						
@@ -503,6 +520,7 @@ void PlayerClass::OnCollision(Collider *c1, Collider *c2) {
 					jump = false;
 					velocity.y = 0;
 					position.y = c1->rect.y - ((c1->rect.y + c1->rect.h) - c2->rect.y);
+					JumpRotation = false;
 				}
 				
 			}
@@ -512,13 +530,13 @@ void PlayerClass::OnCollision(Collider *c1, Collider *c2) {
 				LOG("COLLIDING LEFT");
 				velocity.x = 0;
 				position.x -= (c1->rect.x + c1->rect.w) - c2->rect.x + 4;
-
+				
 			}
 			else if (c1->rect.x <= c2->rect.x + c2->rect.w && c1->rect.x >= c2->rect.x + c2->rect.w - ((velocity.x*-1) - velocity.x)) { //Colliding Right (going left)
 				LOG("COLLIDING RIGHT");
 				velocity.x = 0;
 				position.x += (c2->rect.x + c2->rect.w) - c1->rect.x + 4;
-
+				
 			}
 		}
 	/*}*/
@@ -555,11 +573,10 @@ void PlayerClass::GodMode(float dt) {
 }
 
 void PlayerClass::Die() {
-
-
 	App->player->position.x = App->map->data.start_position.x;
 	App->player->position.y = App->map->data.start_position.y;
-
+	current_animation = &death;
+	if(current_animation->Finished())
 	App->render->find_player = true;
 }
 

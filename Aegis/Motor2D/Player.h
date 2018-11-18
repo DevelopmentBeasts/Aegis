@@ -29,7 +29,7 @@ enum player_states {
 	ST_JUMP_NEUTRAL,
 	ST_JUMP_FORWARD,
 	ST_JUMP_BACKWARD,
-	ST_FALL_ATTACK
+	ST_FRONT_ATTACK
 };
 
 enum player_inputs {
@@ -40,7 +40,7 @@ enum player_inputs {
 	IN_LEFT_AND_RIGHT,
 	IN_JUMP_DOWN,
 	IN_JUMP_UP,
-	IN_FALL_ATTACK
+	IN_FRONT_ATTACK
 };
 
 class PlayerClass : public j1Module {
@@ -76,7 +76,9 @@ public:
 	bool map_loaded;
 
 	bool jump = false;
+	bool front_attack = false;
 	bool JumpRotation = false;
+	bool FallRotation = false;
 	bool deceleration = false;
 
 	bool left = false;
@@ -92,7 +94,7 @@ public:
 	bool DoLogic = false;
 
 	SDL_Texture* player_texture = nullptr;
-
+	
 	//Colliders
 	Collider *player_collider;
 
@@ -129,6 +131,7 @@ private:
 	pugi::xml_document	PlayerStartFile;
 	pugi::xml_document	PlayerStartFile_;
 	pugi::xml_document AnimsDoc;
+	pugi::xml_document ExplosionDoc;
 
 	pugi::xml_node AnimsNode;
 	pugi::xml_node PlayerXmlNode;
