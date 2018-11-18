@@ -32,18 +32,15 @@
       <PushBack x="195" y="218" w="24" h="23"/>
     </death>
   </player>
-
-  <worm>
-    <idle loop="true" speed="0.5">
+<worm>
+    <idle loop="true" speed="0.2">
       <PushBack x="0" y="0" w="40" h="40"/>
       <PushBack x="40" y="0" w="40" h="40"/>
       <PushBack x="80" y="0" w="40" h="40"/>
       <PushBack x="120" y="0" w="40" h="40"/>
-      <PushBack x="80" y="0" w="40" h="40"/>
-      <PushBack x="40" y="0" w="40" h="40"/>
     </idle>
 
-    <move loop="true" speed="0.5">
+    <move loop="true" speed="0.2">
       <PushBack x="0" y="40" w="40" h="40"/>
       <PushBack x="40" y="40" w="40" h="40"/>
       <PushBack x="80" y="40" w="40" h="40"/>

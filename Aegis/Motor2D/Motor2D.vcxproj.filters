@@ -60,6 +60,8 @@
     </ClCompile>
     <ClCompile Include="EnemyTribale.cpp">
       <Filter>Desenvolupament  ========\EntitiesSystem</Filter>
+    <ClCompile Include="j1Pathfinding.cpp">
+      <Filter>Desenvolupament  ========\Modules</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -146,6 +148,8 @@
     </ClInclude>
     <ClInclude Include="EnemyTribale.h">
       <Filter>Desenvolupament  ========\EntitiesSystem</Filter>
+    <ClInclude Include="j1Pathfinding.h">
+      <Filter>Desenvolupament  ========\Modules</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
