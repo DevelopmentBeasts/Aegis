@@ -173,18 +173,20 @@ void j1App::PrepareUpdate()
 {
 
 	dt = Mtimerdt.ReadMs();
+
 	frame_count++;
 	last_sec_frame_count++;
 	//LOG("DT = %f", dt);
 	//Calculate the dt: differential time since last frame
-	
+	Mtimerdt.Start();
 	frame_time.Start();
 }
 
 // ---------------------------------------------
 void j1App::FinishUpdate()
 {
-	BROFILER_CATEGORY("AppUpdate();", Profiler::Color::Coral);
+	BROFILER_CATEGORY("FinishUpdate(); -- delay!", Profiler::Color::AliceBlue);
+
 	if(want_to_save == true)
 		SavegameNow();
 
@@ -206,7 +208,7 @@ void j1App::FinishUpdate()
 	float frames_on_last_update = prev_last_sec_frame_count;
 	
 	static char title[256];
-	sprintf_s(title, 256, " Aegis  ||  FPS: %f | Av.FPS: %f | Last Frame Ms: %f | Cap: on or off | Vsync: On or off", frames_on_last_update, avg_fps, last_frame_ms);
+	sprintf_s(title, 256, " Aegis  ||  FPS: %f | Av.FPS: %f | Last Frame Ms: %f | Cap: %i | Vsync: off", frames_on_last_update, avg_fps, last_frame_ms,framerate_cap);
 	App->win->SetTitle(title);
 	
 	//when game is cappd at 30 fps this is working
@@ -218,9 +220,6 @@ void j1App::FinishUpdate()
 		SDL_Delay(capped_ms - last_frame_ms);
 		//LOG("We waited for %d milliseconds and got back in %f", capped_ms - last_frame_ms, t.ReadMs());
 	}
-	//what happens when game goes 60fps? the player shouldn't go faster!
-	
-	Mtimerdt.Start();
 }
 
 // Call modules before each loop iteration

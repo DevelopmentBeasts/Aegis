@@ -47,11 +47,11 @@ public:
 	void FreeMovement();
 
 	//Moves the camera depending on where the player goes
-	void FollowPlayer();
+	void FollowPlayer(float dt);
 
 	//Moves the camera to the player position in a short period of time
 	//Works like FollowPlayer() but faster
-	void FindPlayer();
+	void FindPlayer(float dt);
 
 	// Set background color
 	void SetBackgroundColor(SDL_Color color);

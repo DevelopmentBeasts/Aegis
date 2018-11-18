@@ -35,12 +35,9 @@ bool j1Scene::Awake()
 // Called before the first frame
 bool j1Scene::Start()
 {
-	
-	iPoint a = { 100,300 };
+
 	LoadLevel(level1);
-	const char* ap = "path";
-//	worm = worm->CreateEnemy(a, FLYER,ap, doc);
-	
+  
 	current_map = App->map;
 	
 	current_map->DrawColliders();
@@ -70,19 +67,19 @@ bool j1Scene::Update(float dt)
 	/*	LoadLevel(level1);*/
 		LoadLevel1NOW = true;
 	}
-	if (App->input->GetKey(SDL_SCANCODE_F4) == KEY_DOWN)	//Load game
+	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)	//Load game
 		LoadLevel2NOW = true;
 		
-	/*if (LoadLevel1NOW && App->player->jumping) {
+	if (LoadLevel1NOW && (App->player->velocity.y * -1 > 0)) {
 		LoadLevel(level1);
 		LoadLevel1NOW = false;
 	}
-	if (LoadLevel2NOW && App->player->jumping) {
+	if (LoadLevel2NOW && (App->player->velocity.y * -1 > 0)) {
 		LoadLevel(level2);
 		LoadLevel2NOW = false;
-	}*/
+	}
 
-	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)			//Load game
+	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)			//Load game
 	{
 		App->player->position.x = App->map->data.start_position.x;
 		App->player->position.y = App->map->data.start_position.y;

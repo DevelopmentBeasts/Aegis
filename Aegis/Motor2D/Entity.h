@@ -17,6 +17,7 @@ enum class ENTITY_TYPE;
 
 class j1Entity {
 
+
 public:
 
 	j1Entity(iPoint pos, ENTITY_TYPE Type);

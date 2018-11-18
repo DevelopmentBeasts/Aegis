@@ -91,6 +91,10 @@ public:
 	j1Collision*		collision;
 	PlayerClass*        player;
 	j1EntityManager*    j1entity_manager;
+
+public:
+	bool                framerate_cap_activated;
+
 private:
 
 	p2List<j1Module*>	modules;
@@ -99,7 +103,7 @@ private:
 	float               last_frame_ms_;
 	uint				frames;
 	uint                framerate_cap;
-	bool                framerate_cap_activated;
+	
 	MasterTimer			Mtimer;
 	MasterTimer         Mtimerdt;
 	Timer               frame_time;
