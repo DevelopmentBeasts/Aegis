@@ -66,6 +66,7 @@ public:
 	bool LoadLevel2NOW;
 	bool SceneLoaded = false;
 	bool PlayerExists = false;
+	bool findplayer = false;
 public:
 	j1Entity * PlayerPt;
 };

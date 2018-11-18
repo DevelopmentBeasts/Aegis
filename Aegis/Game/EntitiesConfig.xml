@@ -32,22 +32,43 @@
       <PushBack x="195" y="218" w="24" h="23"/>
     </death>
   </player>
-
 <worm>
-    <idle loop="true" speed="0.5">
+    <idle loop="true" speed="0.2">
       <PushBack x="0" y="0" w="40" h="40"/>
       <PushBack x="40" y="0" w="40" h="40"/>
       <PushBack x="80" y="0" w="40" h="40"/>
       <PushBack x="120" y="0" w="40" h="40"/>
-      <PushBack x="80" y="0" w="40" h="40"/>
-      <PushBack x="40" y="0" w="40" h="40"/>
     </idle>
 
-    <move loop="true" speed="0.5">
+    <move loop="true" speed="0.2">
       <PushBack x="0" y="40" w="40" h="40"/>
       <PushBack x="40" y="40" w="40" h="40"/>
       <PushBack x="80" y="40" w="40" h="40"/>
       <PushBack x="120" y="40" w="40" h="40"/>
     </move>
   </worm>
+  <Tribale>
+    <idle loop="true" speed="0.2">
+      <PushBack x="20" y="5" w="39" h="29"/>
+      <PushBack x="89" y="4" w="39" h="30"/>
+      <PushBack x="158" y="5" w="38" h="29"/>
+      <PushBack x="225" y="6" w="38" h="28"/>
+    </idle>
+    <move loop="true" speed="0.3">
+      <PushBack x="299" y="4" w="33" h="30"/>
+      <PushBack x="24" y="41" w="35" h="28"/>
+      <PushBack x="91" y="40" w="37" h="28"/>
+      <PushBack x="156" y="2" w="40" h="29"/>
+      <PushBack x="224" y="41" w="40" h="28"/>
+      <PushBack x="296" y="41" w="36" h="28"/>
+    </move>
+    <attack loop="true" speed="0.2">
+      <PushBack x="26" y="74" w="39" h="30"/>
+      <PushBack x="94" y="74" w="39" h="29"/>
+      <PushBack x="137" y="79" w="59" h="26"/>
+      <PushBack x="208" y="77" w="56" h="27"/>
+      <PushBack x="273" y="77" w="59" h="27"/>
+      
+    </attack>
+  </Tribale>
 </properties>

@@ -10,7 +10,7 @@
 enum class ENEMY_TYPE {
 
 	WORM,
-	DUDE,
+	TRIBALE,
 	UNKNOWN = 2
 };
 
@@ -35,6 +35,7 @@ public:
 	bool falling = false;
 
 	fPoint velocity;
+	float GravityValue = 0.6;
 	iPoint initial_velocity;
 
 	SDL_Rect enemy_rect;

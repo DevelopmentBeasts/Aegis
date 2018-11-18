@@ -575,7 +575,7 @@ void PlayerClass::GodMode(float dt) {
 	
 }
 
-void PlayerClass::Die() {
+void j1Entity::Die() {
 	position.x = App->map->data.start_position.x;
 	position.y = App->map->data.start_position.y;
 	//current_animation = &death;

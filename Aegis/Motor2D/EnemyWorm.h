@@ -18,7 +18,7 @@ public:
 
 	bool Update(float dt) override;
 
-
+	void DrawPath();
 public:
 
 	p2DynArray<iPoint>* enemy_path;
@@ -28,6 +28,10 @@ public:
 	MasterTimer pathfinding_recalc;
 
 private:
+
+	const p2DynArray<iPoint>* path;
+
+	SDL_Texture* debug_texture;
 
 	Animation idle;
 	Animation move;
