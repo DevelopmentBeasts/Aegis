@@ -6,12 +6,12 @@
 #include "p2Defs.h"
 #include "EntityManager.h"
 
-
-
 EnemyWorm::EnemyWorm(iPoint pos): j1Enemy(pos, ENEMY_TYPE::WORM) {
 	
-	current_animation = &idle;
-	idle.PushBack({0,0,500,500});
+	properties_node = App->j1entity_manager->properties_doc.child("properties").child("worm");
+
+	idle.LoadPushbacks(properties_node.child("idle"));
+	move.LoadPushbacks(properties_node.child("move"));
 }
 
 EnemyWorm::~EnemyWorm() {}
@@ -19,14 +19,13 @@ EnemyWorm::~EnemyWorm() {}
 bool EnemyWorm::Start() {
 
 	texture= App->j1entity_manager->worm_texture;
-	
+	current_animation = &idle;
 	return true;
 }
 
 bool EnemyWorm::Update(float dt) {
 	
-
-	//texture = App->j1entity_manager->worm_texture;
 	Draw();
+	
 	return true;
 }

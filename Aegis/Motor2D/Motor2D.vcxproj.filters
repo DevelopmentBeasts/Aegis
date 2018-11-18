@@ -34,9 +34,6 @@
     <ClCompile Include="j1Map.cpp">
       <Filter>Desenvolupament  ========\Modules</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Desenvolupament  ========\Modules</Filter>
-    </ClCompile>
     <ClCompile Include="j1Collision.cpp">
       <Filter>Desenvolupament  ========\Modules</Filter>
     </ClCompile>
@@ -56,6 +53,9 @@
       <Filter>Desenvolupament  ========\EntitiesSystem</Filter>
     </ClCompile>
     <ClCompile Include="Enemy.cpp">
+      <Filter>Desenvolupament  ========\EntitiesSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
       <Filter>Desenvolupament  ========\EntitiesSystem</Filter>
     </ClCompile>
   </ItemGroup>
@@ -111,9 +111,6 @@
     <ClInclude Include="j1Map.h">
       <Filter>Desenvolupament  ========\Modules</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Desenvolupament  ========\Modules</Filter>
-    </ClInclude>
     <ClInclude Include="j1Collision.h">
       <Filter>Desenvolupament  ========\Modules</Filter>
     </ClInclude>
@@ -141,6 +138,9 @@
     <ClInclude Include="Enemy.h">
       <Filter>Desenvolupament  ========\EntitiesSystem</Filter>
     </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Desenvolupament  ========\EntitiesSystem</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Programacio 2 ===========">
@@ -164,5 +164,10 @@
     <Filter Include="Desenvolupament  ========\EntitiesSystem">
       <UniqueIdentifier>{de2deca1-3afd-407b-8914-78093181c873}</UniqueIdentifier>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="EntitiesConfig.xml">
+      <Filter>Desenvolupament  ========\Tools\PuguiXML</Filter>
+    </Xml>
   </ItemGroup>
 </Project>

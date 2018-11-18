@@ -4,6 +4,7 @@
 #include "j1App.h"
 #include "j1Render.h"
 
+
 j1Collision::j1Collision()
 {
 	for (uint i = 0; i < MAX_COLLIDERS; ++i)
@@ -65,6 +66,12 @@ bool j1Collision::PreUpdate()
 
 				if (matrix[c2->type][c1->type] && c2->callback)
 					c2->callback->OnCollision(c2, c1);
+
+				if (matrix[c1->type][c2->type] && c1->entity_callback)
+					c1->entity_callback->OnCollision(c1, c2);
+
+				if (matrix[c2->type][c1->type] && c2->entity_callback)
+					c2->entity_callback->OnCollision(c2, c1);
 			}
 		}
 	}
@@ -143,6 +150,23 @@ Collider* j1Collision::AddCollider(SDL_Rect rect, COLLIDER_TYPE type, j1Module* 
 
 	return ret;
 }
+Collider* j1Collision::AddEntCollider(SDL_Rect rect, COLLIDER_TYPE type, j1Entity* callback)
+{
+	Collider* ret = nullptr;
+
+	for (uint i = 0; i < MAX_COLLIDERS; ++i)
+	{
+		if (colliders[i] == nullptr)
+		{
+			ret = colliders[i] = new Collider(rect, type, callback);
+			break;
+		}
+	}
+
+	return ret;
+}
+
+
 
 
 bool Collider::CheckCollision(const SDL_Rect& r) const

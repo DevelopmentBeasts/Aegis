@@ -64,6 +64,10 @@ public:
 public:
 	bool LoadLevel1NOW;
 	bool LoadLevel2NOW;
+	bool SceneLoaded = false;
+	bool PlayerExists = false;
+public:
+	j1Entity * PlayerPt;
 };
 
 #endif // __j1SCENE_H__
