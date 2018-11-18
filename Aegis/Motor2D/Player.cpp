@@ -141,10 +141,7 @@ bool PlayerClass::Update(float dt) {
 	}
 	
 	if (ExternalInput(inputs))
-	{
-		process_fsm(inputs, dt);
-	}	
-	 
+				process_fsm(inputs, dt);
 	
 	//Move the player
 	if (!godmode_activated) {
@@ -199,6 +196,7 @@ bool PlayerClass::Load(pugi::xml_node& node) {
 
 	position.x = node.child("position").attribute("x").as_int();
 	position.y = node.child("position").attribute("y").as_int();
+
 	return true;
 }
 

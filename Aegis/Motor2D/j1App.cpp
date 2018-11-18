@@ -32,7 +32,7 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	map = new j1Map();
 	player = new PlayerClass();
 	collision = new j1Collision();
-	entity_manager = new EntityManager();
+	j1entity_manager = new j1EntityManager();
 
 	// Ordered for awake / Start / Update
 	// Reverse order of CleanUp
@@ -44,7 +44,7 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(player);
 	AddModule(map);
 	AddModule(collision);
-	AddModule(entity_manager);
+	AddModule(j1entity_manager);
 	// render last to swap buffer
 	AddModule(render);
 }
@@ -125,7 +125,7 @@ bool j1App::Start()
 // Called each loop iteration
 bool j1App::Update()
 {
-	BROFILER_CATEGORY("AppUpdate();", Profiler::Color::Orchid);
+	BROFILER_CATEGORY("AppUpdate();", Profiler::Color::Blue);
 	bool ret = true;
 	PrepareUpdate();
 
@@ -171,9 +171,9 @@ pugi::xml_node j1App::LoadConfig(pugi::xml_document& config_file) const
 // ---------------------------------------------
 void j1App::PrepareUpdate()
 {
-	
-    dt = Mtimerdt.ReadMs();
-	
+
+	dt = Mtimerdt.ReadMs();
+
 	frame_count++;
 	last_sec_frame_count++;
 	//LOG("DT = %f", dt);
@@ -186,6 +186,7 @@ void j1App::PrepareUpdate()
 void j1App::FinishUpdate()
 {
 	BROFILER_CATEGORY("FinishUpdate(); -- delay!", Profiler::Color::AliceBlue);
+
 	if(want_to_save == true)
 		SavegameNow();
 
@@ -219,8 +220,6 @@ void j1App::FinishUpdate()
 		SDL_Delay(capped_ms - last_frame_ms);
 		//LOG("We waited for %d milliseconds and got back in %f", capped_ms - last_frame_ms, t.ReadMs());
 	}
-	
-	
 }
 
 // Call modules before each loop iteration

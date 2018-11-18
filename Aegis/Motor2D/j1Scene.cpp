@@ -9,7 +9,10 @@
 #include "j1Map.h"
 #include "j1Scene.h"
 #include "Player.h"
-
+#include "EntityManager.h"
+#include "Entity.h"
+#include "Enemy.h"
+#include "EnemyWorm.h"
 
 j1Scene::j1Scene() : j1Module()
 {
@@ -34,10 +37,13 @@ bool j1Scene::Start()
 {
 
 	LoadLevel(level1);
-		
+  
 	current_map = App->map;
 	
 	current_map->DrawColliders();
+
+	App->j1entity_manager->CreateEnemy(400, 400, ENEMY_TYPE::WORM);
+
 	return true;
 }
 

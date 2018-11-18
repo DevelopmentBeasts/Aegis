@@ -16,7 +16,9 @@ class j1Scene;
 class j1Map;
 class PlayerClass;
 class j1Collision;
-class EntityManager;
+class j1EntityManager;
+class j1EntityManeger;
+
 class j1App
 {
 public:
@@ -88,9 +90,11 @@ public:
 	j1Map*				map;
 	j1Collision*		collision;
 	PlayerClass*        player;
-	EntityManager*      entity_manager;
+	j1EntityManager*    j1entity_manager;
+
 public:
 	bool                framerate_cap_activated;
+
 private:
 
 	p2List<j1Module*>	modules;

@@ -3,6 +3,7 @@
 
 #include "SDL/include/SDL_rect.h"
 #include "PugiXml/src/pugixml.hpp"
+#include "Brofiler/Brofiler.h"
 #define MAX_FRAMES 100
 
 class Animation
@@ -53,7 +54,7 @@ public:
 	}
 
  	void LoadPushbacks(pugi::xml_node node) {
-
+		BROFILER_CATEGORY("LoadPushBacks();", Profiler::Color::Aquamarine);
 		loop = node.attribute("loop").as_bool();
 		speed = node.attribute("speed").as_float();
 	
