@@ -5,6 +5,14 @@
 
 #include "j1Module.h"
 #include "SDL/include/SDL.h"
+//#include "Entity.h"
+#include "p2Defs.h"
+#include "p2Log.h"
+#include "p2Point.h"
+#include "j1Module.h"
+#include "j1App.h"
+#include "Entity.h"
+class j1Entity;
 
 enum COLLIDER_TYPE
 {
@@ -21,13 +29,15 @@ struct Collider
 	bool to_delete = false;
 	COLLIDER_TYPE type;
 	j1Module* callback = nullptr;
+	j1Entity* entity_callback = nullptr;
 
-	Collider(SDL_Rect rectangle, COLLIDER_TYPE type, j1Module* callback = nullptr) :
-		rect(rectangle),
-		type(type),
-		callback(callback)
+	Collider(SDL_Rect rect, COLLIDER_TYPE type, j1Module *callback = nullptr) :
+		rect(rect), type(type), callback(callback) {}
 
-	{}
+
+	Collider(SDL_Rect rect, COLLIDER_TYPE type, j1Entity *entcallback = nullptr) :
+		rect(rect), type(type), entity_callback(entcallback) {}
+
 
 	void SetPos(int x, int y)
 	{
@@ -50,6 +60,7 @@ public:
 	bool CleanUp() override;
 
 	Collider* AddCollider(SDL_Rect rect, COLLIDER_TYPE type, j1Module* callback = nullptr);
+	Collider* AddEntCollider(SDL_Rect rect, COLLIDER_TYPE type, j1Entity* entity_callback = nullptr);
 	void DebugDraw();
 
 

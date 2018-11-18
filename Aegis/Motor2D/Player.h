@@ -7,6 +7,7 @@
 #include "j1Module.h"
 #include "Animation.h"
 #include "p2Queue.h"
+#include "Entity.h"
 
 
 struct SDL_Texture;
@@ -43,11 +44,11 @@ enum player_inputs {
 	IN_FRONT_ATTACK
 };
 
-class PlayerClass : public j1Module {
+class PlayerClass : public j1Entity {
 
 public:
 
-	PlayerClass();
+	PlayerClass(iPoint pos);
 
 	virtual ~PlayerClass();
 	bool Start();
@@ -99,8 +100,8 @@ public:
 	Collider *player_collider;
 
 	//Player data
-	iPoint position;		///position in X & Y axis
-	fPoint velocity = { 0,-3.0 };
+	                 		///position in X & Y axis
+	
 	fPoint jumpvelocity = {0.0,-6.0};    ///velocity in X & Y axis
 	float rotation;			///rotation for blit
 	PlayerTypes avatar;		///current character

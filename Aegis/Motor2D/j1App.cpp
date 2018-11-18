@@ -30,7 +30,7 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	audio = new j1Audio();
 	scene = new j1Scene();
 	map = new j1Map();
-	player = new PlayerClass();
+	
 	collision = new j1Collision();
 	j1entity_manager = new j1EntityManager();
 
@@ -41,10 +41,10 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(tex);
 	AddModule(audio);
 	AddModule(scene);
-	AddModule(player);
 	AddModule(map);
-	AddModule(collision);
 	AddModule(j1entity_manager);
+	AddModule(collision);
+	
 	// render last to swap buffer
 	AddModule(render);
 }
@@ -208,7 +208,7 @@ void j1App::FinishUpdate()
 	float frames_on_last_update = prev_last_sec_frame_count;
 	
 	static char title[256];
-	sprintf_s(title, 256, " Aegis  ||  FPS: %f | Av.FPS: %f | Last Frame Ms: %f | Cap: %i | Vsync: off", frames_on_last_update, avg_fps, last_frame_ms,framerate_cap);
+	sprintf_s(title, 256, " Aegis  ||  FPS: %f | Av.FPS: %f | Last Frame Ms: %f | Cap: %i | Vsync: off | DT %f", frames_on_last_update, avg_fps, last_frame_ms,framerate_cap,dt);
 	App->win->SetTitle(title);
 	
 	//when game is cappd at 30 fps this is working

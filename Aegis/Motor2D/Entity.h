@@ -33,7 +33,8 @@ public:
 	virtual bool Load(pugi::xml_node&) { return true; }
 	virtual bool Save(pugi::xml_node&) { return true; }
 
-	virtual void OnCollision(Collider* c1, Collider* c2) {}
+	//virtual void OnCollision(Collider* c1, Collider* c2) {}
+	virtual void OnCollision(Collider*, Collider*) {}
 
 public:
 
@@ -45,6 +46,7 @@ public:
 
 	//Collider
 	Collider*	collider;
+	fPoint velocity = { 0,-3.0 };
 
 	//Node of the document with the properties
 	pugi::xml_node		properties_node;

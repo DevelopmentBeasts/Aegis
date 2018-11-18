@@ -28,7 +28,7 @@ bool j1Scene::Awake()
 {
 	LOG("Loading Scene");
 	bool ret = true;
-
+	
 	return ret;
 }
 
@@ -43,7 +43,8 @@ bool j1Scene::Start()
 	current_map->DrawColliders();
 
 	App->j1entity_manager->CreateEnemy(400, 400, ENEMY_TYPE::WORM);
-
+	PlayerPt = App->j1entity_manager->CreateEntity(App->map->data.start_position.x, App->map->data.start_position.y, ENTITY_TYPE::PLAYER);
+	
 	return true;
 }
 
@@ -57,6 +58,13 @@ bool j1Scene::PreUpdate()
 bool j1Scene::Update(float dt)
 {
 	
+	if (SceneLoaded) {
+		PlayerPt->position.x = App->map->data.start_position.x;
+		PlayerPt->position.y = App->map->data.start_position.y;
+		SceneLoaded = false;
+		PlayerExists = true;;
+	}
+
 	if(App->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)			//Save game
 		App->LoadGame("save_game.xml");
 
@@ -70,24 +78,24 @@ bool j1Scene::Update(float dt)
 	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)	//Load game
 		LoadLevel2NOW = true;
 		
-	if (LoadLevel1NOW && (App->player->velocity.y * -1 > 0)) {
+	if (LoadLevel1NOW && (PlayerPt->velocity.y * -1 > 0)) {
 		LoadLevel(level1);
 		LoadLevel1NOW = false;
 	}
-	if (LoadLevel2NOW && (App->player->velocity.y * -1 > 0)) {
+	if (LoadLevel2NOW && (PlayerPt->velocity.y * -1 > 0)) {
 		LoadLevel(level2);
 		LoadLevel2NOW = false;
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)			//Load game
 	{
-		App->player->position.x = App->map->data.start_position.x;
-		App->player->position.y = App->map->data.start_position.y;
+		PlayerPt->position.x = App->map->data.start_position.x;
+		PlayerPt->position.y = App->map->data.start_position.y;
 
 		App->render->CenterCamera();
 	}
 
-	if (App->player->position.x >= App->map->data.wincondition) {
+	if (PlayerPt->position.x >= App->map->data.wincondition) {
 
 		LoadLevel(level2);
 	}
@@ -154,9 +162,10 @@ void j1Scene::LoadLevel(const char* leveltoload) {
 		App->map->DrawColliders();
 		current_level = leveltoload;
 
-		App->player->position.x = App->map->data.start_position.x;
-		App->player->position.y = App->map->data.start_position.y;
+	
+		
+		
 
 		App->render->CenterCamera();
-
+		SceneLoaded = true;
 }
