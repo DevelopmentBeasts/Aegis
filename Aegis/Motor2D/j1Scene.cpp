@@ -59,13 +59,6 @@ bool j1Scene::PreUpdate()
 bool j1Scene::Update(float dt)
 {
 	
-	iPoint la(450, 450);
-	iPoint mau(420, 420);
-	App->pathfinding->CreatePath(la,mau);
-	const p2DynArray<iPoint>* path = App->pathfinding->GetLastPath();
-
-
-
 
 	if (SceneLoaded) {
 		PlayerPt->position.x = App->map->data.start_position.x;
@@ -171,10 +164,13 @@ void j1Scene::LoadLevel(const char* leveltoload) {
 		App->map->DrawColliders();
 		current_level = leveltoload;
 
-	
-		
-		
+		int w, h;
+		uchar* data = NULL;
+		if (App->map->CreateWalkabilityMap(w, h, &data))
+			App->pathfinding->SetMap(w, h, data);
 
+		RELEASE_ARRAY(data);
+		
 		App->render->CenterCamera();
 		SceneLoaded = true;
 }

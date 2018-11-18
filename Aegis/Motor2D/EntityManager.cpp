@@ -30,6 +30,7 @@ bool j1EntityManager::Start() {
 	//Load textures
 	player_texture	= App->tex->Load("textures/Fire_Wisp/fireSheet.png");
 	worm_texture	= App->tex->Load("textures/worm_sprites.png");
+	debug_texture	= App->tex->Load(("textures/walkability.png"));
 
 
 	//Execute start() of every entity
@@ -76,6 +77,8 @@ bool j1EntityManager::CleanUp() {
 
 	//Unload textures
 	App->tex->UnLoad(player_texture);
+	App->tex->UnLoad(debug_texture);
+	App->tex->UnLoad(worm_texture);
 	return true;
 }
 

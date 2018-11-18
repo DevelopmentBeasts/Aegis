@@ -70034,6 +70034,7 @@
  </layer>
  <layer name="Colisions" width="200" height="70">
   <properties>
+   <property name="Navigation" type="int" value="1"/>
    <property name="Visible" type="bool" value="false"/>
   </properties>
   <data>
