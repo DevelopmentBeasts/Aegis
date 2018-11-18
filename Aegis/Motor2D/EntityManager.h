@@ -1,49 +1,54 @@
-#ifndef ENTITYMANAGER_H_
-#define ENTITYMANAGER_H_
-
+#ifndef _J1_ENTITY_MANAGER
+#define _J1_ENTITY_MANAGER
 
 #include "j1Module.h"
-#include "SDL/include/SDL.h"
-//#include "Player.h"
-//ENTITY MANAGER
-
 #include "Entity.h"
 #include "p2List.h"
 #include "Enemy.h"
 #include "PugiXml\src\pugixml.hpp"
 
-#define TIMES_PER_SEC 5
 
-class EntityManager : public j1Module
+enum class ENTITY_TYPE {
+
+	ENEMY,
+	PLAYER,
+	UNKNOWN = 2
+
+};
+
+
+class j1EntityManager : public j1Module
 {
 public:
 
-	EntityManager();
-	~EntityManager();
+	j1EntityManager();
 
-public:
+	~j1EntityManager();
 
 	bool Awake();
-	bool Start();
+	bool Start();				//Load textures for each entity
+
 	bool PreUpdate();
 	bool Update(float dt);
 	bool CleanUp();
 
+	j1Entity *CreateEntity(int x , int y, ENTITY_TYPE eType);
+	j1Entity *CreateEnemy(int x, int y, ENEMY_TYPE );
+	void DestroyEntity(j1Entity *Entity);
 
-public:
-
-	Entity *CreateEntity(EntityType eType);
-	void DestroyEntity(Entity *Entity);
-
-public:
-
-	p2List<Entity*> entities_list;
+	p2List<j1Entity*> entities_list;
 
 	float accumulated_time;
 	float update_ms_cycle;
-	int times_per_sec;
+
+public:
 
 	bool do_logic;
+
+	//Textures for the entities
+	SDL_Texture* player_texture;
+	SDL_Texture* worm_texture;
+
 
 };
 

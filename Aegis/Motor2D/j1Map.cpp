@@ -54,6 +54,7 @@ void j1Map::Draw()
 					
 						if (App->render->InScreen(pos.x,pos.y, rect.w, rect.h, parallax))
 							App->render->Blit(tileset->texture, pos.x, pos.y, &rect,parallax);
+
 					}
 				}
 			}

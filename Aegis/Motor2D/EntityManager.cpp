@@ -1,68 +1,64 @@
 #include "EntityManager.h"
 #include "p2Log.h"
 #include "Entity.h"
-#include "j1Scene.h"
+#include "j1Textures.h"
+#include "EnemyWorm.h"
+#include "j1Render.h"
 
-
-
-EntityManager::EntityManager()
+j1EntityManager::j1EntityManager()
 {
 	name.create("entities");
 }
 
 
-EntityManager::~EntityManager() {}
+j1EntityManager::~j1EntityManager() {}
 
-bool EntityManager::Awake() {
+bool j1EntityManager::Awake() {
 
 	LOG("AWAKING ENTITY MANAGER");
-	times_per_sec = TIMES_PER_SEC; //Read this with an XML
-	update_ms_cycle = 1.0f / (float)times_per_sec;
 
 	return true;
 }
 
-bool EntityManager::Start() {
+bool j1EntityManager::Start() {
 
-	p2List_item<Entity*>* item;
-	item = entities_list.start;
+	//Load textures
+	player_texture	= App->tex->Load("textures/Fire_Wisp/fireSheet.png");
+	worm_texture	= App->tex->Load("textures/worm_sprites.png");
 
-	while (item != nullptr) {
 
+	//Execute start() of every entity
+	p2List_item<j1Entity*>*item = entities_list.start;
+	for (; item != nullptr; item = item->next) {
 		item->data->Start();
-		item = item->next;
 	}
 
 	return true;
 }
 
-bool EntityManager::PreUpdate() {
+bool j1EntityManager::PreUpdate() {
 
 	do_logic = false;
 	return true;
 }
 
-bool EntityManager::Update(float dt) {
+bool j1EntityManager::Update(float dt) {
 
-	/*accumulated_time += dt;
-	if (accumulated_time >= update_ms_cycle)
-		do_logic = true;
-	if (do_logic == true) {*/
-	p2List_item<Entity*>*item = entities_list.start;
-	for (; item != nullptr; item = item->next)
+	p2List_item<j1Entity*>*item = entities_list.start;
+	for (; item != nullptr; item = item->next) {
 		item->data->Update(dt);
+	}
 
 	accumulated_time = 0.0f;
-	//}
 
 	return true;
 }
 
-bool EntityManager::CleanUp() {
+bool j1EntityManager::CleanUp() {
 
 	LOG("Clean Up Entity Manager");
 
-	p2List_item<Entity*>* item;
+	p2List_item<j1Entity*>* item;
 	item = entities_list.start;
 
 	while (item != nullptr) {
@@ -73,36 +69,49 @@ bool EntityManager::CleanUp() {
 
 	entities_list.clear();
 
+	//Unload textures
+	App->tex->UnLoad(player_texture);
 	return true;
 }
 
-Entity *EntityManager::CreateEntity(EntityType eType) {
+j1Entity *j1EntityManager::CreateEntity(int x, int y, ENTITY_TYPE eType) {
 
-	//static_assert(EntityType::NONVALID == EntityType(3), "UPDATE ENTITY TYPES");
+	static_assert(ENTITY_TYPE::UNKNOWN == ENTITY_TYPE(2), "UPDATE ENTITY TYPES");
 
-	Entity* Entity_ = nullptr;
+	j1Entity* Entity = nullptr;
 
 	switch (eType) {
 
-	case EntityType::ENEMY:
-		Entity_ = new Entity(EntityType::ENEMY);
-		break;
-	case EntityType::PLAYER:
-		Entity_ = new Entity(EntityType::PLAYER);
+	case ENTITY_TYPE::PLAYER:
+		Entity = new j1Entity(iPoint (x,y),ENTITY_TYPE::PLAYER);
 		break;
 	default:
 		break;
-
 	}
 
-	entities_list.add(Entity_);
-	return Entity_;
+	entities_list.add(Entity);
+	Entity->Start();
+	return Entity;
 }
 
+j1Entity* j1EntityManager::CreateEnemy(int x, int y, ENEMY_TYPE Type) {
 
-void EntityManager::DestroyEntity(Entity *Entity) {
+	static_assert(ENTITY_TYPE::UNKNOWN == ENTITY_TYPE(2), "UPDATE ENEMIES");
 
-	/*p2List_item<Entity*>*item = entities_list.start;
+	j1Entity* Entity = nullptr;
+
+	switch (Type) {
+	case ENEMY_TYPE::WORM:
+		Entity = new EnemyWorm(iPoint(x, y));
+	}
+	entities_list.add(Entity);
+	Entity->Start();
+	return Entity;
+}
+
+void j1EntityManager::DestroyEntity(j1Entity *Entity) {
+
+	p2List_item<j1Entity*>*item = entities_list.start;
 
 	while (item != nullptr) {
 
@@ -114,5 +123,5 @@ void EntityManager::DestroyEntity(Entity *Entity) {
 		}
 
 		item = item->next;
-	}*/
+	}
 }

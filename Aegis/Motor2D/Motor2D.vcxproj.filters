@@ -52,6 +52,9 @@
     <ClCompile Include="EnemyWorm.cpp">
       <Filter>Desenvolupament  ========\EntitiesSystem</Filter>
     </ClCompile>
+    <ClCompile Include="Entity.cpp">
+      <Filter>Desenvolupament  ========\EntitiesSystem</Filter>
+    </ClCompile>
     <ClCompile Include="Enemy.cpp">
       <Filter>Desenvolupament  ========\EntitiesSystem</Filter>
     </ClCompile>
@@ -132,10 +135,10 @@
     <ClInclude Include="EnemyWorm.h">
       <Filter>Desenvolupament  ========\EntitiesSystem</Filter>
     </ClInclude>
-    <ClInclude Include="Enemy.h">
+    <ClInclude Include="Entity.h">
       <Filter>Desenvolupament  ========\EntitiesSystem</Filter>
     </ClInclude>
-    <ClInclude Include="Entity.h">
+    <ClInclude Include="Enemy.h">
       <Filter>Desenvolupament  ========\EntitiesSystem</Filter>
     </ClInclude>
   </ItemGroup>

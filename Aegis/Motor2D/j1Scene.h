@@ -2,6 +2,7 @@
 #define __j1SCENE_H__
 
 #include "j1Module.h"
+#include "Enemy.h"
 
 struct SDL_Texture;
 class j1Map;
@@ -44,9 +45,6 @@ public:
 
 private:
 	
-	//const char* level1="AEGIS_RUN_TUTORIAL.tmx";	//Level 1
-	//const char* level2="AEGIS_RUN.tmx";			//Level 2
-	
 	//Level that is loaded at the moment
 	p2SString current_level;
 
@@ -62,7 +60,7 @@ public:
 	float screeninitx;
 	float screeninity;
 
-
+	pugi::xml_document doc;
 public:
 	bool LoadLevel1NOW;
 	bool LoadLevel2NOW;

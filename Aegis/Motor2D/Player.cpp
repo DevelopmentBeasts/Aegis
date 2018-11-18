@@ -20,8 +20,8 @@ PlayerClass::PlayerClass() {   //DO PUSHBACKS WITH XML
 
 	pugi::xml_parse_result result = AnimsDoc.load_file("PlayerAnims.xml");
 
-	if (result == NULL) {
-		LOG("The xml file that contains the pushbacks for the animations is not working.PlayerAnims.xml. error: %s",result.description());
+	if (result == NULL ) {
+		LOG("The xml file that contains the pushbacks for the animations is not working.PlayerAnims.xml.  error: %s",result.description());
 	}
 	
 	AnimsNode = AnimsDoc.child("config").child("AnimsCoords").child("idle_left");
@@ -90,7 +90,7 @@ bool PlayerClass::Start() {
 	JumpForce = PlayerXmlNode.child("worldplayerinteraction").attribute("JumpForce").as_float();
 
 	//dt stuff
-	Period = PlayerXmlNode_.attribute("period").as_int();
+	//movement_period = PlayerXmlNode_.attribute("period").as_float(33.0f);
 
 
 
@@ -102,6 +102,7 @@ bool PlayerClass::Start() {
 	LOG("LOADING PLAYER TEXTURES");
 
 	player_texture = App->tex->Load("textures/Fire_Wisp/fireSheet.png");
+
 	current_animation = &move;
 
 	LOG("CREATING PLAYER COLLIDER");
@@ -117,59 +118,52 @@ bool PlayerClass::Start() {
 bool PlayerClass::Update(float dt) {
 	BROFILER_CATEGORY("PlayerUpdate();", Profiler::Color::Green);
     
-	//acumulatedtime += dt;
-	//LOG("waiting");
-	//if (acumulatedtime >= Period) {
-	//	if (ExternalInput(inputs))
-	//	{
-	//		//InternalInput(inputs);
-	//		process_fsm(inputs, dt);
-	//		acumulatedtime -= Period;
-	//		LOG("YEAH BOI NOW IM EXECUTING THE process_fsm(); FUNCTION");
-	//	}
-	//}
-	
-	/*	acumulatedtime += dt;
-		LOG("waiting");
-		if (acumulatedtime >= Period)
-			DoLogic = true;
+	//FRAMERATE CONTROL
+	if (App->framerate_cap_activated) {
+		dt = 30;
+		idle.speed = 0.22;
+		move.speed = 0.22;
+	}
+	else if (!(App->framerate_cap_activated)) {
+		idle.speed = 0.22;
+		move.speed = 0.22;
+		idle.speed *= (dt / 30);
+		move.speed *= (dt / 30);
+	}
 
-		if (DoLogic) {
-			process_fsm(inputs, dt);
-			acumulatedtime = 0;
-			DoLogic = false;
-			LOG("YEAH BOI NOW IM EXECUTING THE process_fsm(); FUNCTION");
-		}
-	}*/
+
+	if (App->input->GetKey(SDL_SCANCODE_F10) == j1KeyState::KEY_DOWN) {
+		godmode_activated = !godmode_activated;
+	}
+	 
+	if (!godmode_activated && position.y > 1700) {
+		Die();
+	}
 	
 	if (ExternalInput(inputs))
-			{
-				//InternalInput(inputs);
 				process_fsm(inputs, dt);
-				//acumulatedtime -= Period;
-				LOG("YEAH BOI NOW IM EXECUTING THE process_fsm(); FUNCTION");
-			}	
-		
 	
-	
-	
-
 	//Move the player
 	if (!godmode_activated) {
-		position.x += velocity.x;
+			
+		position.x += velocity.x*(dt/30);
 		if (Gravity) {
-			velocity.y += GravityValue;
-			position.y += velocity.y;
+			velocity.y += GravityValue * (dt / 30);
+			position.y += velocity.y*(dt/30);
 		}
-
 	}
+	else
+		GodMode(dt);
+	
+	
 	//Move the collider
 	player_collider->SetPos(position.x, position.y);
 
-	//Draw the player
+	//DRAW THE PLAYER
 	CurrentAnimationRect = current_animation->GetCurrentFrame();
 	
-	if (JumpRotation) {
+	
+	if (JumpRotation && rotation < 20  ) {
 		rotation = velocity.y;
 	}
 	else if (!JumpRotation) {
@@ -202,17 +196,12 @@ bool PlayerClass::Load(pugi::xml_node& node) {
 
 	position.x = node.child("position").attribute("x").as_int();
 	position.y = node.child("position").attribute("y").as_int();
+
 	return true;
 }
 
 bool PlayerClass::ExternalInput(p2Queue<player_inputs> &inputs) {
 	
-
-	if (App->input->GetKey(SDL_SCANCODE_F10) == j1KeyState::KEY_DOWN) {
-		godmode_activated = !godmode_activated;
-	}
-	if (!godmode_activated) {
-
 		if (App->input->GetKey(SDL_SCANCODE_G) == j1KeyState::KEY_DOWN) {
 			Gravity = true;
 		}
@@ -220,10 +209,11 @@ bool PlayerClass::ExternalInput(p2Queue<player_inputs> &inputs) {
 			jump = false;
 		}
 		// key is pressed
-		if (App->input->GetKey(SDL_SCANCODE_W) == j1KeyState::KEY_DOWN) {
+		if (App->input->GetKey(SDL_SCANCODE_W ) == j1KeyState::KEY_DOWN && !JumpRotation && Gravity == true) {
 			inputs.Push(IN_JUMP_DOWN);
 			JumpRotation = true;
 			up = true;
+			
 		}
 		if (App->input->GetKey(SDL_SCANCODE_A) == j1KeyState::KEY_DOWN) {
 			left = true;
@@ -246,11 +236,12 @@ bool PlayerClass::ExternalInput(p2Queue<player_inputs> &inputs) {
 				deceleration = true;
 			}
 		}
-		if (App->input->GetKey(SDL_SCANCODE_F) == j1KeyState::KEY_DOWN) {
-			if (jump) {
-				LOG("MEGA FALL ATTACK");
-				inputs.Push(IN_FALL_ATTACK);
-			}
+		if (App->input->GetKey(SDL_SCANCODE_E) == j1KeyState::KEY_DOWN) {
+				LOG("FRONT ATTACK");
+				inputs.Push(IN_FRONT_ATTACK);
+				down = true;
+				front_attack = true;
+				
 		}
 
 		// key is released
@@ -273,15 +264,13 @@ bool PlayerClass::ExternalInput(p2Queue<player_inputs> &inputs) {
 			if (right)
 				inputs.Push(IN_RIGHT_DOWN);
 		}
-	}
+	
 	return true;
 }
 
 player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) {
 	
-	if (godmode_activated) {
-		GodMode();
-	}
+	
 	if (!godmode_activated) {
 	
 		static player_states state = ST_IDLE;
@@ -294,15 +283,15 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) 
 			switch (state)
 			{
 			case ST_IDLE:
-				//LOG("IM FUCKING IDL MEN");
+				//LOG("IM  IDL ");
 				
 				switch (last_input)
 				{
 				case IN_RIGHT_DOWN:
 					state = ST_WALK_FORWARD;
-					velocity.x = 12;
+					velocity.x = 10;
 					if (Gravity) {
-						velocity.x =  12;
+						velocity.x =  10;
 					}
 					flip = SDL_FLIP_HORIZONTAL;
 					current_animation = &move;
@@ -310,9 +299,9 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) 
 					break;
 				case IN_LEFT_DOWN:
 					state = ST_WALK_BACKWARD;
-					velocity.x = -12;
+					velocity.x = -10;
 					if (Gravity) {
-						velocity.x = -12;
+						velocity.x = -10;
 					}
 					flip = SDL_FLIP_NONE;
 					current_animation = &move;
@@ -325,13 +314,14 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) 
 						//LOG("INPUT----->JUMP_DOWN");
 					}
 					break;
+				
 				}
 
 				break;
 
 			case ST_WALK_FORWARD:
 				//LOG("WALKING RIGHT");
-				velocity.x = 12;
+				velocity.x = 15;
 				switch (last_input)
 				{
 				case IN_RIGHT_UP:
@@ -354,6 +344,7 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) 
 						state = ST_JUMP_FORWARD;
 						//LOG("INPUT----->JUMP_DOWN");
 						jump = true;
+				
 					}
 					break;
 				}
@@ -382,7 +373,9 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) 
 						state = ST_JUMP_BACKWARD;
 						//LOG("INPUT----->JUMP_DOWN");
 						jump = true;
+				
 					}
+
 					break;
 				}
 				break;
@@ -396,18 +389,19 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) 
 				{
 				case IN_RIGHT_DOWN:
 					state = ST_WALK_FORWARD;
-					velocity.x = 12;
+					velocity.x = 10;
 					flip = SDL_FLIP_HORIZONTAL;
 					current_animation = &move;
 					//LOG("INPUT----->JUMPING RIGHT ------");
 					break;
 				case IN_LEFT_DOWN:
 					state = ST_WALK_BACKWARD;
-					velocity.x = -12;
+					velocity.x = -10;
 					flip = SDL_FLIP_NONE;
 					current_animation = &move;
 					//LOG("INPUT----->JUMPING LEFT ------");
 					break;
+				
 				}
 
 			case ST_JUMP_FORWARD:
@@ -420,18 +414,19 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) 
 				{
 				case IN_RIGHT_DOWN:
 					state = ST_WALK_FORWARD;
-					velocity.x = 12;
+					velocity.x = 10;
 					flip = SDL_FLIP_HORIZONTAL;
 					current_animation = &move;
 					//LOG("INPUT----->JUMPING RIGHT ------ ");
 					break;
 				case IN_LEFT_DOWN:
 					state = ST_WALK_BACKWARD;
-					velocity.x = -12;
+					velocity.x = -10;
 					flip = SDL_FLIP_NONE;
 					current_animation = &move;
 					//LOG("INPUT----->JUMPING LEFT ------ ");
 					break;
+				
 				}
 				break;
 			case ST_JUMP_BACKWARD:
@@ -445,23 +440,25 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) 
 				{
 				case IN_RIGHT_DOWN:
 					state = ST_WALK_FORWARD;
-					velocity.x = 12;
+					velocity.x = 10;
 					flip = SDL_FLIP_HORIZONTAL;
 					current_animation = &move;
 					//LOG("INPUT----->JUMPING RIGHT ------ ");
 					break;
 				case IN_LEFT_DOWN:
 					state = ST_WALK_BACKWARD;
-					velocity.x = -12;
+					velocity.x = -10;
 					flip = SDL_FLIP_NONE;
 					current_animation = &move;
 					//LOG("INPUT----->JUMPING LEFT ------ ");
 					break;
+				case IN_FRONT_ATTACK:
+					state = ST_FRONT_ATTACK;
+					break;
 				}
 				break;
-			case ST_FALL_ATTACK:
-				LOG("NEED CODE FOR FALL ATTACK");
-				break;
+			
+
 			default:
 				break;
 			}
@@ -473,6 +470,10 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) 
 			Jump();
 			jump = false;
 		}
+		/*if (front_attack) {
+			velocity.x += 50;
+			front_attack = false;
+		}*/
 	return state;
 	}
 }
@@ -499,8 +500,7 @@ void PlayerClass::OnCollision(Collider *c1, Collider *c2) {
 
 				//Checking Y Axis Collisions
 				if (c1->rect.y <= c2->rect.y + c2->rect.h && c1->rect.y >= c2->rect.y + c2->rect.h -20/*- ((velocity.y*-1)-velocity.y)*/) { //Colliding down (jumping)
-					LOG("BOOL COLLIDING DOWN TRUE");
-					/*velocity.y = 0;*/
+					//LOG("BOOL COLLIDING DOWN TRUE");
 					if (velocity.y * -1 < 0 ) {
 						velocity.y += (velocity.y*-1);
 						
@@ -518,6 +518,7 @@ void PlayerClass::OnCollision(Collider *c1, Collider *c2) {
 					jump = false;
 					velocity.y = 0;
 					position.y = c1->rect.y - ((c1->rect.y + c1->rect.h) - c2->rect.y);
+					JumpRotation = false;
 				}
 				
 			}
@@ -527,57 +528,53 @@ void PlayerClass::OnCollision(Collider *c1, Collider *c2) {
 				LOG("COLLIDING LEFT");
 				velocity.x = 0;
 				position.x -= (c1->rect.x + c1->rect.w) - c2->rect.x + 4;
-
+				
 			}
 			else if (c1->rect.x <= c2->rect.x + c2->rect.w && c1->rect.x >= c2->rect.x + c2->rect.w - ((velocity.x*-1) - velocity.x)) { //Colliding Right (going left)
 				LOG("COLLIDING RIGHT");
 				velocity.x = 0;
 				position.x += (c2->rect.x + c2->rect.w) - c1->rect.x + 4;
-
+				
 			}
 		}
 	/*}*/
 }
 
-void PlayerClass::GodMode() {
+void PlayerClass::GodMode(float dt) {
 
 	current_animation = &idle;
 	
 	
 	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) {
 		    //LOG("<----GODMODE");
-		    velocity.x = 10;
-		    position.x -= velocity.x;
+		    velocity.x = 10 ;
+		    position.x -= velocity.x*(dt/30);
 	}
 	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) {
 		    //LOG("GODMODE---->");
-			velocity.x = 10;
-			position.x += velocity.x;
+			velocity.x = 10 ;
+			position.x += velocity.x*(dt / 30);
 	}
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) {
 		    //LOG("GODMODE UP");
-		    velocity.y = 10;
-		    position.y -= velocity.x;
-	}
-		
-
+		    velocity.y = -10 ;
+		    position.y -= velocity.x*(dt / 30);
+	}	
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) {
 		    //LOG("GODMODE DOWN");
-		    velocity.y = 10;
-		    position.y += velocity.x;
+		    velocity.y =10 ;
+		    position.y += velocity.x*(dt / 30);
 	}
-		
-
-	//App->render->Blit(Textures, (int)data.xpos, (int)data.ypos, &current_animation->GetCurrentFrame(), 1, 0, SDL_FLIP_NONE, 1, 1, 1.0);
-
+	
+	
+	
 }
 
 void PlayerClass::Die() {
-
-
 	App->player->position.x = App->map->data.start_position.x;
 	App->player->position.y = App->map->data.start_position.y;
-
+	current_animation = &death;
+	if(current_animation->Finished())
 	App->render->find_player = true;
 }
 

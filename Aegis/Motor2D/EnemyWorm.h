@@ -1,22 +1,37 @@
-//#ifndef __ENEMY_BEE_H__
-//#define __ENEMY_BEE_H__
-//
-//#include "Enemy.h"
-//#include "Animation.h"
-//#include "j1Collision.h"
-//
-//class EnemyWorm : public Enemy
-//{
-//public:
-//	EnemyWorm(iPoint pos,const char* path, pugi::xml_document &EnemiesDocument);
-//	~EnemyWorm();
-//    void OnCollision(Collider *collider);
-//	fPoint shoot;	
-//	Animation example;
-//	SDL_Texture* Normal;
-//
-//	
-//	void Move();
-//};
-//
-//#endif // __ENEMY_BEE_H__
+
+#ifndef _J1_ENEMY_FLYER_
+#define _J1_ENEMY_FLYER_
+
+#include "Enemy.h"
+#include "Animation.h"
+
+
+class EnemyWorm: public j1Enemy
+{
+
+public:
+
+	EnemyWorm(iPoint pos);
+	~EnemyWorm();
+
+	bool Start() override;
+
+	bool Update(float dt) override;
+
+
+public:
+
+	p2DynArray<iPoint>* enemy_path;
+	p2DynArray<iPoint>* last_enemy_path;
+
+	SDL_Rect pathrect;
+	MasterTimer pathfinding_recalc;
+
+private:
+
+	Animation idle;
+	Animation move;
+
+};
+
+#endif

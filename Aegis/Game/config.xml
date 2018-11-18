@@ -21,7 +21,7 @@
   </window>
   
   <UpdateInfo>
-    <player period="3"/>  
+    <player period="0.0033"/>  
     <Astar>
       <period value ="10"/>
     </Astar>

@@ -9,7 +9,10 @@
 #include "j1Map.h"
 #include "j1Scene.h"
 #include "Player.h"
-
+#include "EntityManager.h"
+#include "Entity.h"
+#include "Enemy.h"
+#include "EnemyWorm.h"
 
 j1Scene::j1Scene() : j1Module()
 {
@@ -34,11 +37,13 @@ bool j1Scene::Start()
 {
 
 	LoadLevel(level1);
-	
-	
+  
 	current_map = App->map;
 	
 	current_map->DrawColliders();
+
+	App->j1entity_manager->CreateEnemy(400, 400, ENEMY_TYPE::WORM);
+
 	return true;
 }
 
@@ -62,19 +67,19 @@ bool j1Scene::Update(float dt)
 	/*	LoadLevel(level1);*/
 		LoadLevel1NOW = true;
 	}
-	if (App->input->GetKey(SDL_SCANCODE_F4) == KEY_DOWN)	//Load game
+	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)	//Load game
 		LoadLevel2NOW = true;
 		
-	/*if (LoadLevel1NOW && App->player->jumping) {
+	if (LoadLevel1NOW && (App->player->velocity.y * -1 > 0)) {
 		LoadLevel(level1);
 		LoadLevel1NOW = false;
 	}
-	if (LoadLevel2NOW && App->player->jumping) {
+	if (LoadLevel2NOW && (App->player->velocity.y * -1 > 0)) {
 		LoadLevel(level2);
 		LoadLevel2NOW = false;
-	}*/
+	}
 
-	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)			//Load game
+	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)			//Load game
 	{
 		App->player->position.x = App->map->data.start_position.x;
 		App->player->position.y = App->map->data.start_position.y;
