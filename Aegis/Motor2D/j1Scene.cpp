@@ -42,7 +42,8 @@ bool j1Scene::Start()
 	
 	current_map->DrawColliders();
 
-	App->j1entity_manager->CreateEnemy(400, 400, ENEMY_TYPE::WORM);
+	//App->j1entity_manager->CreateEnemy(400, 400, ENEMY_TYPE::WORM);
+	App->j1entity_manager->CreateEnemy(500, 500, ENEMY_TYPE::TRIBALE);
 	PlayerPt = App->j1entity_manager->CreateEntity(App->map->data.start_position.x, App->map->data.start_position.y, ENTITY_TYPE::PLAYER);
 	
 	return true;
@@ -64,7 +65,10 @@ bool j1Scene::Update(float dt)
 		SceneLoaded = false;
 		PlayerExists = true;;
 	}
-
+	if (App->render->find_player) {
+		App->render->FindPlayer(dt);
+	}
+	
 	if(App->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)			//Save game
 		App->LoadGame("save_game.xml");
 
@@ -98,6 +102,7 @@ bool j1Scene::Update(float dt)
 	if (PlayerPt->position.x >= App->map->data.wincondition) {
 
 		LoadLevel(level2);
+		App->render->FindPlayer(dt);
 	}
 
 	//Draw the map
@@ -161,11 +166,8 @@ void j1Scene::LoadLevel(const char* leveltoload) {
 		App->map->Load(leveltoload);
 		App->map->DrawColliders();
 		current_level = leveltoload;
+		//App->render->CenterCamera();
 
-	
-		
-		
-
-		App->render->CenterCamera();
 		SceneLoaded = true;
+		App->render->find_player = true;
 }

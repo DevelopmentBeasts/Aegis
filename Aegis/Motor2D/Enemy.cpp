@@ -10,7 +10,7 @@
 #include "EntityManager.h"
 #include "Player.h"
 #include "j1Collision.h"
-
+#include "EnemyTribale.h"
 
 j1Enemy::j1Enemy(iPoint pos, ENEMY_TYPE enemy_type) : enemy_type(enemy_type), j1Entity(pos, ENTITY_TYPE::ENEMY){
 	
@@ -22,5 +22,5 @@ void j1Enemy::OnCollision(Collider *c1, Collider *c2) {
 }
 
 void j1Enemy::Draw() {
-	App->render->Blit(texture,position.x, position.y, &current_animation->GetCurrentFrame(), 1.0/*Parallax*/, 0.0/*rotation*/, flip);
+	App->render->Blit(texture,position.x, position.y, &current_animation->GetCurrentFrame(), 1.0/*Parallax*/, 0.0/*rotation*/, flip,NULL,NULL,3);
 }

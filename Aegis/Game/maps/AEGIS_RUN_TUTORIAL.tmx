@@ -70030,7 +70030,7 @@
   </data>
  </layer>
  <objectgroup name="Spawn">
-  <object id="4" x="1079.67" y="850" width="28.6667" height="66"/>
+  <object id="4" x="1194.82" y="819.697" width="28.6667" height="66"/>
  </objectgroup>
  <objectgroup name="Win">
   <object id="20" x="3806" y="1086.67" width="35.6667" height="34.6667"/>

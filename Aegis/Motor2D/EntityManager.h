@@ -51,7 +51,7 @@ public:
 	//Textures for the entities
 	SDL_Texture* player_texture;
 	SDL_Texture* worm_texture;
-
+	SDL_Texture* tribale_texture;
 
 };
 

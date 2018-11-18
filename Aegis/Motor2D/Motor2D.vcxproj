@@ -77,6 +77,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="EnemyTribale.cpp" />
     <ClCompile Include="EnemyWorm.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="EntityManager.cpp" />
@@ -99,6 +100,7 @@
   <ItemGroup>
     <ClInclude Include="Animation.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="EnemyTribale.h" />
     <ClInclude Include="EnemyWorm.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="EntityManager.h" />

@@ -58,6 +58,9 @@
     <ClCompile Include="Player.cpp">
       <Filter>Desenvolupament  ========\EntitiesSystem</Filter>
     </ClCompile>
+    <ClCompile Include="EnemyTribale.cpp">
+      <Filter>Desenvolupament  ========\EntitiesSystem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="j1Window.h">
@@ -139,6 +142,9 @@
       <Filter>Desenvolupament  ========\EntitiesSystem</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
+      <Filter>Desenvolupament  ========\EntitiesSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyTribale.h">
       <Filter>Desenvolupament  ========\EntitiesSystem</Filter>
     </ClInclude>
   </ItemGroup>
