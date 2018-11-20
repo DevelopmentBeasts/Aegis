@@ -53,7 +53,7 @@ bool EnemyTribale::Update(float dt) {
 	switch (state)
 	{
 	case IDL:
-		LOG("TRIBALE IDL");
+		//LOG("TRIBALE IDL");
 		velocity.x = 0;
 		if (position.x - App->scene->PlayerPt->position.x < detectdistance && position.x - App->scene->PlayerPt->position.x > 20 ) {  // SIEMPRE IRA A LA IZQUIERDA=???? NIO LO SE, MIRAR
 			state = TribaleStates::RUN_LEFT;

@@ -66,6 +66,7 @@ public:
 	player_states process_fsm(p2Queue<player_inputs>&inputs,float dt);	///Act depending on the inputs
 
 	void Jump();
+	void SpeedPower(int speedpowervalue,int  AvailableDistanceRightNow,float dt);
 	
 
 	//God Mode will allow the player to fly around the map ignoring collisions
@@ -98,7 +99,10 @@ public:
 	
 	//Colliders
 	Collider *player_collider;
-
+	Collider *sensor_collider1;
+	Collider *sensor_collider2;
+	int AvailableDistance;
+	int AvailableDistanceRightNow;
 	//Player data
 	                 		///position in X & Y axis
 	
@@ -111,6 +115,10 @@ public:
 	float PlayerScale;
 	float GravityValue;
 	float JumpForce;
+
+	int speedpowervalue;
+	bool SpeedPowerActivatedRight;
+	bool SpeedPowerActivatedLeft;
 
 	int CurrFrame = 0;
 	
