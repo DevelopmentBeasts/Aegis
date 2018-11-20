@@ -30,7 +30,9 @@ enum player_states {
 	ST_JUMP_NEUTRAL,
 	ST_JUMP_FORWARD,
 	ST_JUMP_BACKWARD,
-	ST_FRONT_ATTACK
+	ST_FRONT_ATTACK,
+	ST_RIGHT_SPEED,
+	ST_LEFT_SPEED
 };
 
 enum player_inputs {
@@ -41,7 +43,9 @@ enum player_inputs {
 	IN_LEFT_AND_RIGHT,
 	IN_JUMP_DOWN,
 	IN_JUMP_UP,
-	IN_FRONT_ATTACK
+	IN_FRONT_ATTACK,
+	IN_RIGHT_SPEED,
+	IN_LEFT_SPEED
 };
 
 class PlayerClass : public j1Entity {
@@ -66,6 +70,7 @@ public:
 	player_states process_fsm(p2Queue<player_inputs>&inputs,float dt);	///Act depending on the inputs
 
 	void Jump();
+	void SpeedBoost(int speedboost);
 	
 
 	//God Mode will allow the player to fly around the map ignoring collisions
@@ -94,6 +99,7 @@ public:
 	
 	bool DoLogic = false;
 
+	bool SpeedBoostActive = false;
 	SDL_Texture* player_texture = nullptr;
 	
 	//Colliders
@@ -111,7 +117,7 @@ public:
 	float PlayerScale;
 	float GravityValue;
 	float JumpForce;
-
+	int speedboost;
 	int CurrFrame = 0;
 	
 	Animation* current_animation = nullptr;	///Animation being shown at the moment

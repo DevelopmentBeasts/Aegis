@@ -210,9 +210,7 @@ bool PlayerClass::ExternalInput(p2Queue<player_inputs> &inputs) {
 		if (App->input->GetKey(SDL_SCANCODE_G) == j1KeyState::KEY_DOWN) {
 			Gravity = true;
 		}
-		if (App->input->GetKey(SDL_SCANCODE_J) == j1KeyState::KEY_DOWN) {
-			jump = false;
-		}
+	
 		// key is pressed
 		if (App->input->GetKey(SDL_SCANCODE_W ) == j1KeyState::KEY_DOWN && !JumpRotation && Gravity == true) {
 			inputs.Push(IN_JUMP_DOWN);
@@ -243,10 +241,7 @@ bool PlayerClass::ExternalInput(p2Queue<player_inputs> &inputs) {
 		}
 		if (App->input->GetKey(SDL_SCANCODE_E) == j1KeyState::KEY_DOWN) {
 				LOG("FRONT ATTACK");
-				inputs.Push(IN_FRONT_ATTACK);
-				down = true;
-				front_attack = true;
-				
+				inputs.Push(IN_RIGHT_SPEED);			
 		}
 
 		// key is released
@@ -276,8 +271,9 @@ bool PlayerClass::ExternalInput(p2Queue<player_inputs> &inputs) {
 player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) {
 	
 	
-	if (!godmode_activated) {
-	
+	if (!godmode_activated) 
+	{
+
 		static player_states state = ST_IDLE;
 		player_inputs last_input;
 		if (velocity.x == 0) {
@@ -289,14 +285,14 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) 
 			{
 			case ST_IDLE:
 				//LOG("IM  IDL ");
-				
+
 				switch (last_input)
 				{
 				case IN_RIGHT_DOWN:
 					state = ST_WALK_FORWARD;
 					velocity.x = 10;
 					if (Gravity) {
-						velocity.x =  10;
+						velocity.x = 10;
 					}
 					flip = SDL_FLIP_HORIZONTAL;
 					current_animation = &move;
@@ -319,9 +315,16 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) 
 						//LOG("INPUT----->JUMP_DOWN");
 					}
 					break;
-				
-				}
+				case IN_RIGHT_SPEED:
+					SpeedBoostActive = true;
+					speedboost = 10;
+					break;
+				case IN_LEFT_SPEED:
+					SpeedBoostActive = true;
+					speedboost = -10;
+					break;
 
+				}
 				break;
 
 			case ST_WALK_FORWARD:
@@ -349,9 +352,18 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) 
 						state = ST_JUMP_FORWARD;
 						//LOG("INPUT----->JUMP_DOWN");
 						jump = true;
-				
+
 					}
 					break;
+				case IN_RIGHT_SPEED:
+					SpeedBoostActive = true;
+					speedboost = 10;
+					break;
+				case IN_LEFT_SPEED:
+					SpeedBoostActive = true;
+					speedboost = -10;
+					break;
+
 				}
 				break;
 
@@ -378,10 +390,17 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) 
 						state = ST_JUMP_BACKWARD;
 						//LOG("INPUT----->JUMP_DOWN");
 						jump = true;
-				
 					}
-
 					break;
+				case IN_RIGHT_SPEED:
+					SpeedBoostActive = true;
+					speedboost = 10;
+					break;
+				case IN_LEFT_SPEED:
+					SpeedBoostActive = true;
+					speedboost = -10;
+					break;
+
 				}
 				break;
 			case ST_JUMP_NEUTRAL:
@@ -406,9 +425,17 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) 
 					current_animation = &move;
 					//LOG("INPUT----->JUMPING LEFT ------");
 					break;
-				
-				}
+				case IN_RIGHT_SPEED:
+					SpeedBoostActive = true;
+					speedboost = 10;
+					break;
+				case IN_LEFT_SPEED:
+					SpeedBoostActive = true;
+					speedboost = -10;
+					break;
 
+				}
+				break;
 			case ST_JUMP_FORWARD:
 				LOG("THE JUMP IS FORWARD");
 				if (!jump) {
@@ -431,7 +458,15 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) 
 					current_animation = &move;
 					//LOG("INPUT----->JUMPING LEFT ------ ");
 					break;
-				
+				case IN_RIGHT_SPEED:
+					SpeedBoostActive = true;
+					speedboost = 10;
+					break;
+				case IN_LEFT_SPEED:
+					SpeedBoostActive = true;
+					speedboost = -10;
+					break;
+
 				}
 				break;
 			case ST_JUMP_BACKWARD:
@@ -457,29 +492,57 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) 
 					current_animation = &move;
 					//LOG("INPUT----->JUMPING LEFT ------ ");
 					break;
-				case IN_FRONT_ATTACK:
-					state = ST_FRONT_ATTACK;
+				case IN_RIGHT_SPEED:
+					SpeedBoostActive = true;
+					speedboost = 10;
+					break;
+				case IN_LEFT_SPEED:
+					SpeedBoostActive = true;
+					speedboost = -10;
+					break;
+
+					break;
+				default:
 					break;
 				}
-				break;
-			
-
-			default:
-				break;
 			}
+			if (velocity.y != 0) {
+				current_animation = &move;
+			}
+			if (jump == true) {
+				Jump();
+				jump = false;
+			}
+			if (SpeedBoostActive) {
+				if (speedboost*-1 > 0) {//right
+					flip = SDL_FLIP_HORIZONTAL;
+				}
+				else if (speedboost*-1 < 0)//left
+				{
+					flip = SDL_FLIP_NONE;
+				}
+				current_animation = &move;
+				SpeedBoost(speedboost);
+			}
+			if (deceleration) {
+				if (velocity.x*-1 > 0) {//left movement
+					velocity.x += 5;
+					if (velocity.x > 0) {
+						velocity.x = 0;
+						deceleration = false;
+					}
+				}
+				if (velocity.x*-1 < 0) {//right movement
+					velocity.x -= 5;
+					if (velocity.x < 0) {
+						velocity.x = 0;
+						deceleration = false;
+					}
+				}
+
+			}
+			return state;
 		}
-		if (velocity.y != 0) {
-			current_animation = &move;
-		}
-		if (jump == true) {
-			Jump();
-			jump = false;
-		}
-		/*if (front_attack) {
-			velocity.x += 50;
-			front_attack = false;
-		}*/
-	return state;
 	}
 }
 
@@ -584,8 +647,16 @@ void j1Entity::Die() {
 }
 
 void PlayerClass::Jump() {
-
-	velocity.y -= JumpForce;
-	
+	velocity.y -= JumpForce;	
+}
+void PlayerClass::SpeedBoost(int boost) {
+	velocity.x += boost;
+	if (velocity.x < 40) {
+		position.x += velocity.x;
+	}
+	else if (velocity.x >= 40) {
+		deceleration = true;
+		SpeedBoostActive = false;
+	}
 	
 }
