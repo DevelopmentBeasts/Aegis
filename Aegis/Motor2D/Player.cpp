@@ -94,6 +94,7 @@ bool PlayerClass::Start() {
 	GravityValue = PlayerXmlNode.child("worldplayerinteraction").attribute("GravityValue").as_float();
 	JumpForce = PlayerXmlNode.child("worldplayerinteraction").attribute("JumpForce").as_float();
 	speedpowervalue = PlayerXmlNode.attribute("speedpower").as_int();
+	AvailableDistance = PlayerXmlNode.child("sensors").attribute("sensor_distance").as_int();
 	//dt stuff
 	//movement_period = PlayerXmlNode_.attribute("period").as_float(33.0f);
 
@@ -137,7 +138,7 @@ bool PlayerClass::Update(float dt) {
 		move.speed *= (dt / 30);
 	}
 
-
+	//GOD MODE
 	if (App->input->GetKey(SDL_SCANCODE_F10) == j1KeyState::KEY_DOWN) {
 		godmode_activated = !godmode_activated;
 	}
@@ -145,7 +146,7 @@ bool PlayerClass::Update(float dt) {
 	if (!godmode_activated && position.y > 2300) {
 		Die();
 	}
-	
+	//INPUTS
 	if (ExternalInput(inputs))
 				process_fsm(inputs, dt);
 	
@@ -161,11 +162,13 @@ bool PlayerClass::Update(float dt) {
 	else
 		GodMode(dt);
 	
+	//SPEEDPOWER
+	
 	
 	//Move the colliders
 	player_collider->SetPos(position.x, position.y);
-	sensor_collider1->SetPos(position.x + 200, position.y);
-	sensor_collider2->SetPos(position.x - 200, position.y);
+	sensor_collider1->SetPos(position.x + 300, position.y);
+	sensor_collider2->SetPos(position.x - 300, position.y);
 	
 	//DRAW THE PLAYER
 	CurrentAnimationRect = current_animation->GetCurrentFrame();
@@ -213,15 +216,17 @@ bool PlayerClass::ExternalInput(p2Queue<player_inputs> &inputs) {
 		if (App->input->GetKey(SDL_SCANCODE_G) == j1KeyState::KEY_DOWN) {
 			Gravity = true;
 		}
-		if (App->input->GetKey(SDL_SCANCODE_E) == j1KeyState::KEY_DOWN) {
-			
+		if (App->input->GetKey(SDL_SCANCODE_N) == j1KeyState::KEY_DOWN) {
+
 			SpeedPowerActivatedRight = true;
 			AvailableDistanceRightNow = AvailableDistance;
 		}
-		if (App->input->GetKey(SDL_SCANCODE_Q) == j1KeyState::KEY_DOWN) {
+		if (App->input->GetKey(SDL_SCANCODE_M) == j1KeyState::KEY_DOWN) {
+
 			SpeedPowerActivatedLeft = true;
 			AvailableDistanceRightNow = AvailableDistance;
 		}
+		
 		// key is pressed
 		if (App->input->GetKey(SDL_SCANCODE_W ) == j1KeyState::KEY_DOWN && !JumpRotation && Gravity == true) {
 			inputs.Push(IN_JUMP_DOWN);
@@ -250,13 +255,6 @@ bool PlayerClass::ExternalInput(p2Queue<player_inputs> &inputs) {
 				deceleration = true;
 			}
 		}
-		/*if (App->input->GetKey(SDL_SCANCODE_E) == j1KeyState::KEY_DOWN) {
-				LOG("FRONT ATTACK");
-				inputs.Push(IN_FRONT_ATTACK);
-				down = true;
-				front_attack = true;
-				
-		}*/
 
 		// key is released
 		if (App->input->GetKey(SDL_SCANCODE_A) == j1KeyState::KEY_UP) {
@@ -491,12 +489,16 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) 
 		if (SpeedPowerActivatedRight) {
 			flip = SDL_FLIP_HORIZONTAL;
 			current_animation = &move;
+			AvailableDistanceRightNow -= speedpowervalue;
 			SpeedPower(speedpowervalue, AvailableDistanceRightNow,dt);
+			
 		}
 		if (SpeedPowerActivatedLeft) {
 			flip = SDL_FLIP_NONE;
 			current_animation = &move;
+			AvailableDistanceRightNow -= speedpowervalue;
 			SpeedPower(-speedpowervalue, AvailableDistanceRightNow, dt);
+			
 		}
 		if (deceleration) {
 			velocity.x = 0;
@@ -508,6 +510,10 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) 
 
 void PlayerClass::OnCollision(Collider *c1, Collider *c2) {
 
+	//if (c1 != sensor_collider1 && c1 != sensor_collider2) {
+	//	AvailableDistance = 200;
+	//}
+	
 		if (c2->type == COLLIDER_WALL) 
 		{
 			if (c1->type == COLLIDER_SENSOR) {
@@ -519,8 +525,11 @@ void PlayerClass::OnCollision(Collider *c1, Collider *c2) {
 				}
 				if (c1 == sensor_collider2) {
 					LOG("LEFT SENSOR ACTIVATED");
+					AvailableDistance = (c1->rect.x - c2->rect.x) - (c2->rect.x - (c1->rect.x + PlayerScale * 32));//playerscale*32 is just the .x+w
+					LOG(" AvailableDistance IS %i", AvailableDistance);
 					//codigo de correccion de trayectoria aqui
 				}
+				
 			}
 			if (c1->type == COLLIDER_PLAYER) 
 			{
@@ -619,23 +628,25 @@ void PlayerClass::Jump() {
 }
 
 void PlayerClass::SpeedPower(int boost,int  AvailableDistanceRightNow,float dt) {
-	//if (boost*-1 > 0) {//left movement
-	//	float TimeNow = SDL_GetTicks();
-	//	velocity.x = boost;
-	//	position.x += velocity.x*(dt/30);
-	//	if (TimeNow - SpeedPowerTimer > 100) {
-	//		deceleration = true;
-	//		SpeedPowerActivatedLeft = false;
-	//	}
-	//}
+	
 	if (boost*-1 < 0) {//right movement
 		if (AvailableDistanceRightNow>0) {
-			AvailableDistanceRightNow -= boost;
 			position.x += boost;
 		}
 		else if (AvailableDistanceRightNow <= 0) {
 			deceleration = true;
 			SpeedPowerActivatedRight = false;
+			position.x += AvailableDistanceRightNow;
+		}
+	}
+	if (boost*-1 > 0) {//left movement
+		if (AvailableDistanceRightNow > 0) {
+			position.x -= boost;
+		}
+		else if (AvailableDistanceRightNow <= 0) {
+			deceleration = true;
+			SpeedPowerActivatedLeft = false;
+			position.x += AvailableDistanceRightNow;
 		}
 	}
 }

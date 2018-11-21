@@ -3,10 +3,11 @@
 <!-- Config file for the game -->
 
 <config>
-  <player xpos ="901" ypos ="1370" type ="0" yvel="1" xvel ="120" PlayerOnTop="false" PlayerColliding="false" scale ="1.3" speedpower ="15">
+  <player xpos ="901" ypos ="1370" type ="0" yvel="1" xvel ="120" PlayerOnTop="false" PlayerColliding="false" scale ="1.3" speedpower ="40">
     <worldplayerinteraction GravityValue="1.6" JumpForce ="30"/>
     <playerrect w="41" h="41"/>
     <StaminaRect w ="13" h="40" x="30" y="700"/>
+    <sensors sensor_distance="300"/>
   </player>/>
  
 </config>
