@@ -534,8 +534,8 @@ void PlayerClass::OnCollision(Collider *c1, Collider *c2) {
 				if (c1 == sensor_collider2) {
 					//LOG("LEFT SENSOR ACTIVATED");
 					sensorcollidingleft = true;
-					AvailableDistanceleft = c1->rect.x - (c2->rect.x + c2->rect.w);
-					LOG(" AvailableDistance IS %i", AvailableDistanceright);
+					AvailableDistanceleft =(300 - (c2->rect.x + c2->rect.w) - c1->rect.x);
+					LOG(" AvailableDistance IS %i", AvailableDistanceleft);
 				}
 				
 			}
