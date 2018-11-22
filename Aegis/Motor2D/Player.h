@@ -57,6 +57,7 @@ public:
 	bool Save(pugi::xml_node&) const;
 
 	bool Update(float dt);
+	bool PostUpdate();
 	void MovePlayer();
 	void OnCollision(Collider *c1, Collider *c2);
 
@@ -77,50 +78,53 @@ public:
 
 	bool map_loaded;
 
-	bool jump = false;
-	bool front_attack = false;
-	bool JumpRotation = false;
-	bool FallRotation = false;
-	bool deceleration = false;
+	bool jump =           false;
+	bool front_attack =   false;
+	bool JumpRotation =   false;
+	bool FallRotation =   false;
+	bool deceleration =   false;
 
-	bool left = false;
-	bool right = false;
-	bool down = false;
-	bool up = false;
+	bool left =           false;
+	bool right =          false;
+	bool down =           false;
+	bool up =             false;
 
-	bool ToLeft = false;
-	bool ToRight = false;
+	bool ToLeft =         false;
+	bool ToRight =        false;
 
-	bool Gravity = false;
+	bool Gravity =        false;
 	
-	bool DoLogic = false;
+	bool DoLogic =        false;
 
 	SDL_Texture* player_texture = nullptr;
 	
 	//Colliders
-	Collider *player_collider;
-	Collider *sensor_collider1;
-	Collider *sensor_collider2;
-	int AvailableDistance;
-	int AvailableDistanceRightNow;
-	//Player data
-	                 		///position in X & Y axis
-	
-	fPoint jumpvelocity = {0.0,-6.0};    ///velocity in X & Y axis
-	float rotation;			///rotation for blit
-	PlayerTypes avatar;		///current character
-	SDL_RendererFlip flip;	///animation flip
-	
-	SDL_Rect CurrentAnimationRect;
-	float PlayerScale;
-	float GravityValue;
-	float JumpForce;
+	Collider *        player_collider;
+	Collider *        sensor_collider1;
+	Collider *        sensor_collider2;
+	int               AvailableDistanceright;
+	int               AvailableDistanceleft;
+	int               AvailableDistanceRightNow;
+	bool              sensorcollidingright;
+	bool              sensorcollidingleft;
 
-	int speedpowervalue;
-	bool SpeedPowerActivatedRight;
-	bool SpeedPowerActivatedLeft;
 
-	int CurrFrame = 0;
+	//Player data	
+	fPoint                  jumpvelocity = {0.0,-6.0};    ///velocity in X & Y axis
+	float                   rotation;			 ///rotation for blit
+	PlayerTypes             avatar;		         ///current character
+	SDL_RendererFlip        flip;	             ///animation flip
+	
+	SDL_Rect                CurrentAnimationRect;
+	float                   PlayerScale;
+	float                   GravityValue;
+	float                   JumpForce;
+
+	int                     speedpowervalue;
+	bool                    SpeedPowerActivatedRight;
+	bool                    SpeedPowerActivatedLeft;
+
+	int                     CurrFrame = 0;
 	
 	Animation* current_animation = nullptr;	///Animation being shown at the moment
 private:

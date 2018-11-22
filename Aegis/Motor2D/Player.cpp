@@ -94,7 +94,8 @@ bool PlayerClass::Start() {
 	GravityValue = PlayerXmlNode.child("worldplayerinteraction").attribute("GravityValue").as_float();
 	JumpForce = PlayerXmlNode.child("worldplayerinteraction").attribute("JumpForce").as_float();
 	speedpowervalue = PlayerXmlNode.attribute("speedpower").as_int();
-	AvailableDistance = PlayerXmlNode.child("sensors").attribute("sensor_distance").as_int();
+	AvailableDistanceright = PlayerXmlNode.child("sensors").attribute("sensor_distance").as_int();
+	AvailableDistanceleft = PlayerXmlNode.child("sensors").attribute("sensor_distance").as_int();
 	//dt stuff
 	//movement_period = PlayerXmlNode_.attribute("period").as_float(33.0f);
 
@@ -113,8 +114,8 @@ bool PlayerClass::Start() {
 
 	LOG("CREATING PLAYER COLLIDER");
 	player_collider = App->collision->AddEntCollider({ position.x, position.y, player_rect.w*(int)PlayerScale, player_rect.h*(int)PlayerScale }, COLLIDER_PLAYER, this);
-	sensor_collider1 = App->collision->AddEntCollider({ position.x + 200,position.y + player_rect.h / 3,10,10 }, COLLIDER_SENSOR, this);
-	sensor_collider2 = App->collision->AddEntCollider({ position.x - 200,position.y + player_rect.h / 3,10,10 }, COLLIDER_SENSOR, this);
+	sensor_collider1 = App->collision->AddEntCollider({ position.x + player_rect.w,position.y ,300,player_rect.h-10 }, COLLIDER_SENSOR, this);
+	sensor_collider2 = App->collision->AddEntCollider({ position.x - 300,position.y ,300,player_rect.h-10 }, COLLIDER_SENSOR, this);
 	velocity = { 0.0,0.0 };
 	current_animation = &idle;
 	
@@ -167,7 +168,7 @@ bool PlayerClass::Update(float dt) {
 	
 	//Move the colliders
 	player_collider->SetPos(position.x, position.y);
-	sensor_collider1->SetPos(position.x + 300, position.y);
+	sensor_collider1->SetPos(position.x+player_rect.w, position.y);
 	sensor_collider2->SetPos(position.x - 300, position.y);
 	
 	//DRAW THE PLAYER
@@ -187,10 +188,13 @@ bool PlayerClass::Update(float dt) {
 	App->render->Blit(player_texture,position.x,position.y,&current_animation->GetCurrentFrame(),1,/*rotation is equal to jumpvelocity.y*/rotation * 3,flip,0,0, PlayerScale);
 	return true;
 }
-
-void PlayerClass::MovePlayer() {
-	
-	
+bool PlayerClass::PostUpdate() {
+	//LOG("POSTUPDATE");
+	sensorcollidingright = false;
+	sensorcollidingleft = false;
+	return true;
+}
+void PlayerClass::MovePlayer() {	
 }
 
 bool PlayerClass::Save(pugi::xml_node& node)const{
@@ -217,14 +221,18 @@ bool PlayerClass::ExternalInput(p2Queue<player_inputs> &inputs) {
 			Gravity = true;
 		}
 		if (App->input->GetKey(SDL_SCANCODE_N) == j1KeyState::KEY_DOWN) {
-
-			SpeedPowerActivatedRight = true;
-			AvailableDistanceRightNow = AvailableDistance;
+			if (!sensorcollidingleft) {
+				AvailableDistanceleft = PlayerXmlNode.child("sensors").attribute("sensor_distance").as_int();
+			}
+			SpeedPowerActivatedLeft = true;
+			AvailableDistanceRightNow = AvailableDistanceleft;
 		}
 		if (App->input->GetKey(SDL_SCANCODE_M) == j1KeyState::KEY_DOWN) {
-
-			SpeedPowerActivatedLeft = true;
-			AvailableDistanceRightNow = AvailableDistance;
+			if (!sensorcollidingright) {
+				AvailableDistanceright = PlayerXmlNode.child("sensors").attribute("sensor_distance").as_int();
+			}
+			SpeedPowerActivatedRight = true;
+			AvailableDistanceRightNow = AvailableDistanceright;
 		}
 		
 		// key is pressed
@@ -490,14 +498,14 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) 
 			flip = SDL_FLIP_HORIZONTAL;
 			current_animation = &move;
 			AvailableDistanceRightNow -= speedpowervalue;
-			SpeedPower(speedpowervalue, AvailableDistanceRightNow,dt);
+			SpeedPower(speedpowervalue, AvailableDistanceRightNow+30,dt);
 			
 		}
 		if (SpeedPowerActivatedLeft) {
 			flip = SDL_FLIP_NONE;
 			current_animation = &move;
 			AvailableDistanceRightNow -= speedpowervalue;
-			SpeedPower(-speedpowervalue, AvailableDistanceRightNow, dt);
+			SpeedPower(-speedpowervalue, AvailableDistanceRightNow+30, dt);
 			
 		}
 		if (deceleration) {
@@ -519,15 +527,15 @@ void PlayerClass::OnCollision(Collider *c1, Collider *c2) {
 			if (c1->type == COLLIDER_SENSOR) {
 				if (c1 == sensor_collider1) {
 					//LOG("RIGHT SENSOR ACTIVATED");
-					//codigo de correccion de trayectoria aqui
-					AvailableDistance = (c1->rect.x - (position.x + PlayerScale * 32)) - (c1->rect.x - c2->rect.x);//playerscale*32 is just the .x+w
-					LOG(" AvailableDistance IS %i", AvailableDistance);
+					sensorcollidingright = true;
+					AvailableDistanceright = c2->rect.x - c1->rect.x;
+					LOG(" AvailableDistance IS %i", AvailableDistanceright);
 				}
 				if (c1 == sensor_collider2) {
-					LOG("LEFT SENSOR ACTIVATED");
-					AvailableDistance = (c1->rect.x - c2->rect.x) - (c2->rect.x - (c1->rect.x + PlayerScale * 32));//playerscale*32 is just the .x+w
-					LOG(" AvailableDistance IS %i", AvailableDistance);
-					//codigo de correccion de trayectoria aqui
+					//LOG("LEFT SENSOR ACTIVATED");
+					sensorcollidingleft = true;
+					AvailableDistanceleft = c1->rect.x - (c2->rect.x + c2->rect.w);
+					LOG(" AvailableDistance IS %i", AvailableDistanceright);
 				}
 				
 			}
