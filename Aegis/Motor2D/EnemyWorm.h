@@ -24,12 +24,9 @@ public:
 	p2DynArray<iPoint>* enemy_path;
 	p2DynArray<iPoint>* last_enemy_path;
 
-	SDL_Rect pathrect;
 	MasterTimer pathfinding_recalc;
 
 private:
-
-	const p2DynArray<iPoint>* path;
 
 	SDL_Texture* debug_texture;
 

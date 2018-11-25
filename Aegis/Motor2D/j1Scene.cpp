@@ -58,7 +58,8 @@ bool j1Scene::PreUpdate()
 // Called each loop iteration
 bool j1Scene::Update(float dt)
 {
-	
+	if (App->input->GetKey(SDL_SCANCODE_SPACE) == j1KeyState::KEY_DOWN)
+		App->render->CenterCamera();
 
 	if (SceneLoaded) {
 		PlayerPt->position.x = App->map->data.start_position.x;
@@ -66,9 +67,24 @@ bool j1Scene::Update(float dt)
 		SceneLoaded = false;
 		PlayerExists = true;;
 	}
-	if (App->render->find_player) {
+	/*if (App->render->find_player) {
 		App->render->FindPlayer(dt);
+	}*/
+
+	/*if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN) {
+		App->pathfinding->CreatePath({ 0,0 }, {12,5 });
 	}
+
+	const p2DynArray<iPoint>* path = App->pathfinding->GetLastPath();*/
+
+	/*for (uint i = 0; i < path->Count(); ++i)
+	{
+		iPoint lemao;
+		lemao = App->map->MapToWorld(path->At(i)->x, path->At(i)->y);
+		
+		SDL_Rect rect = {lemao.x , lemao.y, 32, 32 };
+		App->render->DrawQuad(rect,150,150,150);
+	}*/
 	
 	if(App->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)			//Save game
 		App->LoadGame("save_game.xml");
@@ -107,7 +123,7 @@ bool j1Scene::Update(float dt)
 	}
 
 	//Draw the map
-	current_map->Draw();				
+	//current_map->Draw();				
 
 	//Draw the title
 	int x, y;

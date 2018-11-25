@@ -9,32 +9,6 @@
 #include "j1App.h"
 #include "j1Textures.h"
 
-struct Properties
-{
-	struct Property
-	{
-		p2SString name;
-		int value;
-	};
-
-	~Properties()
-	{
-		p2List_item<Property*>* item;
-		item = list.start;
-
-		while (item != NULL)
-		{
-			RELEASE(item->data);
-			item = item->next;
-		}
-
-		list.clear();
-	}
-
-	int Get(const char* name, int default_value = 0) const;
-
-	p2List<Property*>	list;
-};
 
 struct ColliderData {
 	p2List<Collider*>			collider_list;
@@ -57,7 +31,7 @@ struct MapLayer
 	uint*		data;
 	float		parallax=1.0f;
 	bool		visible = true;
-	Properties	properties;
+	int			navigation=0;
 
 	MapLayer() : data(NULL)
 	{}

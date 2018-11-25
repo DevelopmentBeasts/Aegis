@@ -57,6 +57,7 @@ public:
 
 	float playerinitx;
 	float playerinity;
+
 	float screeninitx;
 	float screeninity;
 
