@@ -107,7 +107,10 @@ public:
 	int               AvailableDistanceRightNow;
 	bool              sensorcollidingright;
 	bool              sensorcollidingleft;
-
+	int                     speedpowervalue;
+	bool                    SpeedPowerActivatedRight;
+	bool                    SpeedPowerActivatedLeft;
+	int                     DashEnergy;
 
 	//Player data	
 	fPoint                  jumpvelocity = {0.0,-6.0};    ///velocity in X & Y axis
@@ -120,10 +123,7 @@ public:
 	float                   GravityValue;
 	float                   JumpForce;
 
-	int                     speedpowervalue;
-	bool                    SpeedPowerActivatedRight;
-	bool                    SpeedPowerActivatedLeft;
-
+	
 	int                     CurrFrame = 0;
 	
 	Animation* current_animation = nullptr;	///Animation being shown at the moment

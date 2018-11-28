@@ -220,14 +220,14 @@ bool PlayerClass::ExternalInput(p2Queue<player_inputs> &inputs) {
 		if (App->input->GetKey(SDL_SCANCODE_G) == j1KeyState::KEY_DOWN) {
 			Gravity = true;
 		}
-		if (App->input->GetKey(SDL_SCANCODE_N) == j1KeyState::KEY_DOWN) {
+		if (App->input->GetKey(SDL_SCANCODE_N) == j1KeyState::KEY_DOWN && !SpeedPowerActivatedLeft && DashEnergy>90) {
 			if (!sensorcollidingleft) {
 				AvailableDistanceleft = PlayerXmlNode.child("sensors").attribute("sensor_distance").as_int();
 			}
 			SpeedPowerActivatedLeft = true;
 			AvailableDistanceRightNow = AvailableDistanceleft;
 		}
-		if (App->input->GetKey(SDL_SCANCODE_M) == j1KeyState::KEY_DOWN) {
+		if (App->input->GetKey(SDL_SCANCODE_M) == j1KeyState::KEY_DOWN && !SpeedPowerActivatedRight  && DashEnergy > 90) {
 			if (!sensorcollidingright) {
 				AvailableDistanceright = PlayerXmlNode.child("sensors").attribute("sensor_distance").as_int();
 			}
@@ -529,12 +529,12 @@ void PlayerClass::OnCollision(Collider *c1, Collider *c2) {
 					//LOG("RIGHT SENSOR ACTIVATED");
 					sensorcollidingright = true;
 					AvailableDistanceright = c2->rect.x - c1->rect.x;
-					LOG(" AvailableDistance IS %i", AvailableDistanceright);
+					//LOG(" AvailableDistance IS %i", AvailableDistanceright);
 				}
 				if (c1 == sensor_collider2) {
 					//LOG("LEFT SENSOR ACTIVATED");
 					sensorcollidingleft = true;
-					AvailableDistanceleft =(300 - (c2->rect.x + c2->rect.w) - c1->rect.x);
+					AvailableDistanceleft = 300 - ((c2->rect.x+c2->rect.w)-c1->rect.x);
 					LOG(" AvailableDistance IS %i", AvailableDistanceleft);
 				}
 				
@@ -570,7 +570,8 @@ void PlayerClass::OnCollision(Collider *c1, Collider *c2) {
 
 					if (c1->rect.y + c1->rect.h >= c2->rect.y && c1->rect.y + c1->rect.h <= c2->rect.y + velocity.y) { //Colliding Up (falling)
 																													   //LOG("COLLIDING UP");
-																													   //LOG("BOOL COLLIDING UP TRUE");
+						DashEnergy += 1;//LOG("BOOL COLLIDING UP TRUE");
+						LOG("DASH ENERGY = %i", DashEnergy);
 						jump = false;
 						velocity.y = 0;
 						position.y = c1->rect.y - ((c1->rect.y + c1->rect.h) - c2->rect.y);
@@ -645,16 +646,18 @@ void PlayerClass::SpeedPower(int boost,int  AvailableDistanceRightNow,float dt) 
 			deceleration = true;
 			SpeedPowerActivatedRight = false;
 			position.x += AvailableDistanceRightNow;
+			DashEnergy = 0;
 		}
 	}
 	if (boost*-1 > 0) {//left movement
 		if (AvailableDistanceRightNow > 0) {
-			position.x -= boost;
+			position.x += boost;
 		}
 		else if (AvailableDistanceRightNow <= 0) {
 			deceleration = true;
 			SpeedPowerActivatedLeft = false;
-			position.x += AvailableDistanceRightNow;
+			position.x -= AvailableDistanceRightNow;
+			DashEnergy = 0;
 		}
 	}
 }
