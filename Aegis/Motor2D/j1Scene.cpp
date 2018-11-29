@@ -37,15 +37,17 @@ bool j1Scene::Awake()
 bool j1Scene::Start()
 {
 
-	LoadLevel(level1);
+	
   
 	current_map = App->map;
-	
 	current_map->DrawColliders();
 
 	App->j1entity_manager->CreateEnemy(500, 500, ENEMY_TYPE::TRIBALE);
 	PlayerPt = App->j1entity_manager->CreateEntity(App->map->data.start_position.x, App->map->data.start_position.y, ENTITY_TYPE::PLAYER);
-	
+	if (PlayerPt != nullptr) {
+		PlayerExists = true;
+	}	
+	LoadLevel(level1);
 	return true;
 }
 
@@ -64,7 +66,7 @@ bool j1Scene::Update(float dt)
 		PlayerPt->position.x = App->map->data.start_position.x;
 		PlayerPt->position.y = App->map->data.start_position.y;
 		SceneLoaded = false;
-		PlayerExists = true;;
+		PlayerExists = true;//no hace falta pero por si acaso
 	}
 	if (App->render->find_player) {
 		App->render->FindPlayer(dt);
@@ -103,7 +105,7 @@ bool j1Scene::Update(float dt)
 	if (PlayerPt->position.x >= App->map->data.wincondition) {
 
 		LoadLevel(level2);
-		App->render->FindPlayer(dt);
+		//App->render->FindPlayer(dt);
 	}
 
 	//Draw the map
@@ -167,7 +169,7 @@ void j1Scene::LoadLevel(const char* leveltoload) {
 		App->map->Load(leveltoload);
 		App->map->DrawColliders();
 		current_level = leveltoload;
-		//App->render->CenterCamera();
+		
 
 		int w, h;
 		uchar* data = NULL;
@@ -175,7 +177,8 @@ void j1Scene::LoadLevel(const char* leveltoload) {
 			App->pathfinding->SetMap(w, h, data);
 
 		RELEASE_ARRAY(data);
-		
+		PlayerPt->position.x = App->map->data.start_position.x;
+		PlayerPt->position.y = App->map->data.start_position.y;
 		App->render->CenterCamera();
 		SceneLoaded = true;
 		App->render->find_player = true;
