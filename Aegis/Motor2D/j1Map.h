@@ -118,7 +118,10 @@ public:
 	//Add all the colliders to the map
 	void DrawColliders();
   
+	//Tile coordinates to pixel coordinates
 	iPoint MapToWorld(int x, int y) const;
+
+	//Pixel coordinates to tile coordinates
 	iPoint WorldToMap(int x, int y) const;
 
 	bool CreateWalkabilityMap(int& width, int& height, uchar** buffer) const;
