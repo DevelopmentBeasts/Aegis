@@ -2,6 +2,9 @@
 #include "p2Log.h"
 #include "j1App.h"
 #include "j1PathFinding.h"
+#include "SDL/include/SDL.h"
+#include "j1Map.h"
+#include "j1Render.h"
 
 j1PathFinding::j1PathFinding() : j1Module(), map(NULL), last_path(DEFAULT_PATH_LENGTH), width(0), height(0)
 {
@@ -203,7 +206,7 @@ int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination)
 	
 
 		for (; item; item = item->next) {
-			LOG("%f", item->data.CalculateF(destination));
+//			LOG("%f", item->data.CalculateF(destination));
 			if (closed.Find(item->data.pos) == NULL) {
 
 				p2List_item<PathNode>* adjacent_in_open = open.Find(item->data.pos);
@@ -225,4 +228,30 @@ int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination)
 		}
 	}
 	return ret;
+}
+
+void j1PathFinding::DrawPath(const p2DynArray<iPoint>* path) const
+{
+	//The map will be drawn with rectangles
+	
+	//DrawQuad() draws the color set by the rgb scale
+	uint r=250;
+	uint g=0;
+	uint b=0;
+
+	//Alpha is the opacity, from 0 to 100
+	uint alpha = 100;
+
+	for (int i = 0; i < path->Count(); ++i)
+	{
+		
+		SDL_Rect rect;
+
+		rect.x = App->map->MapToWorld(path->At(i)->x, path->At(i)->y).x;
+		rect.y = App->map->MapToWorld(path->At(i)->x, path->At(i)->y).y;
+		rect.w = App->map->data.tile_width;
+		rect.h = App->map->data.tile_height;
+		
+		App->render->DrawQuad(rect,r,g,b,alpha);
+	}
 }

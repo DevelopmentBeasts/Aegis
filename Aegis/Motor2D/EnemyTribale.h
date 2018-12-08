@@ -41,7 +41,8 @@ public:
 private:
 
 	Animation idle;
-	Animation move;
+	Animation move_left;
+	Animation move_right;
 	Animation attack;
 
     TribaleStates state = IDL;

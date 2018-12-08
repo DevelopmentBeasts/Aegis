@@ -30,6 +30,7 @@ public:
 
 	bool PreUpdate();
 	bool Update(float dt);
+	bool PostUpdate();
 	bool CleanUp();
 
 	j1Entity *CreateEntity(int x , int y, ENTITY_TYPE eType);
