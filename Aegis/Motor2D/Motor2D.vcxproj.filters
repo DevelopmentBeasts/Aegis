@@ -30,6 +30,29 @@
     <ClInclude Include="EnemyWorm.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="EntityManager.h" />
+    <ClCompile Include="PugiXml\src\pugixml.cpp" />
+    <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="Entity.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityManager.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>Entities\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyTribale.cpp">
+      <Filter>Entities\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyWorm.cpp">
+      <Filter>Entities\Enemies</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Animation.h" />
     <ClInclude Include="j1Collision.h" />
     <ClInclude Include="j1Map.h" />
     <ClInclude Include="j1Pathfinding.h" />
@@ -56,5 +79,37 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="EntitiesConfig.xml" />
+    <ClInclude Include="PugiXml\src\pugiconfig.hpp" />
+    <ClInclude Include="PugiXml\src\pugixml.hpp" />
+    <ClInclude Include="Timer.h" />
+    <ClInclude Include="Entity.h">
+      <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityManager.h">
+      <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>Entities\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyTribale.h">
+      <Filter>Entities\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyWorm.h">
+      <Filter>Entities\Enemies</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="EntitiesConfig.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Entities">
+      <UniqueIdentifier>{98e4c936-564b-4b9d-8d71-a6343ff3cab2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Entities\Enemies">
+      <UniqueIdentifier>{c542b6fc-addf-406f-b393-708e7e49ef13}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

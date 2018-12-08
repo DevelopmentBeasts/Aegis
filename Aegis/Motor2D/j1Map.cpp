@@ -64,20 +64,6 @@ void j1Map::Draw()
 	}
 }
 
-int Properties::Get(const char* value, int default_value) const
-{
-	p2List_item<Property*>* item = list.start;
-
-	while (item)
-	{
-		if (item->data->name == value)
-			return item->data->value;
-		item = item->next;
-	}
-
-	return default_value;
-}
-
 TileSet* j1Map::GetTilesetFromTileId(int id) const
 {
 	// Return the tileset based on a tile id
@@ -96,7 +82,7 @@ TileSet* j1Map::GetTilesetFromTileId(int id) const
 
 iPoint j1Map::MapToWorld(int x, int y) const
 {
-	iPoint ret;
+	iPoint ret(0,0);
 
 	if(data.type == MAPTYPE_ORTHOGONAL)
 	{
@@ -448,6 +434,9 @@ bool j1Map::LoadLayer(pugi::xml_node& node, MapLayer* layer)
 		if (property_name == "Visible") {
 			layer->visible = property.attribute("value").as_bool(true);
 		}
+
+		if (property_name == "Navigation")
+			layer->navigation = property.attribute("value").as_int(0);
 	}
 
 	//Load data
@@ -475,6 +464,7 @@ bool j1Map::LoadLayer(pugi::xml_node& node, MapLayer* layer)
 }
 
 bool j1Map::LoadColliders(pugi::xml_node& node, ColliderData* collider) {
+	
 	bool ret = true;
 	pugi::xml_node& colliders = node.child("object");
 
@@ -485,12 +475,12 @@ bool j1Map::LoadColliders(pugi::xml_node& node, ColliderData* collider) {
 	}
 	else {
 		for (colliders; colliders; colliders = colliders.next_sibling("object")) {
-			SDL_Rect auxiliar_rect;
-			auxiliar_rect.x = colliders.attribute("x").as_int();
-			auxiliar_rect.y = colliders.attribute("y").as_int();
-			auxiliar_rect.w = colliders.attribute("width").as_int();
-			auxiliar_rect.h = colliders.attribute("height").as_int();
-			data.colliders.collider_rects.add(auxiliar_rect);
+			SDL_Rect rect;
+			rect.x = colliders.attribute("x").as_int();
+			rect.y = colliders.attribute("y").as_int();
+			rect.w = colliders.attribute("width").as_int();
+			rect.h = colliders.attribute("height").as_int();
+			data.colliders.collider_rects.add(rect);
 		}
 	}
 
@@ -515,7 +505,7 @@ bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
 	{
 		MapLayer* layer = item->data;
 
-		if (layer->properties.Get("Navigation", 0) == 0)
+		if (layer->navigation == 0)
 			continue;
 
 		uchar* map = new uchar[layer->width*layer->height];

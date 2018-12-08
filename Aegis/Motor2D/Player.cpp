@@ -454,8 +454,7 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) 
 				}
 				break;
 			case ST_JUMP_BACKWARD:
-				LOG("THE JUMP IS BACKWARD");
-
+			
 				if (!jump) {
 					//LOG("CHANGING TO IDL");
 					state = ST_IDLE;

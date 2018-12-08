@@ -44,6 +44,7 @@ bool j1Scene::Start()
 
 	App->j1entity_manager->CreateEnemy(500, 500, ENEMY_TYPE::TRIBALE);
 	PlayerPt = App->j1entity_manager->CreateEntity(App->map->data.start_position.x, App->map->data.start_position.y, ENTITY_TYPE::PLAYER);
+
 	if (PlayerPt != nullptr) {
 		PlayerExists = true;
 	}	
@@ -60,7 +61,13 @@ bool j1Scene::PreUpdate()
 // Called each loop iteration
 bool j1Scene::Update(float dt)
 {
-	
+	//TESTING
+	if (App->input->GetKey(SDL_SCANCODE_SPACE) == j1KeyState::KEY_DOWN)
+		App->pathfinding->CreatePath(App->map->WorldToMap(PlayerPt->position.x, PlayerPt->position.y), App->map->WorldToMap(PlayerPt->position.x - 200, PlayerPt->position.y-200) );
+	//TESTING
+
+	//if (App->input->GetKey(SDL_SCANCODE_SPACE) == j1KeyState::KEY_DOWN)
+	//	App->render->CenterCamera();
 
 	if (SceneLoaded) {
 		PlayerPt->position.x = App->map->data.start_position.x;
@@ -68,9 +75,24 @@ bool j1Scene::Update(float dt)
 		SceneLoaded = false;
 		PlayerExists = true;//no hace falta pero por si acaso
 	}
-	if (App->render->find_player) {
+	/*if (App->render->find_player) {
 		App->render->FindPlayer(dt);
+	}*/
+
+	/*if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN) {
+		App->pathfinding->CreatePath({ 0,0 }, {12,5 });
 	}
+
+	const p2DynArray<iPoint>* path = App->pathfinding->GetLastPath();*/
+
+	/*for (uint i = 0; i < path->Count(); ++i)
+	{
+		iPoint lemao;
+		lemao = App->map->MapToWorld(path->At(i)->x, path->At(i)->y);
+		
+		SDL_Rect rect = {lemao.x , lemao.y, 32, 32 };
+		App->render->DrawQuad(rect,150,150,150);
+	}*/
 	
 	if(App->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)			//Save game
 		App->LoadGame("save_game.xml");
@@ -78,11 +100,11 @@ bool j1Scene::Update(float dt)
 	if(App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)			//Save game
 		App->SaveGame("save_game.xml");
 
-	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN) {//Load game
+	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN) {		//Load game
 	/*	LoadLevel(level1);*/
 		LoadLevel1NOW = true;
 	}
-	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)	//Load game
+	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)		//Load game
 		LoadLevel2NOW = true;
 		
 	if (LoadLevel1NOW && (PlayerPt->velocity.y * -1 > 0)) {
@@ -109,20 +131,18 @@ bool j1Scene::Update(float dt)
 	}
 
 	//Draw the map
-	current_map->Draw();				
+	current_map->Draw();
 
-	//Draw the title
-	int x, y;
-	App->input->GetMousePosition(x, y);
-	iPoint map_coordinates = App->map->WorldToMap(x - App->render->camera.x, y - App->render->camera.y);
-	//p2SString title("AEGIS Version 0.2");
-	/*Map:%dx%d Tiles:%dx%d Tilesets:%d Tile:%d,%d",
-		App->map->data.width, App->map->data.height,
-		App->map->data.tile_width, App->map->data.tile_height,
-		App->map->data.tilesets.count(),
-					map_coordinates.x, map_coordinates.y);*/
+	// TESTING 
 
-	//App->win->SetTitle(title.GetString());
+	static const p2DynArray<iPoint>* path = App->pathfinding->GetLastPath();
+
+	App->pathfinding->DrawPath(path);
+
+	//TESTING
+
+				
+
 	return true;
 }
 
