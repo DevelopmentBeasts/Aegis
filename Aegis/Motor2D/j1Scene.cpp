@@ -169,7 +169,6 @@ void j1Scene::LoadLevel(const char* leveltoload) {
 		App->map->Load(leveltoload);
 		App->map->DrawColliders();
 		current_level = leveltoload;
-		
 
 		int w, h;
 		uchar* data = NULL;

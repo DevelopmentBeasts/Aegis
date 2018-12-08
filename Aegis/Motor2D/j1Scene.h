@@ -49,7 +49,7 @@ private:
 	p2SString current_level;
 
 public:
-	const char* level1 = "AEGIS_RUN_TUTORIAL.tmx";	//Level 1
+	const char* level1 = "MAGIC_CAVES.tmx";	//Level 1
 	const char* level2 = "AEGIS_RUN.tmx";			//Level 2
 
 	////Pointer to the current map

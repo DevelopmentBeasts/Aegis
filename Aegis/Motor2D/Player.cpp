@@ -113,8 +113,8 @@ bool PlayerClass::Start() {
 	current_animation = &move;
 
 	LOG("CREATING PLAYER COLLIDER");
-	player_collider = App->collision->AddEntCollider({ position.x, position.y, player_rect.w*(int)PlayerScale, player_rect.h*(int)PlayerScale }, COLLIDER_PLAYER, this);
-	sensor_collider1 = App->collision->AddEntCollider({ position.x + player_rect.w,position.y ,300,player_rect.h-10 }, COLLIDER_SENSOR, this);
+	player_collider = App->collision->AddEntCollider({ position.x, position.y, player_rect.w*(int)PlayerScale-10, player_rect.h*(int)PlayerScale-10 }, COLLIDER_PLAYER, this);
+	sensor_collider1 = App->collision->AddEntCollider({ position.x-10 + player_rect.w,position.y ,300,player_rect.h-10 }, COLLIDER_SENSOR, this);
 	sensor_collider2 = App->collision->AddEntCollider({ position.x - 300,position.y ,300,player_rect.h-10 }, COLLIDER_SENSOR, this);
 	velocity = { 0.0,0.0 };
 	current_animation = &idle;
@@ -168,7 +168,7 @@ bool PlayerClass::Update(float dt) {
 	
 	//Move the colliders
 	player_collider->SetPos(position.x, position.y);
-	sensor_collider1->SetPos(position.x+player_rect.w, position.y);
+	sensor_collider1->SetPos(position.x-10+player_rect.w, position.y);
 	sensor_collider2->SetPos(position.x - 300, position.y);
 	
 	//DRAW THE PLAYER
