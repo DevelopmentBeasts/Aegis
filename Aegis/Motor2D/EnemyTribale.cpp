@@ -12,7 +12,8 @@ EnemyTribale::EnemyTribale(iPoint pos) : j1Enemy(pos, ENEMY_TYPE::TRIBALE) {
 	properties_node = App->j1entity_manager->properties_doc.child("properties").child("Tribale");
 
 	idle.LoadPushbacks(properties_node.child("idle"));
-	move.LoadPushbacks(properties_node.child("move"));
+	move_left.LoadPushbacks(properties_node.child("move_left"));
+	move_right.LoadPushbacks(properties_node.child("move_right"));
 	attack.LoadPushbacks(properties_node.child("attack"));
 
 
@@ -63,7 +64,7 @@ bool EnemyTribale::Update(float dt) {
 		}
 		break;
 	case RUN_LEFT:
-		current_animation = &move;
+		current_animation = &move_left;
 		flip = SDL_FLIP_NONE;
 		velocity.x = -8;
 		/*LOG("TRIBALE RUN   <----------");*/
@@ -74,12 +75,10 @@ bool EnemyTribale::Update(float dt) {
 		break;
 	case RUN_RIGHT:
 		/*LOG("TRIBALE RUN    ---------->");*/
-		current_animation = &move;
-		flip = SDL_FLIP_HORIZONTAL;
+		current_animation = &move_right;
 		velocity.x = 8;
 		if (position.x - App->scene->PlayerPt->position.x < detectdistance && position.x - App->scene->PlayerPt->position.x > 20) {  // SIEMPRE IRA A LA IZQUIERDA=???? NIO LO SE, MIRAR
 			state = TribaleStates::IDL;
-			flip = SDL_FLIP_HORIZONTAL;
 		}
 		
 		break;
