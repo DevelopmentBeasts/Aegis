@@ -27,7 +27,7 @@ public:
 	virtual bool Start() { return true; }
 
 	virtual bool Update(float dt) { return true; }
-
+	virtual bool PostUpdate() { return true; }
 	virtual bool CleanUp();
 
 	virtual bool Load(pugi::xml_node&) { return true; }

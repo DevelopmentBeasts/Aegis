@@ -57,6 +57,7 @@ public:
 	bool Save(pugi::xml_node&) const;
 
 	bool Update(float dt);
+	bool PostUpdate();
 	void MovePlayer();
 	void OnCollision(Collider *c1, Collider *c2);
 
@@ -66,6 +67,7 @@ public:
 	player_states process_fsm(p2Queue<player_inputs>&inputs,float dt);	///Act depending on the inputs
 
 	void Jump();
+	void SpeedPower(int speedpowervalue,int  AvailableDistanceRightNow,float dt);
 	
 
 	//God Mode will allow the player to fly around the map ignoring collisions
@@ -76,43 +78,53 @@ public:
 
 	bool map_loaded;
 
-	bool jump = false;
-	bool front_attack = false;
-	bool JumpRotation = false;
-	bool FallRotation = false;
-	bool deceleration = false;
+	bool jump =           false;
+	bool front_attack =   false;
+	bool JumpRotation =   false;
+	bool FallRotation =   false;
+	bool deceleration =   false;
 
-	bool left = false;
-	bool right = false;
-	bool down = false;
-	bool up = false;
+	bool left =           false;
+	bool right =          false;
+	bool down =           false;
+	bool up =             false;
 
-	bool ToLeft = false;
-	bool ToRight = false;
+	bool ToLeft =         false;
+	bool ToRight =        false;
 
-	bool Gravity = false;
+	bool Gravity =        false;
 	
-	bool DoLogic = false;
+	bool DoLogic =        false;
 
 	SDL_Texture* player_texture = nullptr;
 	
 	//Colliders
-	Collider *player_collider;
+	Collider *        player_collider;
+	Collider *        sensor_collider1;
+	Collider *        sensor_collider2;
+	int               AvailableDistanceright;
+	int               AvailableDistanceleft;
+	int               AvailableDistanceRightNow;
+	bool              sensorcollidingright;
+	bool              sensorcollidingleft;
+	int                     speedpowervalue;
+	bool                    SpeedPowerActivatedRight;
+	bool                    SpeedPowerActivatedLeft;
+	int                     DashEnergy;
 
-	//Player data
-	                 		///position in X & Y axis
+	//Player data	
+	fPoint                  jumpvelocity = {0.0,-6.0};    ///velocity in X & Y axis
+	float                   rotation;			 ///rotation for blit
+	PlayerTypes             avatar;		         ///current character
+	SDL_RendererFlip        flip;	             ///animation flip
 	
-	fPoint jumpvelocity = {0.0,-6.0};    ///velocity in X & Y axis
-	float rotation;			///rotation for blit
-	PlayerTypes avatar;		///current character
-	SDL_RendererFlip flip;	///animation flip
-	
-	SDL_Rect CurrentAnimationRect;
-	float PlayerScale;
-	float GravityValue;
-	float JumpForce;
+	SDL_Rect                CurrentAnimationRect;
+	float                   PlayerScale;
+	float                   GravityValue;
+	float                   JumpForce;
 
-	int CurrFrame = 0;
+	
+	int                     CurrFrame = 0;
 	
 	Animation* current_animation = nullptr;	///Animation being shown at the moment
 private:

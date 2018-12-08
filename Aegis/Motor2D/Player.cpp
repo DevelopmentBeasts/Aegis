@@ -93,7 +93,9 @@ bool PlayerClass::Start() {
 	PlayerScale = PlayerXmlNode.attribute("scale").as_float();
 	GravityValue = PlayerXmlNode.child("worldplayerinteraction").attribute("GravityValue").as_float();
 	JumpForce = PlayerXmlNode.child("worldplayerinteraction").attribute("JumpForce").as_float();
-
+	speedpowervalue = PlayerXmlNode.attribute("speedpower").as_int();
+	AvailableDistanceright = PlayerXmlNode.child("sensors").attribute("sensor_distance").as_int();
+	AvailableDistanceleft = PlayerXmlNode.child("sensors").attribute("sensor_distance").as_int();
 	//dt stuff
 	//movement_period = PlayerXmlNode_.attribute("period").as_float(33.0f);
 
@@ -111,8 +113,9 @@ bool PlayerClass::Start() {
 	current_animation = &move;
 
 	LOG("CREATING PLAYER COLLIDER");
-	player_collider = App->collision->AddEntCollider({ position.x, position.y, player_rect.w*(int)PlayerScale, player_rect.h*(int)PlayerScale }, COLLIDER_PLAYER, this);
-
+	player_collider = App->collision->AddEntCollider({ position.x, position.y, player_rect.w*(int)PlayerScale-10, player_rect.h*(int)PlayerScale-10 }, COLLIDER_PLAYER, this);
+	sensor_collider1 = App->collision->AddEntCollider({ position.x-10 + player_rect.w,position.y ,300,player_rect.h-10 }, COLLIDER_SENSOR, this);
+	sensor_collider2 = App->collision->AddEntCollider({ position.x - 300,position.y ,300,player_rect.h-10 }, COLLIDER_SENSOR, this);
 	velocity = { 0.0,0.0 };
 	current_animation = &idle;
 	
@@ -136,7 +139,7 @@ bool PlayerClass::Update(float dt) {
 		move.speed *= (dt / 30);
 	}
 
-
+	//GOD MODE
 	if (App->input->GetKey(SDL_SCANCODE_F10) == j1KeyState::KEY_DOWN) {
 		godmode_activated = !godmode_activated;
 	}
@@ -144,7 +147,7 @@ bool PlayerClass::Update(float dt) {
 	if (!godmode_activated && position.y > 2300) {
 		Die();
 	}
-	
+	//INPUTS
 	if (ExternalInput(inputs))
 				process_fsm(inputs, dt);
 	
@@ -160,10 +163,14 @@ bool PlayerClass::Update(float dt) {
 	else
 		GodMode(dt);
 	
+	//SPEEDPOWER
 	
-	//Move the collider
+	
+	//Move the colliders
 	player_collider->SetPos(position.x, position.y);
-
+	sensor_collider1->SetPos(position.x-10+player_rect.w, position.y);
+	sensor_collider2->SetPos(position.x - 300, position.y);
+	
 	//DRAW THE PLAYER
 	CurrentAnimationRect = current_animation->GetCurrentFrame();
 	
@@ -181,10 +188,13 @@ bool PlayerClass::Update(float dt) {
 	App->render->Blit(player_texture,position.x,position.y,&current_animation->GetCurrentFrame(),1,/*rotation is equal to jumpvelocity.y*/rotation * 3,flip,0,0, PlayerScale);
 	return true;
 }
-
-void PlayerClass::MovePlayer() {
-	
-	
+bool PlayerClass::PostUpdate() {
+	//LOG("POSTUPDATE");
+	sensorcollidingright = false;
+	sensorcollidingleft = false;
+	return true;
+}
+void PlayerClass::MovePlayer() {	
 }
 
 bool PlayerClass::Save(pugi::xml_node& node)const{
@@ -210,9 +220,21 @@ bool PlayerClass::ExternalInput(p2Queue<player_inputs> &inputs) {
 		if (App->input->GetKey(SDL_SCANCODE_G) == j1KeyState::KEY_DOWN) {
 			Gravity = true;
 		}
-		if (App->input->GetKey(SDL_SCANCODE_J) == j1KeyState::KEY_DOWN) {
-			jump = false;
+		if (App->input->GetKey(SDL_SCANCODE_N) == j1KeyState::KEY_DOWN && !SpeedPowerActivatedLeft && DashEnergy>90) {
+			if (!sensorcollidingleft) {
+				AvailableDistanceleft = PlayerXmlNode.child("sensors").attribute("sensor_distance").as_int();
+			}
+			SpeedPowerActivatedLeft = true;
+			AvailableDistanceRightNow = AvailableDistanceleft;
 		}
+		if (App->input->GetKey(SDL_SCANCODE_M) == j1KeyState::KEY_DOWN && !SpeedPowerActivatedRight  && DashEnergy > 90) {
+			if (!sensorcollidingright) {
+				AvailableDistanceright = PlayerXmlNode.child("sensors").attribute("sensor_distance").as_int();
+			}
+			SpeedPowerActivatedRight = true;
+			AvailableDistanceRightNow = AvailableDistanceright;
+		}
+		
 		// key is pressed
 		if (App->input->GetKey(SDL_SCANCODE_W ) == j1KeyState::KEY_DOWN && !JumpRotation && Gravity == true) {
 			inputs.Push(IN_JUMP_DOWN);
@@ -240,13 +262,6 @@ bool PlayerClass::ExternalInput(p2Queue<player_inputs> &inputs) {
 			if (jump) {
 				deceleration = true;
 			}
-		}
-		if (App->input->GetKey(SDL_SCANCODE_E) == j1KeyState::KEY_DOWN) {
-				LOG("FRONT ATTACK");
-				inputs.Push(IN_FRONT_ATTACK);
-				down = true;
-				front_attack = true;
-				
 		}
 
 		// key is released
@@ -326,7 +341,9 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) 
 
 			case ST_WALK_FORWARD:
 				//LOG("WALKING RIGHT");
-				velocity.x = 15;
+				if (!SpeedPowerActivatedLeft && !SpeedPowerActivatedRight) {
+					velocity.x = 15;
+				}
 				switch (last_input)
 				{
 				case IN_RIGHT_UP:
@@ -357,6 +374,9 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) 
 
 			case ST_WALK_BACKWARD:
 				//LOG("WALKING LEFT");
+				if (!SpeedPowerActivatedLeft && !SpeedPowerActivatedRight) {
+					velocity.x = -15;
+				}
 				switch (last_input)
 				{
 				case IN_LEFT_UP:
@@ -431,7 +451,6 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) 
 					current_animation = &move;
 					//LOG("INPUT----->JUMPING LEFT ------ ");
 					break;
-				
 				}
 				break;
 			case ST_JUMP_BACKWARD:
@@ -474,74 +493,107 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) 
 			Jump();
 			jump = false;
 		}
-		/*if (front_attack) {
-			velocity.x += 50;
-			front_attack = false;
-		}*/
+		if (SpeedPowerActivatedRight) {
+			flip = SDL_FLIP_HORIZONTAL;
+			current_animation = &move;
+			AvailableDistanceRightNow -= speedpowervalue;
+			SpeedPower(speedpowervalue, AvailableDistanceRightNow+30,dt);
+			
+		}
+		if (SpeedPowerActivatedLeft) {
+			flip = SDL_FLIP_NONE;
+			current_animation = &move;
+			AvailableDistanceRightNow -= speedpowervalue;
+			SpeedPower(-speedpowervalue, AvailableDistanceRightNow+30, dt);
+			
+		}
+		if (deceleration) {
+			velocity.x = 0;
+			deceleration = false;
+		}
 	return state;
 	}
 }
 
 void PlayerClass::OnCollision(Collider *c1, Collider *c2) {
-	//if(c1->type == player_collider)
-	//Checking collision with walls
-	/*if (!godmode_activated) {*/
 
-		if (c2->type == COLLIDER_WALL) {
-		
-			//Calculating an error margin of collision to avoid problems with colliders corners
-			int error_margin = 0;
-
-			if (ToRight) {
-				error_margin = (c1->rect.x + c1->rect.w) - c2->rect.x;
+	//if (c1 != sensor_collider1 && c1 != sensor_collider2) {
+	//	AvailableDistance = 200;
+	//}
+	
+		if (c2->type == COLLIDER_WALL) 
+		{
+			if (c1->type == COLLIDER_SENSOR) {
+				if (c1 == sensor_collider1) {
+					//LOG("RIGHT SENSOR ACTIVATED");
+					sensorcollidingright = true;
+					AvailableDistanceright = c2->rect.x - c1->rect.x;
+					//LOG(" AvailableDistance IS %i", AvailableDistanceright);
+				}
+				if (c1 == sensor_collider2) {
+					//LOG("LEFT SENSOR ACTIVATED");
+					sensorcollidingleft = true;
+					AvailableDistanceleft = 300 - ((c2->rect.x+c2->rect.w)-c1->rect.x);
+					LOG(" AvailableDistance IS %i", AvailableDistanceleft);
+				}
+				
 			}
-			else if (ToLeft) {
-				error_margin = (c2->rect.x + c2->rect.w) - c1->rect.x;
-			}
+			if (c1->type == COLLIDER_PLAYER) 
+			{
+				//Calculating an error margin of collision to avoid problems with colliders corners
+				int error_margin = 0;
 
-			//If the player falls less than a pixel over a collider, it falls (and it looks ok)
-			if (error_margin > 1) {
+				if (ToRight) {
+					error_margin = (c1->rect.x + c1->rect.w) - c2->rect.x;
+				}
+				else if (ToLeft) {
+					error_margin = (c2->rect.x + c2->rect.w) - c1->rect.x;
+				}
 
-				//Checking Y Axis Collisions
-				if (c1->rect.y <= c2->rect.y + c2->rect.h && c1->rect.y >= c2->rect.y + c2->rect.h -20/*- ((velocity.y*-1)-velocity.y)*/) { //Colliding down (jumping)
-					//LOG("BOOL COLLIDING DOWN TRUE");
-					if (velocity.y * -1 < 0 ) {
-						velocity.y += (velocity.y*-1);
-						
+				//If the player falls less than a pixel over a collider, it falls (and it looks ok)
+				if (error_margin > 1) {
+
+					//Checking Y Axis Collisions
+					if (c1->rect.y <= c2->rect.y + c2->rect.h && c1->rect.y >= c2->rect.y + c2->rect.h - 20/*- ((velocity.y*-1)-velocity.y)*/) { //Colliding down (jumping)
+																																				 //LOG("BOOL COLLIDING DOWN TRUE");
+						if (velocity.y * -1 < 0) {
+							velocity.y += (velocity.y*-1);
+
+						}
+						jump = false;
+						position.y = c2->rect.y + c2->rect.h + 1;
+						velocity.y = 0;/*c1->rect.y + c2->rect.h - (c1->rect.y - c2->rect.y) + 3;*/
 					}
-					jump = false;
-					position.y = c2->rect.y + c2->rect.h + 1;
-					velocity.y = 0;/*c1->rect.y + c2->rect.h - (c1->rect.y - c2->rect.y) + 3;*/
-				}
-				
-				
-			
-				if (c1->rect.y + c1->rect.h >= c2->rect.y && c1->rect.y + c1->rect.h <= c2->rect.y + velocity.y) { //Colliding Up (falling)
-					//LOG("COLLIDING UP");
-					//LOG("BOOL COLLIDING UP TRUE");
-					jump = false;
-					velocity.y = 0;
-					position.y = c1->rect.y - ((c1->rect.y + c1->rect.h) - c2->rect.y);
-					JumpRotation = false;
-				}
-				
-			}
 
-			//Checking X Axis Collisions
-			if (c1->rect.x + c1->rect.w >= c2->rect.x && c1->rect.x + c1->rect.w <= c2->rect.x + velocity.x) { //Colliding Left (going right)
-				LOG("COLLIDING LEFT");
-				velocity.x = 0;
-				position.x -= (c1->rect.x + c1->rect.w) - c2->rect.x + 4;
-				
-			}
-			else if (c1->rect.x <= c2->rect.x + c2->rect.w && c1->rect.x >= c2->rect.x + c2->rect.w - ((velocity.x*-1) - velocity.x)) { //Colliding Right (going left)
-				LOG("COLLIDING RIGHT");
-				velocity.x = 0;
-				position.x += (c2->rect.x + c2->rect.w) - c1->rect.x + 4;
-				
-			}
+
+
+					if (c1->rect.y + c1->rect.h >= c2->rect.y && c1->rect.y + c1->rect.h <= c2->rect.y + velocity.y) { //Colliding Up (falling)
+																													   //LOG("COLLIDING UP");
+						DashEnergy += 1;//LOG("BOOL COLLIDING UP TRUE");
+						LOG("DASH ENERGY = %i", DashEnergy);
+						jump = false;
+						velocity.y = 0;
+						position.y = c1->rect.y - ((c1->rect.y + c1->rect.h) - c2->rect.y);
+						JumpRotation = false;
+					}
+
+				}
+
+				//Checking X Axis Collisions
+				if (c1->rect.x + c1->rect.w >= c2->rect.x && c1->rect.x + c1->rect.w <= c2->rect.x + velocity.x) { //Colliding Left (going right)
+					LOG("COLLIDING LEFT");
+					velocity.x = 0;
+					position.x -= (c1->rect.x + c1->rect.w) - c2->rect.x + 4;
+				}
+				else if (c1->rect.x <= c2->rect.x + c2->rect.w && c1->rect.x >= c2->rect.x + c2->rect.w - ((velocity.x*-1) - velocity.x)) { //Colliding Right (going left)
+					LOG("COLLIDING RIGHT");
+					velocity.x = 0;
+					position.x += (c2->rect.x + c2->rect.w) - c1->rect.x + 4;
+				}
 		}
-	/*}*/
+			
+	}
+	
 }
 
 void PlayerClass::GodMode(float dt) {
@@ -569,9 +621,6 @@ void PlayerClass::GodMode(float dt) {
 		    velocity.y =10 ;
 		    position.y += velocity.x*(dt / 30);
 	}
-	
-	
-	
 }
 
 void j1Entity::Die() {
@@ -583,8 +632,31 @@ void j1Entity::Die() {
 }
 
 void PlayerClass::Jump() {
-
 	velocity.y -= JumpForce;
+}
+
+void PlayerClass::SpeedPower(int boost,int  AvailableDistanceRightNow,float dt) {
 	
-	
+	if (boost*-1 < 0) {//right movement
+		if (AvailableDistanceRightNow>0) {
+			position.x += boost;
+		}
+		else if (AvailableDistanceRightNow <= 0) {
+			deceleration = true;
+			SpeedPowerActivatedRight = false;
+			position.x += AvailableDistanceRightNow;
+			DashEnergy = 0;
+		}
+	}
+	if (boost*-1 > 0) {//left movement
+		if (AvailableDistanceRightNow > 0) {
+			position.x += boost;
+		}
+		else if (AvailableDistanceRightNow <= 0) {
+			deceleration = true;
+			SpeedPowerActivatedLeft = false;
+			position.x -= AvailableDistanceRightNow;
+			DashEnergy = 0;
+		}
+	}
 }

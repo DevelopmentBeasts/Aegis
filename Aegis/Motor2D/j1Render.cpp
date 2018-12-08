@@ -282,10 +282,10 @@ bool j1Render::DrawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, U
 	return ret;
 }
 
-void j1Render::CenterCamera(){
+void j1Render::CenterCamera(){ // only called at the load level (the center camera does not really centers the camera to the player because after being used, the find player activates and makes a soft transition)
 	if (App->scene->PlayerExists) {
-		camera.x = left_border - App->scene->PlayerPt->position.x;
-		camera.y = top_border - App->scene->PlayerPt->position.y;
+		camera.x = left_border - (App->scene->PlayerPt->position.x);
+		camera.y = top_border - (App->scene->PlayerPt->position.y);
 	}
 	
 		
@@ -341,7 +341,7 @@ void j1Render::FindPlayer(float dt) {
 		if ((App->scene->PlayerPt->position.y) > (-camera.y + camera.h - bot_border))
 			camera.y -= vel * (dt / 30);
 
-		if (((App->scene->PlayerPt->position.x) < (-camera.x + camera.w - right_border))		//If we found the player, stop looking for it
+		if (((App->scene->PlayerPt->position.x) < (-camera.x + camera.w - right_border))//If we found the player, stop looking for it
 			&& ((App->scene->PlayerPt->position.x) > (-camera.x + left_border))
 			&& ((App->scene->PlayerPt->position.y) > (-camera.y + top_border))
 			&& ((App->scene->PlayerPt->position.y) < (-camera.y + camera.h - bot_border)))

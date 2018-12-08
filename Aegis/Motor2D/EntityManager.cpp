@@ -60,7 +60,17 @@ bool j1EntityManager::Update(float dt) {
 
 	return true;
 }
+bool j1EntityManager::PostUpdate() {
 
+	p2List_item<j1Entity*>*item = entities_list.start;
+	for (; item != nullptr; item = item->next) {
+		item->data->PostUpdate();
+	}
+
+	accumulated_time = 0.0f;
+
+	return true;
+}
 bool j1EntityManager::CleanUp() {
 
 	LOG("Clean Up Entity Manager");
