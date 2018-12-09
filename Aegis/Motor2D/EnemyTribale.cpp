@@ -26,7 +26,7 @@ EnemyTribale::EnemyTribale(iPoint pos) : j1Enemy(pos, ENEMY_TYPE::TRIBALE) {
 EnemyTribale::~EnemyTribale() {}
 
 bool EnemyTribale::Start() {
-	TribaleCollider = App->collision->AddEntCollider(TribaleRect, COLLIDER_ENEMY, this);
+	//TribaleCollider = App->collision->AddEntCollider(TribaleRect, COLLIDER_ENEMY, this);
 	position.x = 3000;
 	position.y = 700;
 
@@ -86,7 +86,7 @@ bool EnemyTribale::Update(float dt) {
 		break;
 	}
 	position.x += velocity.x/**(dt/30)*/;
-	TribaleCollider->SetPos(position.x+40, position.y);
+	//TribaleCollider->SetPos(position.x+40, position.y);
 	
 	Draw();
 

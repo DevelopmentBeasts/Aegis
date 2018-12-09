@@ -114,8 +114,8 @@ bool PlayerClass::Start() {
 
 	LOG("CREATING PLAYER COLLIDER");
 	player_collider = App->collision->AddEntCollider({ position.x, position.y, player_rect.w*(int)PlayerScale-10, player_rect.h*(int)PlayerScale-10 }, COLLIDER_PLAYER, this);
-	sensor_collider1 = App->collision->AddEntCollider({ position.x-10 + player_rect.w,position.y ,300,player_rect.h-10 }, COLLIDER_SENSOR, this);
-	sensor_collider2 = App->collision->AddEntCollider({ position.x - 300,position.y ,300,player_rect.h-10 }, COLLIDER_SENSOR, this);
+	sensor_collider1 = App->collision->AddEntCollider({ position.x-10 + player_rect.w,position.y ,300,player_rect.h-20 }, COLLIDER_SENSOR, this);
+	sensor_collider2 = App->collision->AddEntCollider({ position.x - 300,position.y ,300,player_rect.h-20 }, COLLIDER_SENSOR, this);
 	velocity = { 0.0,0.0 };
 	current_animation = &idle;
 	

@@ -52,7 +52,7 @@ void j1Map::Draw()
 						iPoint pos = MapToWorld(x, y);
 						float parallax = layer->parallax;
 					
-						if (App->render->InScreen(pos.x,pos.y, rect.w, rect.h, parallax) && layer->visible )
+						//if (App->render->InScreen(pos.x,pos.y, rect.w, rect.h, parallax) && layer->visible )
 							App->render->Blit(tileset->texture, pos.x, pos.y, &rect,parallax,0,SDL_FLIP_NONE,NULL,NULL,1);
 
 					}
@@ -237,7 +237,7 @@ bool j1Map::Load(const char* file_name)
 		objectname = objectgroup.attribute("name").as_string();
 		
 		if (objectname == "Spawn") {
-			data.start_position.x = objectgroup.child("object").attribute("x").as_int();
+  			data.start_position.x = objectgroup.child("object").attribute("x").as_int();
 			data.start_position.y = objectgroup.child("object").attribute("y").as_int();
 			
 		}
