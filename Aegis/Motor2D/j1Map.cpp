@@ -52,9 +52,10 @@ void j1Map::Draw()
 						iPoint pos = MapToWorld(x, y);
 						float parallax = layer->parallax;
 					
-						if (App->render->InScreen(pos.x,pos.y, rect.w, rect.h, parallax) && layer->visible )
+						if (App->render->InScreen(pos.x,pos.y, rect.w, rect.h, parallax) && layer->visible && tileset->name != "pixelcave_tileset_bg_2")
 							App->render->Blit(tileset->texture, pos.x, pos.y, &rect,parallax,0,SDL_FLIP_NONE,NULL,NULL,1);
-
+						if(App->render->InScreen(pos.x, pos.y, rect.w, rect.h, parallax) && layer->visible && tileset->name == "pixelcave_tileset_bg_2")
+							App->render->Blit(tileset->texture, pos.x, pos.y, &rect, parallax, 0, SDL_FLIP_NONE, NULL, NULL, 1);
 					}
 				}
 			}
@@ -246,7 +247,7 @@ bool j1Map::Load(const char* file_name)
 		}
 		if (objectname == "Colliders") {
 			LoadColliders(objectgroup, &data.colliders);
-			break;
+			
 		}
 		
 

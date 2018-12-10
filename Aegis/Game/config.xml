@@ -7,7 +7,7 @@
   </app>
 	
   <renderer>
-    <borders top="300" bot="300" left="200" right="500"/>
+    <borders top="300" bot="300" left="500" right="400"/>
     <vsync value="false"/>
     <framerate_cap value = "true"/>
   </renderer>
