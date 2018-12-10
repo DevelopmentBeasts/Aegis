@@ -306,7 +306,7 @@ void j1Render::FreeMovement() {
 }
 
 void j1Render::FollowPlayer(float dt) {
-	LOG("CAMERA X = %i",camera.x);
+	//LOG("CAMERA X = %i",camera.x);
 	if (App->scene->PlayerExists) {
 		if (camera.x < -10) {
 			if ((App->scene->PlayerPt->position.x) < (-camera.x + left_border)) {				//Move the camera to the left if the player is going back and behnid the left border

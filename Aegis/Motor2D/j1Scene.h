@@ -63,8 +63,8 @@ public:
 
 	pugi::xml_document doc;
 public:
-	bool LoadLevel1NOW;
-	bool LoadLevel2NOW;
+	bool LoadLevel1NOW = false;
+	bool LoadLevel2NOW = false;
 	bool SceneLoaded = false;
 	bool PlayerExists = false;
 	bool findplayer = false;
