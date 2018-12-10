@@ -356,8 +356,9 @@ bool j1Render::InScreen(int x, int y, uint w, uint h, float parallax_speed) cons
 	uint window_w, window_h;
 	App->win->GetWindowSize(window_w, window_h);
 
-	if (x < (-camera.x*parallax_speed) + window_w +150 &&
-		x>(-camera.x*parallax_speed -50))
+	
+
+	if (x < (-camera.x*parallax_speed) + window_w +1200 && x>(-camera.x*parallax_speed -50))
 		ret = true;
 	
 	return ret;
