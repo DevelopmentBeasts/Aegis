@@ -200,5 +200,6 @@ void j1Scene::LoadLevel(const char* leveltoload) {
 		PlayerPt->position.y = App->map->data.start_position.y;
 		App->render->CenterCamera();
 		SceneLoaded = true;
+		App->render->camera.x = -100;
 		App->render->find_player = true;
 }
