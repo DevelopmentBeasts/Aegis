@@ -35,14 +35,10 @@ bool j1Scene::Awake()
 
 // Called before the first frame
 bool j1Scene::Start()
-{
-	
-	
-  
+{	
 	current_map = App->map;
 	current_map->DrawColliders();
 
-	App->j1entity_manager->CreateEnemy(700, 200, ENEMY_TYPE::TRIBALE);
 	PlayerPt = App->j1entity_manager->CreateEntity(App->map->data.start_position.x, App->map->data.start_position.y, ENTITY_TYPE::PLAYER);
 
 	if (PlayerPt != nullptr) {

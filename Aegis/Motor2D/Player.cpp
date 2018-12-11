@@ -13,6 +13,7 @@
 #include "Enemy.h"
 #include "Entity.h"
 #include "EntityManager.h"
+#include "WinClass.h"
 //Destructor
 
 PlayerClass::~PlayerClass() {
@@ -520,7 +521,7 @@ void PlayerClass::OnCollision(Collider *c1, Collider *c2) {
 	//if (c1 != sensor_collider1 && c1 != sensor_collider2) {
 	//	AvailableDistance = 200;
 	//}
-	
+
 		if (c2->type == COLLIDER_WALL) 
 		{
 			if (c1->type == COLLIDER_SENSOR) {

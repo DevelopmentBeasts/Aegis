@@ -6,7 +6,7 @@
 #include "j1Map.h"
 #include <math.h>
 #include "Brofiler/Brofiler.h"
-
+#include "EntityManager.h"
 j1Map::j1Map() : j1Module(), map_loaded(false)
 {
 	name.create("map");
@@ -281,6 +281,12 @@ bool j1Map::Load(const char* file_name)
 			item_layer = item_layer->next;
 		}
 	}
+
+	//LOAD ENTITIES
+	App->j1entity_manager->CreateEntity(400, 250, ENTITY_TYPE::WIN);
+	//App->j1entity_manager->CreateEnemy(700, 200, ENEMY_TYPE::TRIBALE);
+
+
 
 	map_loaded = ret;
 

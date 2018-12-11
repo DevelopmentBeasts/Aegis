@@ -19,18 +19,21 @@ j1Collision::j1Collision()
 	matrix[COLLIDER_WALL][COLLIDER_PLAYER] = true;
 	matrix[COLLIDER_WALL][COLLIDER_NONE] = false;
 	matrix[COLLIDER_WALL][COLLIDER_ENEMY] = true;
+	matrix[COLLIDER_WALL][COLLIDER_WIN] = false;
 	//matrix[COLLIDER_WALL][COLLIDER_SENSOR] = true;
 
 	matrix[COLLIDER_PLAYER][COLLIDER_PLAYER] = false;
 	matrix[COLLIDER_PLAYER][COLLIDER_WALL] = true;
 	matrix[COLLIDER_PLAYER][COLLIDER_NONE] = false;
 	matrix[COLLIDER_PLAYER][COLLIDER_ENEMY] = true;
+	matrix[COLLIDER_PLAYER][COLLIDER_WIN] = true;
 	//matrix[COLLIDER_PLAYER][COLLIDER_SENSOR] = false;
 
 	matrix[COLLIDER_ENEMY][COLLIDER_ENEMY] = false;
 	matrix[COLLIDER_ENEMY][COLLIDER_PLAYER] = true;
 	matrix[COLLIDER_ENEMY][COLLIDER_WALL] = true;
 	matrix[COLLIDER_ENEMY][COLLIDER_NONE] = false;
+	matrix[COLLIDER_ENEMY][COLLIDER_WIN] = false;
 	//matrix[COLLIDER_ENEMY][COLLIDER_SENSOR] = false;
 
 	matrix[COLLIDER_SENSOR][COLLIDER_SENSOR] = false;
@@ -38,6 +41,13 @@ j1Collision::j1Collision()
 	matrix[COLLIDER_SENSOR][COLLIDER_PLAYER] = false;
 	matrix[COLLIDER_SENSOR][COLLIDER_ENEMY] = false;
 	matrix[COLLIDER_SENSOR][COLLIDER_NONE] = false;
+	matrix[COLLIDER_SENSOR][COLLIDER_WIN] = false;
+
+	matrix[COLLIDER_WIN][COLLIDER_WIN] = false;
+	matrix[COLLIDER_WIN][COLLIDER_PLAYER] = true;
+	matrix[COLLIDER_WIN][COLLIDER_SENSOR] = false;
+	matrix[COLLIDER_WIN][COLLIDER_ENEMY] = false;
+	matrix[COLLIDER_WIN][COLLIDER_WALL] = false;
 }
 
 // Destructor
@@ -129,7 +139,7 @@ void j1Collision::DebugDraw()
 		case COLLIDER_WALL: // blue
 			App->render->DrawQuad(colliders[i]->rect, 0, 0, 255, alpha);
 			break;
-		case COLLIDER_PLAYER: // blue
+		case COLLIDER_PLAYER: // red
 			App->render->DrawQuad(colliders[i]->rect, 255, 30, 12, alpha);
 			break;
 		case COLLIDER_ENEMY: // pink
@@ -138,7 +148,11 @@ void j1Collision::DebugDraw()
 		case COLLIDER_SENSOR: //yellow
 			App->render->DrawQuad(colliders[i]->rect, 255, 255, 0, alpha);
 			break;
+		case COLLIDER_WIN: //green
+			App->render->DrawQuad(colliders[i]->rect, 0, 255, 0, alpha);
+			break;
 		}
+	
 	}
 }
 

@@ -29,7 +29,7 @@ public:
 	virtual bool Update(float dt) { return true; }
 	virtual bool PostUpdate() { return true; }
 	virtual bool CleanUp();
-
+	void Draw();
 	virtual bool Load(pugi::xml_node&) { return true; }
 	virtual bool Save(pugi::xml_node&) { return true; }
 
@@ -54,11 +54,12 @@ public:
 public:
 
 	//Texture
-	SDL_Texture *texture;
-	
+	SDL_Texture* texture;
+	float BlitScale=1;
 	//Animation being shown
-	Animation   *current_animation;
+	Animation* current_animation;
 	void Die();
+
 
 };
 

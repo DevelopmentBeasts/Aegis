@@ -22,6 +22,9 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PugiXml\src\pugixml.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="WinClass.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
@@ -50,6 +53,9 @@
     <ClCompile Include="EnemyWorm.cpp">
       <Filter>Entities\Enemies</Filter>
     </ClCompile>
+    <ClInclude Include="WinClass.h">
+      <Filter>Entities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
