@@ -40,11 +40,7 @@ bool j1Scene::Awake()
 
 // Called before the first frame
 bool j1Scene::Start()
-{
 
-	current_map = App->map;
-	
-	App->j1entity_manager->CreateEnemy(500, 500, ENEMY_TYPE::TRIBALE);
 	PlayerPt = App->j1entity_manager->CreateEntity(App->map->data.start_position.x, App->map->data.start_position.y, ENTITY_TYPE::PLAYER);
 
 	if (PlayerPt != nullptr) {
@@ -178,6 +174,7 @@ void j1Scene::LoadLevel(p2SString &level_to_load) {
 		PlayerPt->position.y = App->map->data.start_position.y;
 		App->render->CenterCamera();
 		SceneLoaded = true;
+		App->render->camera.x = -100;
 		App->render->find_player = true;
 
 
