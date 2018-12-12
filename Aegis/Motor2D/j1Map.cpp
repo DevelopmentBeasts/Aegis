@@ -244,11 +244,13 @@ bool j1Map::Load(const char* file_name)
 		if(objectname == "Win") {
 			data.wincondition = objectgroup.child("object").attribute("x").as_int();
 		}
-		if (objectname == "Colliders") {
-			LoadColliders(objectgroup, &data.colliders);
+		if (objectname == "Death colliders") {
+			LoadColliders(objectgroup, &data.colliders, COLLIDER_DEATH);
+		}
+		if (objectname == "Wall colliders") {
+			LoadColliders(objectgroup, &data.colliders, COLLIDER_WALL);
 			break;
 		}
-		
 
 		
 	}
@@ -463,7 +465,7 @@ bool j1Map::LoadLayer(pugi::xml_node& node, MapLayer* layer)
 	return ret;
 }
 
-bool j1Map::LoadColliders(pugi::xml_node& node, ColliderData* collider) {
+bool j1Map::LoadColliders(pugi::xml_node& node, ColliderData* collider, COLLIDER_TYPE collider_type) {
 	
 	bool ret = true;
 	pugi::xml_node& colliders = node.child("object");
@@ -480,19 +482,11 @@ bool j1Map::LoadColliders(pugi::xml_node& node, ColliderData* collider) {
 			rect.y = colliders.attribute("y").as_int();
 			rect.w = colliders.attribute("width").as_int();
 			rect.h = colliders.attribute("height").as_int();
-			data.colliders.collider_rects.add(rect);
+			
+			data.colliders.collider_list.add(App->collision->AddCollider(rect, collider_type));
 		}
 	}
-
 	return ret;
-}
-
-void j1Map::DrawColliders() {
-	uint i = 0;
-	while (i < data.colliders.collider_rects.count()) {
-
-		data.colliders.collider_list.add( App->collision->AddCollider(data.colliders.collider_rects[i++], COLLIDER_WALL));
-	}
 }
 
 bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
@@ -523,11 +517,6 @@ bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
 				if (tileset != NULL)
 				{
 					map[i] = (tile_id - tileset->firstgid) > 0 ? 0 : 1;
-					/*TileType* ts = tileset->GetTileType(tile_id);
-					if(ts != NULL)
-					{
-						map[i] = ts->properties.Get("walkable", 1);
-					}*/
 				}
 			}
 		}

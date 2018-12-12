@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="200" height="70" tilewidth="16" tileheight="16" nextobjectid="32">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="200" height="70" tilewidth="16" tileheight="16" nextobjectid="35">
  <tileset firstgid="1" name="pixelcave_tileset_map" tilewidth="16" tileheight="16" tilecount="1024" columns="32">
   <image source="pixelcave_tileset_map.png" width="512" height="512"/>
  </tileset>
@@ -28011,7 +28011,16 @@
    <tile gid="0"/>
   </data>
  </layer>
- <objectgroup name="Colliders" visible="0">
+ <objectgroup name="Death colliders">
+  <object id="32" x="667" y="154" width="90" height="84"/>
+  <object id="33" x="552" y="271" width="99" height="35"/>
+  <object id="34" x="1058" y="731"/>
+ </objectgroup>
+ <objectgroup name="Spawn">
+  <object id="3" x="464" y="231.75" width="0.25" height="0.25"/>
+  <object id="4" x="467.5" y="185" width="28.5" height="67.5"/>
+ </objectgroup>
+ <objectgroup name="Wall colliders">
   <object id="2" x="370.25" y="352.75" width="235.75" height="61.5"/>
   <object id="7" x="896.833" y="306.333" width="141" height="42.8333"/>
   <object id="13" x="896.909" y="340.364" width="36.4545" height="43.2727"/>
@@ -28030,9 +28039,5 @@
   <object id="26" x="625.75" y="448.5" width="188" height="61.5"/>
   <object id="27" x="705.25" y="433.25" width="109" height="16.5"/>
   <object id="31" x="753.75" y="370.75" width="28.25" height="26.25"/>
- </objectgroup>
- <objectgroup name="Spawn">
-  <object id="3" x="464" y="231.75" width="0.25" height="0.25"/>
-  <object id="4" x="467.5" y="185" width="28.5" height="67.5"/>
  </objectgroup>
 </map>
