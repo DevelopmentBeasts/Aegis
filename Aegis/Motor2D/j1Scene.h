@@ -41,16 +41,16 @@ public:
 	bool Save(pugi::xml_node&) const;
 
 	//Called when we want the change the level
-	void LoadLevel(const char* leveltoload);
+	void LoadLevel(p2SString &level_to_load);
 
 private:
 	
 	//Level that is loaded at the moment
-	p2SString current_level;
+	p2SString* current_level;
 
 public:
-	const char* level1 = "MAGIC_CAVES.tmx";	//Level 1
-	const char* level2 = "AEGIS_RUN.tmx";			//Level 2
+	p2SString level1;	//Level 1
+	p2SString level2;	//Level 2
 
 	////Pointer to the current map
 	j1Map* current_map=nullptr;
@@ -63,8 +63,8 @@ public:
 
 	pugi::xml_document doc;
 public:
-	bool LoadLevel1NOW;
-	bool LoadLevel2NOW;
+	bool LoadLevel1NOW = false;
+	bool LoadLevel2NOW = false;
 	bool SceneLoaded = false;
 	bool PlayerExists = false;
 	bool findplayer = false;

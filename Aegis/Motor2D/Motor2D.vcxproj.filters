@@ -1,11 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="Enemy.cpp" />
-    <ClCompile Include="EnemyTribale.cpp" />
-    <ClCompile Include="EnemyWorm.cpp" />
-    <ClCompile Include="Entity.cpp" />
-    <ClCompile Include="EntityManager.cpp" />
     <ClCompile Include="j1Collision.cpp" />
     <ClCompile Include="j1Main.cpp" />
     <ClCompile Include="j1App.cpp" />
@@ -15,21 +10,35 @@
     <ClCompile Include="j1Pathfinding.cpp" />
     <ClCompile Include="j1Scene.cpp" />
     <ClCompile Include="MasterTimer.cpp" />
-    <ClCompile Include="p2Log.cpp" />
     <ClCompile Include="j1Render.cpp" />
     <ClCompile Include="j1Textures.cpp" />
     <ClCompile Include="j1Window.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PugiXml\src\pugixml.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="WinClass.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>Entities\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyTribale.cpp">
+      <Filter>Entities\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyWorm.cpp">
+      <Filter>Entities\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="Entity.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityManager.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="p2Log.cpp">
+      <Filter>Tools</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Animation.h" />
-    <ClInclude Include="Enemy.h" />
-    <ClInclude Include="EnemyTribale.h" />
-    <ClInclude Include="EnemyWorm.h" />
-    <ClInclude Include="Entity.h" />
-    <ClInclude Include="EntityManager.h" />
     <ClCompile Include="PugiXml\src\pugixml.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Entity.cpp">
@@ -50,6 +59,22 @@
     <ClCompile Include="EnemyWorm.cpp">
       <Filter>Entities\Enemies</Filter>
     </ClCompile>
+    <ClInclude Include="WinClass.h">
+    <ClInclude Include="Animation.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>Entities\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyTribale.h">
+      <Filter>Entities\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyWorm.h">
+      <Filter>Entities\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>Entities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
@@ -58,24 +83,41 @@
     <ClInclude Include="j1Pathfinding.h" />
     <ClInclude Include="j1Scene.h" />
     <ClInclude Include="MasterTimer.h" />
-    <ClInclude Include="p2DynArray.h" />
     <ClInclude Include="j1Audio.h" />
     <ClInclude Include="j1Input.h" />
-    <ClInclude Include="p2Log.h" />
     <ClInclude Include="j1App.h" />
-    <ClInclude Include="p2Defs.h" />
-    <ClInclude Include="p2List.h" />
     <ClInclude Include="j1Module.h" />
-    <ClInclude Include="p2Point.h" />
     <ClInclude Include="j1Render.h" />
     <ClInclude Include="j1Textures.h" />
     <ClInclude Include="j1Window.h" />
-    <ClInclude Include="p2Queue.h" />
-    <ClInclude Include="p2SString.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PugiXml\src\pugiconfig.hpp" />
     <ClInclude Include="PugiXml\src\pugixml.hpp" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="EntityManager.h">
+      <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="p2Defs.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="p2DynArray.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="p2List.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="p2Log.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="p2Point.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="p2Queue.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="p2SString.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="EntitiesConfig.xml" />
@@ -110,6 +152,9 @@
     </Filter>
     <Filter Include="Entities\Enemies">
       <UniqueIdentifier>{c542b6fc-addf-406f-b393-708e7e49ef13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tools">
+      <UniqueIdentifier>{a821534f-cc91-4c2b-bf79-fc3c5826a006}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

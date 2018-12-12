@@ -306,45 +306,48 @@ void j1Render::FreeMovement() {
 }
 
 void j1Render::FollowPlayer(float dt) {
+	//LOG("CAMERA X = %i",camera.x);
 	if (App->scene->PlayerExists) {
-		if ((App->scene->PlayerPt->position.x) > (-camera.x + camera.w - right_border)) {	//Move the camera to the right if the player is advancing and ahead of the border
+		if (camera.x < -10) {
+			if ((App->scene->PlayerPt->position.x) < (-camera.x + left_border)) {				//Move the camera to the left if the player is going back and behnid the left border
 
-			camera.x -= App->scene->PlayerPt->velocity.x*(dt / 30);
+				camera.x -= App->scene->PlayerPt->velocity.x*(dt / 30);
+			}
+			
 		}
-		if ((App->scene->PlayerPt->position.x) < (-camera.x + left_border)) {				//Move the camera to the left if the player is going back and behnid the left border
+		if (camera.x > -1600) {
+			if ((App->scene->PlayerPt->position.x) > (-camera.x + camera.w - right_border)) {	//Move the camera to the right if the player is advancing and ahead of the border
 
-			camera.x -= App->scene->PlayerPt->velocity.x*(dt / 30);
+				camera.x -= App->scene->PlayerPt->velocity.x*(dt / 30);
+			}
 		}
-
-		if ((App->scene->PlayerPt->position.y) < (-camera.y + top_border))					//Move the camera upwards if the player is going up and above the top border
-			camera.y -= App->scene->PlayerPt->velocity.y*(dt / 30);
-
-		if ((App->scene->PlayerPt->position.y) > (-camera.y + camera.h - bot_border))		//Move the camera upwards if the player is going up and above the top border
-			camera.y -= App->scene->PlayerPt->velocity.y*(dt / 30);
+		camera.y = 0;
+		
 	}
 }
 
 void j1Render::FindPlayer(float dt) {
 	
 		int vel = 20;
+		if (camera.x < -1600) {
+			if ((App->scene->PlayerPt->position.x) > (-camera.x + camera.w - right_border))
+				camera.x -= vel * (dt / 30);
+		}
+		if (camera.x > 10) {
+			if ((App->scene->PlayerPt->position.x) < (-camera.x + left_border))
+				camera.x += vel * (dt / 30);
+		}
 
-		if ((App->scene->PlayerPt->position.x) > (-camera.x + camera.w - right_border))
-			camera.x -= vel * (dt / 30);
+		//if ((App->scene->PlayerPt->position.y) < (-camera.y + top_border))
+		//	camera.y += vel * (dt / 30);
 
-		if ((App->scene->PlayerPt->position.x) < (-camera.x + left_border))
-			camera.x += vel * (dt / 30);
-
-
-		if ((App->scene->PlayerPt->position.y) < (-camera.y + top_border))
-			camera.y += vel * (dt / 30);
-
-		if ((App->scene->PlayerPt->position.y) > (-camera.y + camera.h - bot_border))
-			camera.y -= vel * (dt / 30);
+		//if ((App->scene->PlayerPt->position.y) > (-camera.y + camera.h - bot_border))
+		//	camera.y -= vel * (dt / 30);
 
 		if (((App->scene->PlayerPt->position.x) < (-camera.x + camera.w - right_border))//If we found the player, stop looking for it
 			&& ((App->scene->PlayerPt->position.x) > (-camera.x + left_border))
-			&& ((App->scene->PlayerPt->position.y) > (-camera.y + top_border))
-			&& ((App->scene->PlayerPt->position.y) < (-camera.y + camera.h - bot_border)))
+			/*&& ((App->scene->PlayerPt->position.y) > (-camera.y + top_border))
+			&& ((App->scene->PlayerPt->position.y) < (-camera.y + camera.h - bot_border))*/)
 			find_player = false;
 	
 	
@@ -356,8 +359,9 @@ bool j1Render::InScreen(int x, int y, uint w, uint h, float parallax_speed) cons
 	uint window_w, window_h;
 	App->win->GetWindowSize(window_w, window_h);
 
-	if (x < (-camera.x*parallax_speed) + window_w +150 &&
-		x>(-camera.x*parallax_speed -50))
+	
+
+	if (x < (-camera.x*parallax_speed) + window_w +1200 && x>(-camera.x*parallax_speed -50))
 		ret = true;
 	
 	return ret;

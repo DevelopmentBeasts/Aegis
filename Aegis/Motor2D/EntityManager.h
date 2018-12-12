@@ -12,6 +12,7 @@ enum class ENTITY_TYPE {
 
 	ENEMY,
 	PLAYER,
+	WIN,
 	UNKNOWN = 2
 
 };
@@ -54,6 +55,7 @@ public:
 	SDL_Texture* worm_texture;
 	SDL_Texture* tribale_texture;
 	SDL_Texture* debug_texture;
+	SDL_Texture* Win_Texture;
 
 };
 
