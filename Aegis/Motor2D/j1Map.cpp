@@ -6,7 +6,7 @@
 #include "j1Map.h"
 #include <math.h>
 #include "Brofiler/Brofiler.h"
-
+#include "EntityManager.h"
 j1Map::j1Map() : j1Module(), map_loaded(false)
 {
 	name.create("map");
@@ -52,9 +52,10 @@ void j1Map::Draw()
 						iPoint pos = MapToWorld(x, y);
 						float parallax = layer->parallax;
 					
-						if (App->render->InScreen(pos.x,pos.y, rect.w, rect.h, parallax) && layer->visible )
+						if (App->render->InScreen(pos.x,pos.y, rect.w, rect.h, parallax) && layer->visible && tileset->name != "pixelcave_tileset_bg_2")
 							App->render->Blit(tileset->texture, pos.x, pos.y, &rect,parallax,0,SDL_FLIP_NONE,NULL,NULL,1);
-
+						if(App->render->InScreen(pos.x, pos.y, rect.w, rect.h, parallax) && layer->visible && tileset->name == "pixelcave_tileset_bg_2")
+							App->render->Blit(tileset->texture, pos.x, pos.y, &rect, parallax, 0, SDL_FLIP_NONE, NULL, NULL, 1);
 					}
 				}
 			}
@@ -237,7 +238,7 @@ bool j1Map::Load(const char* file_name)
 		objectname = objectgroup.attribute("name").as_string();
 		
 		if (objectname == "Spawn") {
-			data.start_position.x = objectgroup.child("object").attribute("x").as_int();
+  			data.start_position.x = objectgroup.child("object").attribute("x").as_int();
 			data.start_position.y = objectgroup.child("object").attribute("y").as_int();
 			
 		}
@@ -282,6 +283,13 @@ bool j1Map::Load(const char* file_name)
 			item_layer = item_layer->next;
 		}
 	}
+
+	//LOAD ENTITIES
+	
+	App->j1entity_manager->CreateEntity(2570, 565, ENTITY_TYPE::WIN);
+	//App->j1entity_manager->CreateEnemy(700, 200, ENEMY_TYPE::TRIBALE);
+
+
 
 	map_loaded = ret;
 
