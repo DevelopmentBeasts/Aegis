@@ -1,7 +1,8 @@
 #include "j1Collision.h"
 #include "j1Input.h"
+#include "p2Log.h"
+#include "j1App.h"
 #include "j1Render.h"
-#include "Entity.h"
 
 
 j1Collision::j1Collision()
@@ -13,7 +14,6 @@ j1Collision::j1Collision()
 	matrix[COLLIDER_NONE][COLLIDER_PLAYER] = false;
 	matrix[COLLIDER_NONE][COLLIDER_ENEMY] = false;
 	//matrix[COLLIDER_NONE][COLLIDER_SENSOR] = false;
-	matrix[COLLIDER_NONE][COLLIDER_DEATH] = false;
 
 	matrix[COLLIDER_WALL][COLLIDER_WALL]=false;
 	matrix[COLLIDER_WALL][COLLIDER_PLAYER] = true;
@@ -21,7 +21,6 @@ j1Collision::j1Collision()
 	matrix[COLLIDER_WALL][COLLIDER_ENEMY] = true;
 	matrix[COLLIDER_WALL][COLLIDER_WIN] = false;
 	//matrix[COLLIDER_WALL][COLLIDER_SENSOR] = true;
-	matrix[COLLIDER_WALL][COLLIDER_DEATH] = false;
 
 	matrix[COLLIDER_PLAYER][COLLIDER_PLAYER] = false;
 	matrix[COLLIDER_PLAYER][COLLIDER_WALL] = true;
@@ -29,7 +28,6 @@ j1Collision::j1Collision()
 	matrix[COLLIDER_PLAYER][COLLIDER_ENEMY] = true;
 	matrix[COLLIDER_PLAYER][COLLIDER_WIN] = true;
 	//matrix[COLLIDER_PLAYER][COLLIDER_SENSOR] = false;
-	matrix[COLLIDER_PLAYER][COLLIDER_DEATH] = true;
 
 	matrix[COLLIDER_ENEMY][COLLIDER_ENEMY] = false;
 	matrix[COLLIDER_ENEMY][COLLIDER_PLAYER] = true;
@@ -37,7 +35,6 @@ j1Collision::j1Collision()
 	matrix[COLLIDER_ENEMY][COLLIDER_NONE] = false;
 	matrix[COLLIDER_ENEMY][COLLIDER_WIN] = false;
 	//matrix[COLLIDER_ENEMY][COLLIDER_SENSOR] = false;
-	matrix[COLLIDER_ENEMY][COLLIDER_DEATH] = true;
 
 	matrix[COLLIDER_SENSOR][COLLIDER_SENSOR] = false;
 	matrix[COLLIDER_SENSOR][COLLIDER_WALL] = true;
@@ -45,15 +42,12 @@ j1Collision::j1Collision()
 	matrix[COLLIDER_SENSOR][COLLIDER_ENEMY] = false;
 	matrix[COLLIDER_SENSOR][COLLIDER_NONE] = false;
 	matrix[COLLIDER_SENSOR][COLLIDER_WIN] = false;
-  matrix[COLLIDER_SENSOR][COLLIDER_DEATH] = false;
-  
+
 	matrix[COLLIDER_WIN][COLLIDER_WIN] = false;
 	matrix[COLLIDER_WIN][COLLIDER_PLAYER] = true;
 	matrix[COLLIDER_WIN][COLLIDER_SENSOR] = false;
 	matrix[COLLIDER_WIN][COLLIDER_ENEMY] = false;
 	matrix[COLLIDER_WIN][COLLIDER_WALL] = false;
-	matrix[COLLIDER_WIN][COLLIDER_DEATH] = false;
-
 }
 
 // Destructor
@@ -143,7 +137,7 @@ void j1Collision::DebugDraw()
 			App->render->DrawQuad(colliders[i]->rect, 255, 255, 255, alpha);
 			break;
 		case COLLIDER_WALL: // blue
-			App->render->DrawQuad(colliders[i]->rect,0,0, 255, alpha);
+			App->render->DrawQuad(colliders[i]->rect, 0, 0, 255, alpha);
 			break;
 		case COLLIDER_PLAYER: // red
 			App->render->DrawQuad(colliders[i]->rect, 255, 30, 12, alpha);
@@ -152,11 +146,7 @@ void j1Collision::DebugDraw()
 			App->render->DrawQuad(colliders[i]->rect, 200, 0, 200, alpha);
 			break;
 		case COLLIDER_SENSOR: //yellow
-			App->render->DrawQuad(colliders[i]->rect, 255, 255, 0, alpha); 
-			break;
-
-		case COLLIDER_DEATH: //Red
-			App->render->DrawQuad(colliders[i]->rect, 255, 0, 0, alpha);
+			App->render->DrawQuad(colliders[i]->rect, 255, 255, 0, alpha);
 			break;
 		case COLLIDER_WIN: //green
 			App->render->DrawQuad(colliders[i]->rect, 0, 255, 0, alpha);

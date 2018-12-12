@@ -41,16 +41,16 @@ public:
 	bool Save(pugi::xml_node&) const;
 
 	//Called when we want the change the level
-	void LoadLevel(p2SString &level_to_load);
+	void LoadLevel(const char* leveltoload);
 
 private:
 	
 	//Level that is loaded at the moment
-	p2SString* current_level;
+	p2SString current_level;
 
 public:
-	p2SString level1;	//Level 1
-	p2SString level2;	//Level 2
+	const char* level1 = "MAGIC_CAVES.tmx";	//Level 1
+	const char* level2 = "AEGIS_RUN.tmx";			//Level 2
 
 	////Pointer to the current map
 	j1Map* current_map=nullptr;
