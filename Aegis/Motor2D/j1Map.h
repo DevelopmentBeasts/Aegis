@@ -11,8 +11,8 @@
 
 
 struct ColliderData {
+	
 	p2List<Collider*>			collider_list;
-	p2List<SDL_Rect>			collider_rects;
 
 	~ColliderData() {
 		for (int i = 0; i < collider_list.count(); ++i) {
@@ -114,9 +114,6 @@ public:
 
 	// Load new map
 	bool Load(const char* path);
-
-	//Add all the colliders to the map
-	void DrawColliders();
   
 	//Tile coordinates to pixel coordinates
 	iPoint MapToWorld(int x, int y) const;
@@ -132,7 +129,9 @@ private:
 	bool LoadTilesetDetails(pugi::xml_node& tileset_node, TileSet* set);
 	bool LoadTilesetImage(pugi::xml_node& tileset_node, TileSet* set);
 	bool LoadLayer(pugi::xml_node& node, MapLayer* layer);
-	bool LoadColliders(pugi::xml_node& node, ColliderData* collider);		
+
+	//Add the colliders to the map
+	bool LoadColliders(pugi::xml_node& node, ColliderData* collider, COLLIDER_TYPE collider_type);
 
 
 	TileSet* GetTilesetFromTileId(int id) const;
