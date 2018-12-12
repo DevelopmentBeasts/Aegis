@@ -3,7 +3,7 @@
 #include "p2Log.h"
 #include "j1App.h"
 #include "j1Render.h"
-
+#include "Entity.h"
 
 j1Collision::j1Collision()
 {
@@ -145,6 +145,9 @@ void j1Collision::DebugDraw()
 			break;
 		case COLLIDER_SENSOR: //yellow
 			App->render->DrawQuad(colliders[i]->rect, 255, 255, 0, alpha);
+			break;
+		case COLLIDER_DEATH: //Red
+			App->render->DrawQuad(colliders[i]->rect, 255, 0, 0, alpha);
 			break;
 		}
 	}

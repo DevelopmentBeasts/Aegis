@@ -10,7 +10,7 @@
 #include "p2Point.h"
 #include "j1Module.h"
 #include "j1App.h"
-#include "Entity.h"
+
 class j1Entity;
 
 enum COLLIDER_TYPE
@@ -20,6 +20,8 @@ enum COLLIDER_TYPE
 	COLLIDER_PLAYER,
 	COLLIDER_ENEMY,
 	COLLIDER_SENSOR,
+	COLLIDER_WIN,
+	COLLIDER_DEATH,
 	COLLIDER_MAX
 };
 
