@@ -15,14 +15,9 @@
 #include "EnemyWorm.h"
 #include "j1Pathfinding.h"
 
-
-
 j1Scene::j1Scene() : j1Module()
 {
 	name.create("scene");
-
-	level1 = "MAGIC_CAVES.tmx";	//Level 1
-	level2 = "AEGIS_RUN.tmx";	//Level 2
 }
 
 // Destructor
@@ -40,7 +35,13 @@ bool j1Scene::Awake()
 
 // Called before the first frame
 bool j1Scene::Start()
+<<<<<<< HEAD
 {
+=======
+{	
+	current_map = App->map;
+	current_map->DrawColliders();
+>>>>>>> parent of 48dc1c0... Merge branch 'Joan' into JAUME
 
 	current_map = App->map;
 	
@@ -49,10 +50,8 @@ bool j1Scene::Start()
 
 	if (PlayerPt != nullptr) {
 		PlayerExists = true;
-	}
-
+	}	
 	LoadLevel(level1);
-	
 	return true;
 }
 
@@ -70,13 +69,33 @@ bool j1Scene::Update(float dt)
 		App->pathfinding->CreatePath(App->map->WorldToMap(PlayerPt->position.x, PlayerPt->position.y), App->map->WorldToMap(PlayerPt->position.x - 200, PlayerPt->position.y-200) );
 	//TESTING
 
+	//if (App->input->GetKey(SDL_SCANCODE_SPACE) == j1KeyState::KEY_DOWN)
+	//	App->render->CenterCamera();
 
 	if (SceneLoaded) {
 		PlayerPt->position.x = App->map->data.start_position.x;
 		PlayerPt->position.y = App->map->data.start_position.y;
 		SceneLoaded = false;
-		PlayerExists = true;	//no hace falta pero por si acaso
+		PlayerExists = true;//no hace falta pero por si acaso
 	}
+	/*if (App->render->find_player) {
+		App->render->FindPlayer(dt);
+	}*/
+
+	/*if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN) {
+		App->pathfinding->CreatePath({ 0,0 }, {12,5 });
+	}
+
+	const p2DynArray<iPoint>* path = App->pathfinding->GetLastPath();*/
+
+	/*for (uint i = 0; i < path->Count(); ++i)
+	{
+		iPoint lemao;
+		lemao = App->map->MapToWorld(path->At(i)->x, path->At(i)->y);
+		
+		SDL_Rect rect = {lemao.x , lemao.y, 32, 32 };
+		App->render->DrawQuad(rect,150,150,150);
+	}*/
 	
 	if(App->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)			//Save game
 		App->LoadGame("save_game.xml");
@@ -111,12 +130,21 @@ bool j1Scene::Update(float dt)
 	if (PlayerPt->position.x >= App->map->data.wincondition) {
 
 		LoadLevel(level2);
+		//App->render->FindPlayer(dt);
 	}
 
 	//Draw the map
 	current_map->Draw();
 
-		
+	// TESTING 
+
+	static const p2DynArray<iPoint>* path = App->pathfinding->GetLastPath();
+
+	App->pathfinding->DrawPath(path);
+
+	//TESTING
+
+				
 
 	return true;
 }
@@ -144,7 +172,7 @@ bool j1Scene::CleanUp()
 bool j1Scene::Load(pugi::xml_node& data)
 {
 	
-	LoadLevel(p2SString(data.attribute("level").as_string()));
+	LoadLevel(data.attribute("level").as_string());
 
 	return true;
 }
@@ -153,20 +181,17 @@ bool j1Scene::Load(pugi::xml_node& data)
 bool j1Scene::Save(pugi::xml_node& data) const
 {
 
-	data.append_attribute("level") = current_level->GetString();
+	data.append_attribute("level") = current_level.GetString();
 
 	return true;
 }
 
-void j1Scene::LoadLevel(p2SString &level_to_load) {
+void j1Scene::LoadLevel(const char* leveltoload) {
 		
-	if (&level_to_load != current_level)
-	{
 		App->map->CleanUp();
-		App->map->Load(level_to_load.GetString());
-		current_level = &level_to_load;
-
-	}
+		App->map->Load(leveltoload);
+		App->map->DrawColliders();
+		current_level = leveltoload;
 
 		int w, h;
 		uchar* data = NULL;
@@ -179,6 +204,4 @@ void j1Scene::LoadLevel(p2SString &level_to_load) {
 		App->render->CenterCamera();
 		SceneLoaded = true;
 		App->render->find_player = true;
-
-
 }
