@@ -45,7 +45,7 @@ public:
 	ENTITY_TYPE type;
 
 	//Collider
-	Collider*	collider;
+	Collider*	collider = nullptr;
 	fPoint velocity = { 0,-3.0 };
 
 	//Node of the document with the properties
@@ -54,11 +54,13 @@ public:
 public:
 
 	//Texture
-	SDL_Texture *texture;
+	SDL_Texture* texture = nullptr;
 	
 	//Animation being shown
-	Animation   *current_animation;
+	Animation* current_animation=nullptr;
+	Animation* win_explosion = nullptr;
 	void Die();
+
 
 };
 

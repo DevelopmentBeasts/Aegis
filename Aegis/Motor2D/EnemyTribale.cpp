@@ -19,16 +19,17 @@ EnemyTribale::EnemyTribale(iPoint pos) : j1Enemy(pos, ENEMY_TYPE::TRIBALE) {
 
 	TribaleRect.x = pos.x;
 	TribaleRect.y = pos.y;
-	TribaleRect.w = 50;
-	TribaleRect.h = 87;
+	position.x = pos.x;
+	position.y = pos.y;
+	TribaleRect.w = 25;
+	TribaleRect.h = 43;
 }
 
 EnemyTribale::~EnemyTribale() {}
 
 bool EnemyTribale::Start() {
 	TribaleCollider = App->collision->AddEntCollider(TribaleRect, COLLIDER_ENEMY, this);
-	position.x = 3000;
-	position.y = 700;
+	
 
 	texture = App->j1entity_manager->tribale_texture;
 	current_animation = &idle;
@@ -86,7 +87,7 @@ bool EnemyTribale::Update(float dt) {
 		break;
 	}
 	position.x += velocity.x/**(dt/30)*/;
-	TribaleCollider->SetPos(position.x+40, position.y);
+	TribaleCollider->SetPos(position.x+65, position.y);
 	
 	Draw();
 

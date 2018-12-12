@@ -25,24 +25,6 @@
     <ClCompile Include="WinClass.cpp">
       <Filter>Entities</Filter>
     </ClCompile>
-    <ClCompile Include="Enemy.cpp">
-      <Filter>Entities\Enemies</Filter>
-    </ClCompile>
-    <ClCompile Include="EnemyTribale.cpp">
-      <Filter>Entities\Enemies</Filter>
-    </ClCompile>
-    <ClCompile Include="EnemyWorm.cpp">
-      <Filter>Entities\Enemies</Filter>
-    </ClCompile>
-    <ClCompile Include="Entity.cpp">
-      <Filter>Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="EntityManager.cpp">
-      <Filter>Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="p2Log.cpp">
-      <Filter>Tools</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
@@ -72,19 +54,6 @@
       <Filter>Entities\Enemies</Filter>
     </ClCompile>
     <ClInclude Include="WinClass.h">
-    <ClInclude Include="Animation.h">
-      <Filter>Tools</Filter>
-    </ClInclude>
-    <ClInclude Include="Enemy.h">
-      <Filter>Entities\Enemies</Filter>
-    </ClInclude>
-    <ClInclude Include="EnemyTribale.h">
-      <Filter>Entities\Enemies</Filter>
-    </ClInclude>
-    <ClInclude Include="EnemyWorm.h">
-      <Filter>Entities\Enemies</Filter>
-    </ClInclude>
-    <ClInclude Include="Entity.h">
       <Filter>Entities</Filter>
     </ClInclude>
   </ItemGroup>
