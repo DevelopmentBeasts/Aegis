@@ -23,30 +23,37 @@ WinClass::WinClass(iPoint pos):j1Entity(pos, ENTITY_TYPE::WIN){
 	DiamondAnim.LoadPushbacks(AnimsNode);
 	AnimsNode = AnimsDoc.child("properties").child("Win").child("Explosion");
 	ExplosionAnim.LoadPushbacks(AnimsNode);
-	
+	texture = App->tex->Load("textures/explosions.png");
 
 }
 bool WinClass::Start() {
 	bool ret = true;
 	Tex = App->j1entity_manager->Win_Texture;
-	WinCollider = App->collision->AddEntCollider({ position.x,position.y,20,20 }, COLLIDER_WIN, this);
+	WinCollider = App->collision->AddEntCollider({ position.x,position.y,20,30 }, COLLIDER_WIN, this);
 	
+	current_animation = &DiamondAnim;
+	win_explosion = &ExplosionAnim;
 	return ret;
 }
 
 bool WinClass::Update(float dt) {
-	
-	if (!Explosion) {
-		current_animation = &DiamondAnim;
+	Draw();
+	if (Explosion && win_explosion->Finished()) {
+		App->scene->LoadLevel2NOW = true;
+		Explosion = false;
+		CleanUp();
 	}
-	if (Explosion) {
-		current_animation = &ExplosionAnim;
-	}	
-
 	return true;
 }
 void WinClass::OnCollision(Collider* c1, Collider* c2) {
 	if (c2->type == COLLIDER_PLAYER) {
 		Explosion = true;
+		
+	}
+}
+void WinClass::Draw() {
+	App->render->Blit(texture, position.x - 10, position.y - 10, &current_animation->GetCurrentFrame(), 1.0, 0, SDL_FLIP_NONE, NULL, NULL, 0.5);
+	if (Explosion) {
+		App->render->Blit(texture, position.x - 140, position.y - 150, &win_explosion->GetCurrentFrame(), 1.0, 0, SDL_FLIP_NONE, NULL, NULL, 3);
 	}
 }

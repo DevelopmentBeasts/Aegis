@@ -29,7 +29,7 @@ public:
 	virtual bool Update(float dt) { return true; }
 	virtual bool PostUpdate() { return true; }
 	virtual bool CleanUp();
-	void Draw();
+
 	virtual bool Load(pugi::xml_node&) { return true; }
 	virtual bool Save(pugi::xml_node&) { return true; }
 
@@ -45,7 +45,7 @@ public:
 	ENTITY_TYPE type;
 
 	//Collider
-	Collider*	collider;
+	Collider*	collider = nullptr;
 	fPoint velocity = { 0,-3.0 };
 
 	//Node of the document with the properties
@@ -54,10 +54,11 @@ public:
 public:
 
 	//Texture
-	SDL_Texture* texture;
-	float BlitScale=1;
+	SDL_Texture* texture = nullptr;
+	
 	//Animation being shown
-	Animation* current_animation;
+	Animation* current_animation=nullptr;
+	Animation* win_explosion = nullptr;
 	void Die();
 
 

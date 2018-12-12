@@ -23,5 +23,5 @@ void j1Enemy::OnCollision(Collider *c1, Collider *c2) {
 
 void j1Enemy::Draw() {
 
-	App->render->Blit(texture,position.x, position.y, &current_animation->GetCurrentFrame(), 1.0/*Parallax*/, 0.0/*rotation*/, flip,NULL,NULL,1.5);
+	App->render->Blit(texture,position.x, position.y, &current_animation->GetCurrentFrame(), 1/*Parallax*/, 0.0/*rotation*/, flip,NULL,NULL,1.5);
 }

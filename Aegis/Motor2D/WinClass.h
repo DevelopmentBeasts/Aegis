@@ -18,6 +18,7 @@ public:
 public:
 	bool Start();
 	bool Update(float dt);
+	void Draw();
 public:
 	Collider* WinCollider;
 	void OnCollision(Collider *c1, Collider *c2);

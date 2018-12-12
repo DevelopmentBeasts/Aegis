@@ -14,7 +14,3 @@ bool j1Entity::CleanUp() {
 	
 	return true;
 }
-void j1Entity::Draw() {
-     App->render->Blit(texture, position.x - 250, position.y - 200, &current_animation.GetCurrentFrame(), 0, 0, SDL_FLIP_NONE, NULL, NULL, BlitScale);
-	
-}
