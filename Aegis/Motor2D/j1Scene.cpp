@@ -18,6 +18,9 @@
 j1Scene::j1Scene() : j1Module()
 {
 	name.create("scene");
+
+	level1 = "MAGIC_CAVES.tmx";
+	level2 = "AEGIS_RUN.tmx";
 }
 
 // Destructor
@@ -37,7 +40,6 @@ bool j1Scene::Awake()
 bool j1Scene::Start()
 {	
 	current_map = App->map;
-	current_map->DrawColliders();
 
 	PlayerPt = App->j1entity_manager->CreateEntity(App->map->data.start_position.x, App->map->data.start_position.y, ENTITY_TYPE::PLAYER);
 
@@ -165,7 +167,7 @@ bool j1Scene::CleanUp()
 bool j1Scene::Load(pugi::xml_node& data)
 {
 	
-	LoadLevel(data.attribute("level").as_string());
+	LoadLevel(p2SString(data.attribute("level").as_string()));
 
 	return true;
 }
@@ -174,28 +176,32 @@ bool j1Scene::Load(pugi::xml_node& data)
 bool j1Scene::Save(pugi::xml_node& data) const
 {
 
-	data.append_attribute("level") = current_level.GetString();
+	data.append_attribute("level") = current_level->GetString();
 
 	return true;
 }
 
-void j1Scene::LoadLevel(const char* leveltoload) {
-		
+void j1Scene::LoadLevel(p2SString &level_to_load) {
+	
+	if (&level_to_load != current_level)
+	{
 		App->map->CleanUp();
-		App->map->Load(leveltoload);
-		App->map->DrawColliders();
-		current_level = leveltoload;
+		App->map->Load(level_to_load.GetString());
+		current_level = &level_to_load;
 
 		int w, h;
 		uchar* data = NULL;
 		if (App->map->CreateWalkabilityMap(w, h, &data))
 			App->pathfinding->SetMap(w, h, data);
-
 		RELEASE_ARRAY(data);
+
+	}
+
 		PlayerPt->position.x = App->map->data.start_position.x;
 		PlayerPt->position.y = App->map->data.start_position.y;
 		App->render->CenterCamera();
 		SceneLoaded = true;
 		App->render->camera.x = -100;
 		App->render->find_player = true;
+
 }
