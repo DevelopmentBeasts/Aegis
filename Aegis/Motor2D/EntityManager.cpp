@@ -6,7 +6,6 @@
 #include "j1Render.h"
 #include "Player.h"
 #include "EnemyTribale.h"
-#include "WinClass.h"
 j1EntityManager::j1EntityManager()
 {
 	name.create("entities");
@@ -34,7 +33,7 @@ bool j1EntityManager::Start() {
 	worm_texture	= App->tex->Load("textures/worm_sprites.png");
 	tribale_texture = App->tex->Load("textures/tribale_sprites.png");
 	debug_texture	= App->tex->Load(("textures/walkability.png"));
-	Win_Texture     = App->tex->Load("textures/explosions.png");
+
 	//Execute start() of every entity
 	p2List_item<j1Entity*>*item = entities_list.start;
 	for (; item != nullptr; item = item->next) {
@@ -105,8 +104,7 @@ j1Entity *j1EntityManager::CreateEntity(int x, int y, ENTITY_TYPE eType) {
 	case ENTITY_TYPE::PLAYER:
 		Entity = new PlayerClass(iPoint (x,y));
 		break;
-	case ENTITY_TYPE::WIN:
-		Entity = new WinClass(iPoint(x, y));
+	
 	default:
 		break;
 	}
