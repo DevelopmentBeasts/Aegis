@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="200" height="70" tilewidth="16" tileheight="16" nextobjectid="76">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="200" height="70" tilewidth="16" tileheight="16" nextobjectid="78">
  <tileset firstgid="1" name="pixelcave_tileset_map" tilewidth="16" tileheight="16" tilecount="1024" columns="32">
   <image source="pixelcave_tileset_map.png" width="512" height="512"/>
  </tileset>
  <tileset firstgid="1025" name="pixelcave_tileset_bg_2" tilewidth="16" tileheight="16" tilecount="200704" columns="448">
   <image source="pixelcave_tileset_bg_2.png" width="7168" height="7168"/>
+ </tileset>
+ <tileset firstgid="201729" name="walkability" tilewidth="16" tileheight="16" tilecount="8" columns="4">
+  <image source="walkability.png" width="64" height="32"/>
  </tileset>
  <layer name="cueva3" width="200" height="70">
   <properties>
@@ -56032,6 +56035,9 @@
   </data>
  </layer>
  <layer name="Capa de Patrones 1" width="200" height="70">
+  <properties>
+   <property name="Navigation" type="int" value="1"/>
+  </properties>
   <data>
    <tile gid="679"/>
    <tile gid="679"/>
@@ -70035,7 +70041,7 @@
    <tile gid="0"/>
   </data>
  </layer>
- <objectgroup name="Colliders">
+ <objectgroup name="Wall colliders">
   <object id="2" x="370.25" y="352.75" width="235.75" height="61.5"/>
   <object id="7" x="896.833" y="306.333" width="141" height="42.8333"/>
   <object id="13" x="896.818" y="309.364" width="36.5454" height="74.2727"/>
@@ -70052,14 +70058,14 @@
   <object id="35" x="1184.67" y="609.667" width="46" height="510"/>
   <object id="36" x="1443.17" y="529.333" width="327.167" height="122.333"/>
   <object id="40" x="110" y="300" width="48.3333" height="821"/>
-  <object id="41" x="109.091" y="259.273" width="63.4545" height="38.7273"/>
-  <object id="42" x="156.545" y="239.636" width="32" height="42.9091"/>
-  <object id="43" x="176.909" y="217.273" width="28.3636" height="49.4545"/>
-  <object id="44" x="202.364" y="206.909" width="19.2727" height="42.5455"/>
-  <object id="45" x="212.727" y="187.818" width="24" height="48.1818"/>
-  <object id="46" x="226" y="188" width="24.5455" height="32.1818"/>
-  <object id="47" x="240.182" y="176.182" width="23.6364" height="29.0909"/>
-  <object id="48" x="257.091" y="166.364" width="26.1818" height="23.2727"/>
+  <object id="41" x="17.091" y="257.773" width="63.4545" height="38.7273"/>
+  <object id="42" x="27.045" y="175.136" width="32" height="42.9091"/>
+  <object id="43" x="83.909" y="185.773" width="28.3636" height="49.4545"/>
+  <object id="44" x="235.364" y="73.909" width="19.2727" height="42.5455"/>
+  <object id="45" x="184.227" y="89.818" width="24" height="48.1818"/>
+  <object id="46" x="133.5" y="115" width="24.5455" height="32.1818"/>
+  <object id="47" x="290.182" y="52.682" width="23.6364" height="29.0909"/>
+  <object id="48" x="323.591" y="70.364" width="26.1818" height="23.2727"/>
   <object id="49" x="273.091" y="107.636" width="484.364" height="66.9091"/>
   <object id="50" x="747.455" y="132.364" width="30.5455" height="24.5455"/>
   <object id="51" x="772" y="111.818" width="24.3636" height="28.1818"/>
@@ -70089,5 +70095,8 @@
  <objectgroup name="Spawn">
   <object id="3" x="464" y="231.75" width="0.25" height="0.25"/>
   <object id="4" x="802.167" y="294.333" width="28.5" height="67.5"/>
+ </objectgroup>
+ <objectgroup name="Wall">
+  <object id="76" x="90.7273" y="874.561" width="3087.45" height="329.955"/>
  </objectgroup>
 </map>

@@ -13,7 +13,18 @@ enum TribaleStates {
 	DIE,
 	ERROR404
 };
-
+enum State {
+	NONE,
+	LEFT_UP,
+	RIGHT_UP,
+	RIGHT_DOWN,
+	LEFT_DOWN,
+	UP,
+	DOWN,
+	LEFT,
+	RIGHT
+	
+};
 class EnemyTribale : public j1Enemy
 {
 
@@ -28,7 +39,7 @@ public:
 	void OnCollision(Collider *c1, Collider *c2);
 
 	bool Gravity = true;
-
+	/*p2DynArray<State> wheretogo(const p2DynArray<iPoint>& path);*/
 public:
 
 	p2DynArray<iPoint>* enemy_path;
@@ -47,6 +58,19 @@ private:
 
     TribaleStates state = IDL;
 
+
+
+	//PATHFINDING
+	const p2DynArray<iPoint>* path = nullptr;
+	
+	p2DynArray<State> states;
+	unsigned int i;
+	bool move = false;
+
+	iPoint PosToGo;
+	
+	
+	
 };
 
 #endif

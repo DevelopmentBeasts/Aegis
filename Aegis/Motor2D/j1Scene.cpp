@@ -60,12 +60,12 @@ bool j1Scene::PreUpdate()
 bool j1Scene::Update(float dt)
 {
 	//TESTING
-	if (App->input->GetKey(SDL_SCANCODE_SPACE) == j1KeyState::KEY_DOWN)
-		App->pathfinding->CreatePath(App->map->WorldToMap(PlayerPt->position.x, PlayerPt->position.y), App->map->WorldToMap(PlayerPt->position.x - 200, PlayerPt->position.y-200) );
+	//if (App->input->GetKey(SDL_SCANCODE_SPACE) == j1KeyState::KEY_DOWN)
+	//	App->pathfinding->CreatePath(App->map->WorldToMap(PlayerPt->position.x, PlayerPt->position.y), App->map->WorldToMap(PlayerPt->position.x - 200, PlayerPt->position.y-200) );
 	//TESTING
 
 	//if (App->input->GetKey(SDL_SCANCODE_SPACE) == j1KeyState::KEY_DOWN)
-	//	App->render->CenterCamera();
+	//	App->render->CenterCamera(); 
 
 	if (SceneLoaded) {
 		PlayerPt->position.x = App->map->data.start_position.x;
@@ -133,9 +133,9 @@ bool j1Scene::Update(float dt)
 
 	// TESTING 
 
-	static const p2DynArray<iPoint>* path = App->pathfinding->GetLastPath();
+	/*static const p2DynArray<iPoint>* path = App->pathfinding->GetLastPath();
 
-	App->pathfinding->DrawPath(path);
+	App->pathfinding->DrawPath(path);*/
 
 	//TESTING
 

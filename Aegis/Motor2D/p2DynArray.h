@@ -40,7 +40,7 @@ public:
 	// Operators
 	VALUE& operator[](unsigned int index)
 	{
-		ASSERT(index < num_elements);
+		assert(index < num_elements);
 		return data[index];
 	}
 
@@ -145,6 +145,15 @@ public:
 		VALUE* result = NULL;
 
 		if(index < num_elements)
+			return result = &data[index];
+
+		return result;
+	}
+	 VALUE* AtT(unsigned int index) 
+	{
+		VALUE* result = NULL;
+
+		if (index < num_elements)
 			return result = &data[index];
 
 		return result;
