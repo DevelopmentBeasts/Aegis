@@ -56,8 +56,6 @@ public:
 	// Set background color
 	void SetBackgroundColor(SDL_Color color);
 
-	//Returns true if something is in the camera range
-	bool InScreen(int x,int y,uint w, uint h, float parallax_speed) const;
 
 public:
 
