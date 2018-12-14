@@ -38,29 +38,27 @@ bool EnemyTribale::Start() {
 
 	texture = App->j1entity_manager->tribale_texture;
 	current_animation = &idle;
-	velocity.x = 1;
-	velocity.y = 14;
+	velocity.x = 8;
+	velocity.y = 8;
 	Gravity = 0;
 	return true;
 }
 
 bool EnemyTribale::Update(float dt) {
 
-	if (App->input->GetKey(SDL_SCANCODE_SPACE) == j1KeyState::KEY_DOWN && (position.x - App->scene->PlayerPt->position.x < 700))
+ 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == j1KeyState::KEY_DOWN && (position.x - App->scene->PlayerPt->position.x < 700))
 	{
-	    App->pathfinding->CreatePath(App->map->WorldToMap(position.x, position.y), App->map->WorldToMap(App->scene->PlayerPt->position.x, App->scene->PlayerPt->position.y));
-	    path = App->pathfinding->GetLastPath();
-     	i = 2;
-	    move = !move;
+ 	    App->pathfinding->CreatePath(App->map->WorldToMap(position.x, position.y), App->map->WorldToMap(App->scene->PlayerPt->position.x, App->scene->PlayerPt->position.y));
+	    path = App->pathfinding->GetLastPath();	
+		i = 0;
+		change_iterator = false;
     }
 
-	if(path!=nullptr)
-	App->pathfinding->DrawPath(path);
-
-	if (move) 
-	{		
-		//Move();
+	if (path != nullptr) {
+		App->pathfinding->DrawPath(path);
+		Move(path, dt);
 	}
+		
 
 	if (App->framerate_cap_activated) {
 		dt = 30;
@@ -96,78 +94,124 @@ void EnemyTribale::OnCollision(Collider *c1, Collider *c2) {
 	}
 }
 
-void EnemyTribale::Move() {
+void EnemyTribale::Move(const p2DynArray<iPoint>*path, float dt) {
 
-	if (path->At(i + 3) != nullptr) {
-		if (path->At(i) != nullptr) {
-			PosToGo.x = path->At(i+2)->x;
-			PosToGo.y = path->At(i+2)->y;
-		}
+	const p2DynArray<iPoint>* Path = path;
 
-		PosToGo = App->map->MapToWorld(PosToGo.x, PosToGo.y);
-		//position = App->map->WorldToMap(position.x, position.y);
-		velocity.x = 3;
-		if (velocity.x*(-1) > 0) {
-			velocity.x *= -1;
-		}
-		velocity.y = 3;
-		if (velocity.y*(-1) > 0) {
-			velocity.y *= -1;
-		}
-		xstate;
-		//LEFT
-		if (PosToGo.x < position.x && !rightdone) { //si tienes que ir izquierda y no vienes de la derecha
-			xstate = LEFT;
-			LOG("X STATE LEFT");
-		}
-		if (xstate == LEFT && !leftdone) {//muevete izquierda si asi tienes que hacerlo
-			position.x -= velocity.x;
-		}
-		if (PosToGo.x > position.x && xstate == LEFT) {
-			leftdone = true;
-		}
-		//DOWN
-		if (PosToGo.y > position.y && !updone) {//if have to go down and dont come from bot to tp
-			ystate = DOWN;
-			LOG("Y STATE DOWN");
-		}
-		if (ystate == DOWN && !downdone) {
-			position.y += velocity.y;
-		}
-		if (PosToGo.y < position.y && ystate == DOWN) {
-			downdone = true;
-		}
-		//RIGHT
-		if (PosToGo.x > position.x && !leftdone) {//have to go right and not coming from left
-			xstate = RIGHT;
-			LOG("X STATE RIGHT");
-		}
-		if (xstate == RIGHT && !rightdone) {
-			position.x += velocity.x;
-		}
-		if (PosToGo.x < position.x && xstate == RIGHT) {
-			rightdone = true;
-		}
-		//UP
-		if (PosToGo.y < position.y && !downdone) {//if have to go up and not down done
-			ystate = UP;
-			LOG("Y STATE UP");
-		}
-		if (ystate == UP && !updone) {
-			position.y -= velocity.y;
-		}
-		if (PosToGo.y > position.y && ystate == UP) {
-			updone = true;
-		}
+	curr_direction = NewMovement(Path);
 
-		if (!(PosToGo.x < position.x && !rightdone) && !(PosToGo.y > position.y && !updone) && !(PosToGo.x > position.x && !leftdone) && !(PosToGo.y < position.y && !downdone)) {
-			LOG("NEXT TILE IN THE PATH");
-			i++;
-			leftdone = false;
-			rightdone = false;
-			updone = false;
-			downdone = false;
+	
+
+	switch (curr_direction) {
+
+	case UP_RIGHT:
+		position.x += velocity.x;
+		position.y -= velocity.y;
+		break;
+	case UP_LEFT:
+		position.x -= velocity.x;
+		position.y -= velocity.y;
+		break;
+	case DOWN_RIGHT:
+		position.x += velocity.x;
+		position.y += velocity.y;
+		break;
+	case DOWN_LEFT:
+		position.x -= velocity.x;
+		position.y += velocity.y;
+		break;
+	case RIGHT:
+		position.x += velocity.x;
+		break;
+	case LEFT:
+		position.x -= velocity.x;
+		break;
+	case UP:
+		position.y -= velocity.y;
+		break;
+	case DOWN:
+		position.y += velocity.y;
+		break;
+	case NO_DIRECTION:
+		LOG("NOT MOVING");
+	}
+
+
+
+
+}
+bool EnemyTribale::DetectThePlayer() {
+	iPoint player;
+	player.x = App->scene->PlayerPt->position.x;
+	player.y = App->scene->PlayerPt->position.y;
+	int xdistance = player.x - position.x;
+	if (xdistance*-1 > 0) {
+		xdistance*=-1;
+	}
+	int ydistance = player.y - position.y;
+	if (ydistance*-1 > 0) {
+		ydistance *= -1;
+	}
+	if (xdistance < 3 && ydistance < 3) {
+		return true;
+	}
+}
+EntityDirection EnemyTribale::NewMovement(const p2DynArray<iPoint>*EntityPath) {
+
+	if (EntityPath->Count() >= 2) {
+
+		if (EntityPath->At(i + 2) != nullptr) {
+			iPoint current_Tile;
+			current_Tile.x = EntityPath->At(i)->x;
+			current_Tile.y = EntityPath->At(i)->y;
+			iPoint next_Tile;
+			next_Tile.x = EntityPath->At(i + 1)->x;
+			next_Tile.y = EntityPath->At(i + 1)->y;
+			iPoint Direction_comp;
+
+			Direction_comp.x = next_Tile.x - current_Tile.x;
+			Direction_comp.y = next_Tile.y - current_Tile.y;
+			if (change_iterator) {
+				i++;
+			}
+
+			change_iterator = !change_iterator;
+
+
+			if (Direction_comp.x == 1 && Direction_comp.y == 1) {
+				return DOWN_RIGHT;
+
+			}
+			else if (Direction_comp.x == -1 && Direction_comp.y == 1) {
+				return DOWN_LEFT;
+
+			}
+			else if (Direction_comp.x == 1 && Direction_comp.y == -1) {
+				return UP_RIGHT;
+			}
+			else if (Direction_comp.x == 1 && Direction_comp.y == -1) {
+				return UP_LEFT;
+
+			}
+			else if (Direction_comp.x == 1) {
+				return RIGHT;
+
+			}
+			else if (Direction_comp.x == -1) {
+				return LEFT;
+
+			}
+			else if (Direction_comp.y == 1) {
+				return DOWN;
+
+			}
+			else if (Direction_comp.y == -1) {
+				return UP;
+
+			}
+
+
 		}
-	}else
-		move = false;
+		else return NO_DIRECTION;
+	}
 }

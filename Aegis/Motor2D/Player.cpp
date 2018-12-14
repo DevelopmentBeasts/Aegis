@@ -126,7 +126,13 @@ bool PlayerClass::Start() {
 
 bool PlayerClass::Update(float dt) {
 	BROFILER_CATEGORY("PlayerUpdate();", Profiler::Color::Green);
-    
+	/*if (App->input->GetKey(SDL_SCANCODE_P) == j1KeyState::KEY_DOWN) {
+		stop = !stop;
+	}
+	if (stop) {
+		dt = 0;
+	}*/
+
 	//FRAMERATE CONTROL
 	if (App->framerate_cap_activated) {
 		dt = 30;

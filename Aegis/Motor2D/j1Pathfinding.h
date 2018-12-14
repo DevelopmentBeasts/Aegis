@@ -8,6 +8,8 @@
 #define DEFAULT_PATH_LENGTH 50
 #define INVALID_WALK_CODE 255
 
+
+
 // --------------------------------------------------
 // Recommended reading:
 // Intro: http://www.raywenderlich.com/4946/introduction-to-a-pathfinding
@@ -16,6 +18,9 @@
 
 class j1PathFinding : public j1Module
 {
+public:
+	int i = 0; //iterator for the "EntityDirection NewMovement(const p2DynArray<iPoint>*EntityPath)const;"
+	bool change_iterator = false;
 public:
 
 	j1PathFinding();
@@ -58,6 +63,9 @@ private:
 	uchar* map;
 	// we store the created path here
 	p2DynArray<iPoint> last_path;
+
+
+	
 };
 
 // forward declaration
@@ -85,6 +93,8 @@ struct PathNode
 	int h;
 	iPoint pos;
 	const PathNode* parent; // needed to reconstruct the path in the end
+	//-----------
+	
 };
 
 // ---------------------------------------------------------------------

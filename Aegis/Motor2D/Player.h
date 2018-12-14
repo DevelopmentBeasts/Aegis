@@ -155,7 +155,7 @@ private:
 	pugi::xml_node PlayerXmlNode_;
 	p2SString			folder;
 
-	 
+	bool stop = false;
 
 };
 
