@@ -7,6 +7,8 @@
 #include <math.h>
 #include "Brofiler/Brofiler.h"
 #include "EntityManager.h"
+#include "j1Window.h"
+
 j1Map::j1Map() : j1Module(), map_loaded(false)
 {
 	name.create("map");
@@ -35,13 +37,37 @@ void j1Map::Draw()
 
 	p2List_item <MapLayer*>*layer_item = data.layers.start;
 	MapLayer* layer;
-	
-	while (layer_item != nullptr) {
-		layer = layer_item->data;
 
-		for (int y = 0; y < data.height; y++) {
+	//Scale at which we draw the game
+	int scale = App->win->GetScale();
+
+	//Camera rect
+	SDL_Rect camera_pos = App->render->camera;
+
+	while (layer_item != nullptr) {
+		
+		layer = layer_item->data;			//Current layer
+
+		//Parralax of the layer
+		float parallax = layer->parallax;	
+
+		//We only want to print the tiles that appear on the screen
+		
+		int y;
+		if (camera_pos.y > 0)
+			y = 0;
+		else
+			y = WorldToMap(0, -camera_pos.y*parallax / scale).y;
+
+		for (y;  y < layer->height && y < WorldToMap(0, -camera_pos.y*parallax / scale + camera_pos.h).y; y++) {
 			
-			for (int x = 0; x < data.width; x++) {
+			int  x;
+			if (camera_pos.x > 0)
+				x = 0;
+			else
+				x = WorldToMap(-camera_pos.x*parallax/scale, 0).x;
+
+			for (x; x < layer->width  && x < WorldToMap(-camera_pos.x*parallax / scale + camera_pos.w, 0).x ; x++) {
 				
 				int tile_id = layer->Get(x, y);
 				if (tile_id > 0) {
@@ -50,12 +76,9 @@ void j1Map::Draw()
 					if (tileset != nullptr) {
 						SDL_Rect rect = tileset->GetTileRect(tile_id);
 						iPoint pos = MapToWorld(x, y);
-						float parallax = layer->parallax;
-					
-						if (App->render->InScreen(pos.x,pos.y, rect.w, rect.h, parallax) && layer->visible && tileset->name != "pixelcave_tileset_bg_2")
-							App->render->Blit(tileset->texture, pos.x, pos.y, &rect,parallax,0,SDL_FLIP_NONE,NULL,NULL,1);
-						if(App->render->InScreen(pos.x, pos.y, rect.w, rect.h, parallax) && layer->visible && tileset->name == "pixelcave_tileset_bg_2")
-							App->render->Blit(tileset->texture, pos.x, pos.y, &rect, parallax, 0, SDL_FLIP_NONE, NULL, NULL, 1);
+						
+						App->render->Blit(tileset->texture,pos.x, pos.y, &rect, parallax, 0, SDL_FLIP_NONE, NULL, NULL, 1);
+
 					}
 				}
 			}
@@ -76,8 +99,6 @@ TileSet* j1Map::GetTilesetFromTileId(int id) const
 			}
 		}
 	return data.tilesets.end->data;
-
-
 	
 }
 

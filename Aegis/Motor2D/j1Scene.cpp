@@ -46,7 +46,9 @@ bool j1Scene::Start()
 	if (PlayerPt != nullptr) {
 		PlayerExists = true;
 	}	
+
 	LoadLevel(level1);
+
 	return true;
 }
 
@@ -59,10 +61,7 @@ bool j1Scene::PreUpdate()
 // Called each loop iteration
 bool j1Scene::Update(float dt)
 {
-	//TESTING
-	//if (App->input->GetKey(SDL_SCANCODE_SPACE) == j1KeyState::KEY_DOWN)
-	//	App->pathfinding->CreatePath(App->map->WorldToMap(PlayerPt->position.x, PlayerPt->position.y), App->map->WorldToMap(PlayerPt->position.x - 200, PlayerPt->position.y-200) );
-	//TESTING
+	static const p2DynArray<iPoint>* path=nullptr;
 
 	//if (App->input->GetKey(SDL_SCANCODE_SPACE) == j1KeyState::KEY_DOWN)
 	//	App->render->CenterCamera(); 
@@ -130,16 +129,6 @@ bool j1Scene::Update(float dt)
 
 	//Draw the map
 	current_map->Draw();
-
-	// TESTING 
-
-	/*static const p2DynArray<iPoint>* path = App->pathfinding->GetLastPath();
-
-	App->pathfinding->DrawPath(path);*/
-
-	//TESTING
-
-				
 
 	return true;
 }
