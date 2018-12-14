@@ -47,6 +47,8 @@ public:
 	//Debugging: Draws a path on the screen 
 	void DrawPath(const p2DynArray<iPoint>* path) const ;
 
+	//Utility: Look the next tile to move
+	
 private:
 
 	// size of the map

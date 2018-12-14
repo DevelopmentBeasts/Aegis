@@ -11,7 +11,6 @@
 
 
 struct ColliderData {
-	
 	p2List<Collider*>			collider_list;
 
 	~ColliderData() {
@@ -30,6 +29,7 @@ struct MapLayer
 	int			height;
 	uint*		data;
 	float		parallax=1.0f;
+	float		scale = 1.0f;
 	bool		visible = true;
 	int			navigation=0;
 
@@ -130,8 +130,8 @@ private:
 	bool LoadTilesetImage(pugi::xml_node& tileset_node, TileSet* set);
 	bool LoadLayer(pugi::xml_node& node, MapLayer* layer);
 
-	//Add the colliders to the map
-	bool LoadColliders(pugi::xml_node& node, ColliderData* collider, COLLIDER_TYPE collider_type);
+	//Add colliders
+	bool LoadColliders(pugi::xml_node& node, ColliderData* collider, COLLIDER_TYPE collider_type);		
 
 
 	TileSet* GetTilesetFromTileId(int id) const;

@@ -7,6 +7,8 @@
 #include <math.h>
 #include "Brofiler/Brofiler.h"
 #include "EntityManager.h"
+#include "j1Window.h"
+
 j1Map::j1Map() : j1Module(), map_loaded(false)
 {
 	name.create("map");
@@ -35,13 +37,40 @@ void j1Map::Draw()
 
 	p2List_item <MapLayer*>*layer_item = data.layers.start;
 	MapLayer* layer;
-	
-	while (layer_item != nullptr) {
-		layer = layer_item->data;
 
-		for (int y = 0; y < data.height; y++) {
+	//Global scale affects everything (rects, colliders, etc)
+	int global_scale = App->win->GetScale();
+
+	//Camera rect
+	SDL_Rect camera_pos = App->render->camera;
+
+	while (layer_item != nullptr) {
+		
+		layer = layer_item->data;			//Current layer
+
+		//Parralax of the layer
+		float parallax = layer->parallax;	
+
+		//Extra escale only affects the blit function
+		float extra_scale = layer->scale;
+
+		//We only want to print the tiles that appear on the screen
+		
+		int y;
+		if (camera_pos.y > 0)
+			y = 0;
+		else
+			y = WorldToMap(0, -camera_pos.y*parallax / (global_scale * extra_scale)).y;
+
+		for (y;  y < layer->height && y < WorldToMap(0, -camera_pos.y*parallax/ global_scale * extra_scale + camera_pos.h).y; y++) {
 			
-			for (int x = 0; x < data.width; x++) {
+			int  x;
+			if (camera_pos.x > 0)
+				x = 0;
+			else
+				x = WorldToMap(-camera_pos.x*parallax/(global_scale  * extra_scale), 0).x;
+
+			for (x; x < layer->width  && x < WorldToMap(-camera_pos.x*parallax*extra_scale / global_scale * extra_scale + camera_pos.w, 0).x ; x++) {
 				
 				int tile_id = layer->Get(x, y);
 				if (tile_id > 0) {
@@ -50,12 +79,9 @@ void j1Map::Draw()
 					if (tileset != nullptr) {
 						SDL_Rect rect = tileset->GetTileRect(tile_id);
 						iPoint pos = MapToWorld(x, y);
-						float parallax = layer->parallax;
-					
-						if (App->render->InScreen(pos.x,pos.y, rect.w, rect.h, parallax) && layer->visible && tileset->name != "pixelcave_tileset_bg_2")
-							App->render->Blit(tileset->texture, pos.x, pos.y, &rect,parallax,0,SDL_FLIP_NONE,NULL,NULL,1);
-						if(App->render->InScreen(pos.x, pos.y, rect.w, rect.h, parallax) && layer->visible && tileset->name == "pixelcave_tileset_bg_2")
-							App->render->Blit(tileset->texture, pos.x, pos.y, &rect, parallax, 0, SDL_FLIP_NONE, NULL, NULL, 1);
+						
+						App->render->Blit(tileset->texture,pos.x*extra_scale, pos.y*extra_scale, &rect, parallax, 0, SDL_FLIP_NONE, NULL, NULL, extra_scale);
+
 					}
 				}
 			}
@@ -76,8 +102,6 @@ TileSet* j1Map::GetTilesetFromTileId(int id) const
 			}
 		}
 	return data.tilesets.end->data;
-
-
 	
 }
 
@@ -250,8 +274,8 @@ bool j1Map::Load(const char* file_name)
 		}
 		if (objectname == "Wall colliders") {
 			LoadColliders(objectgroup, &data.colliders, COLLIDER_WALL);
-			break;
 		}
+		
 
 		
 	}
@@ -287,7 +311,7 @@ bool j1Map::Load(const char* file_name)
 	//LOAD ENTITIES
 	
 	App->j1entity_manager->CreateEntity(2570, 565, ENTITY_TYPE::WIN);
-	//App->j1entity_manager->CreateEnemy(700, 200, ENEMY_TYPE::TRIBALE);
+	App->j1entity_manager->CreateEnemy(500, 200, ENEMY_TYPE::TRIBALE);
 
 
 
@@ -447,6 +471,9 @@ bool j1Map::LoadLayer(pugi::xml_node& node, MapLayer* layer)
 
 		if (property_name == "Navigation")
 			layer->navigation = property.attribute("value").as_int(0);
+
+		if (property_name == "Scale")
+			layer->scale = property.attribute("value").as_float(1.0f);
 	}
 
 	//Load data
@@ -490,12 +517,14 @@ bool j1Map::LoadColliders(pugi::xml_node& node, ColliderData* collider, COLLIDER
 			rect.y = colliders.attribute("y").as_int();
 			rect.w = colliders.attribute("width").as_int();
 			rect.h = colliders.attribute("height").as_int();
-			
+
 			data.colliders.collider_list.add(App->collision->AddCollider(rect, collider_type));
 		}
 	}
 	return ret;
 }
+
+
 
 bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
 {
@@ -525,6 +554,11 @@ bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
 				if (tileset != NULL)
 				{
 					map[i] = (tile_id - tileset->firstgid) > 0 ? 0 : 1;
+					/*TileType* ts = tileset->GetTileType(tile_id);
+					if(ts != NULL)
+					{
+						map[i] = ts->properties.Get("walkable", 1);
+					}*/
 				}
 			}
 		}

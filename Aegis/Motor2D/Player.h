@@ -52,7 +52,7 @@ public:
 
 	virtual ~PlayerClass();
 	bool Start();
-
+	void DieNow();
 	bool Load(pugi::xml_node&);
 	bool Save(pugi::xml_node&) const;
 
@@ -98,6 +98,9 @@ public:
 
 	SDL_Texture* player_texture = nullptr;
 	
+	bool die = false;
+
+
 	//Colliders
 	Collider *        player_collider;
 	Collider *        sensor_collider1;

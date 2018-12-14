@@ -106,7 +106,7 @@ bool PlayerClass::Start() {
 	LOG("Resseting anims");
 	idle.Reset();
 	move.Reset();
-
+	death.Reset();
 	LOG("LOADING PLAYER TEXTURES");
 
 	player_texture = App->tex->Load("textures/Fire_Wisp/fireSheet.png");
@@ -145,8 +145,8 @@ bool PlayerClass::Update(float dt) {
 		godmode_activated = !godmode_activated;
 	}
 	 
-	if (!godmode_activated && position.y > 2300) {
-		Die();
+	if (!godmode_activated && die) {
+		DieNow();
 	}
 	//INPUTS
 	if (ExternalInput(inputs))
@@ -193,6 +193,9 @@ bool PlayerClass::PostUpdate() {
 	//LOG("POSTUPDATE");
 	sensorcollidingright = false;
 	sensorcollidingleft = false;
+	if (die) {
+		DieNow();
+	}
 	return true;
 }
 void PlayerClass::MovePlayer() {	
@@ -518,6 +521,9 @@ player_states PlayerClass::process_fsm(p2Queue<player_inputs> &inputs,float dt) 
 
 void PlayerClass::OnCollision(Collider *c1, Collider *c2) {
 
+	if (c2->type == COLLIDER_DEATH || c1->type == COLLIDER_DEATH) {
+		die = true;
+	}
 
 		if (c2->type == COLLIDER_WALL) 
 		{
@@ -620,12 +626,15 @@ void PlayerClass::GodMode(float dt) {
 	}
 }
 
-void j1Entity::Die() {
+void PlayerClass::DieNow() {
 	position.x = App->map->data.start_position.x;
 	position.y = App->map->data.start_position.y;
-	//current_animation = &death;
-	//if(current_animation->Finished())
-	App->render->find_player = true;
+	current_animation = &death;
+	if (current_animation->Finished()) {
+		App->render->find_player = true;
+		die = false;
+	}
+
 }
 
 void PlayerClass::Jump() {

@@ -7,8 +7,6 @@
 struct SDL_Texture;
 class j1Map;
 
-
-
 class j1Scene : public j1Module
 {
 public:
@@ -49,8 +47,9 @@ private:
 	p2SString* current_level;
 
 public:
-	p2SString level1;	//Level 1
-	p2SString level2;	//Level 2
+
+	p2SString  level1 ;			//Level 1
+	p2SString  level2 ;			//Level 2
 
 	////Pointer to the current map
 	j1Map* current_map=nullptr;
