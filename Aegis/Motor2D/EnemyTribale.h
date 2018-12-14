@@ -39,6 +39,7 @@ public:
 	void OnCollision(Collider *c1, Collider *c2);
 
 	bool Gravity = true;
+	void Move();
 	/*p2DynArray<State> wheretogo(const p2DynArray<iPoint>& path);*/
 public:
 
@@ -69,7 +70,12 @@ private:
 
 	iPoint PosToGo;
 	
-	
+	State xstate;
+	State ystate;
+	bool leftdone = false;
+	bool rightdone = false;
+	bool updone = false;
+	bool downdone = false;
 	
 };
 
