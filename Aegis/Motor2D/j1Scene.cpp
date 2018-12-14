@@ -14,6 +14,8 @@
 #include "Enemy.h"
 #include "EnemyWorm.h"
 #include "j1Pathfinding.h"
+#include "j1Gui.h"
+
 
 j1Scene::j1Scene() : j1Module()
 {
@@ -63,33 +65,12 @@ bool j1Scene::Update(float dt)
 {
 	static const p2DynArray<iPoint>* path=nullptr;
 
-	//if (App->input->GetKey(SDL_SCANCODE_SPACE) == j1KeyState::KEY_DOWN)
-	//	App->render->CenterCamera(); 
-
 	if (SceneLoaded) {
 		PlayerPt->position.x = App->map->data.start_position.x;
 		PlayerPt->position.y = App->map->data.start_position.y;
 		SceneLoaded = false;
 		PlayerExists = true;//no hace falta pero por si acaso
 	}
-	/*if (App->render->find_player) {
-		App->render->FindPlayer(dt);
-	}*/
-
-	/*if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN) {
-		App->pathfinding->CreatePath({ 0,0 }, {12,5 });
-	}
-
-	const p2DynArray<iPoint>* path = App->pathfinding->GetLastPath();*/
-
-	/*for (uint i = 0; i < path->Count(); ++i)
-	{
-		iPoint lemao;
-		lemao = App->map->MapToWorld(path->At(i)->x, path->At(i)->y);
-		
-		SDL_Rect rect = {lemao.x , lemao.y, 32, 32 };
-		App->render->DrawQuad(rect,150,150,150);
-	}*/
 	
 	if(App->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)			//Save game
 		App->LoadGame("save_game.xml");
@@ -126,6 +107,10 @@ bool j1Scene::Update(float dt)
 		LoadLevel(level2);
 		//App->render->FindPlayer(dt);
 	}
+
+	static UiLabel* eskete = App->gui->AddLabel({ 300,300 }, "X");
+
+	static UiImage* ailmao = App->gui->AddImage({ 300,300 }, { 160,640, 950,1000 });
 
 	//Draw the map
 	current_map->Draw();

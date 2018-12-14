@@ -42033,7 +42033,7 @@
    <tile gid="0"/>
   </data>
  </layer>
- <layer name="Capa de patrones 2" width="200" height="70">
+ <layer name="Capa de patrones 2" width="200" height="70" visible="0">
   <data>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -56037,7 +56037,7 @@
    <tile gid="0"/>
   </data>
  </layer>
- <layer name="Capa de Patrones 1" width="200" height="70">
+ <layer name="Capa de Patrones 1" width="200" height="70" visible="0">
   <properties>
    <property name="Navigation" type="int" value="1"/>
   </properties>
