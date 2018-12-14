@@ -29,6 +29,7 @@ struct MapLayer
 	int			height;
 	uint*		data;
 	float		parallax=1.0f;
+	float		scale = 1.0f;
 	bool		visible = true;
 	int			navigation=0;
 
