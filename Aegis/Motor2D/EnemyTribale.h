@@ -4,6 +4,7 @@
 
 #include "Enemy.h"
 #include "Animation.h"
+#include "j1Pathfinding.h"
 enum TribaleStates {
 	IDL,
 	RUN_LEFT,
@@ -13,18 +14,19 @@ enum TribaleStates {
 	DIE,
 	ERROR404
 };
-enum State {
-	NONE,
-	LEFT_UP,
-	RIGHT_UP,
-	RIGHT_DOWN,
-	LEFT_DOWN,
-	UP,
-	DOWN,
-	LEFT,
-	RIGHT
-	
-};
+//enum State {
+//	NONE,
+//	LEFT_UP,
+//	RIGHT_UP,
+//	RIGHT_DOWN,
+//	LEFT_DOWN,
+//	UP,
+//	DOWN,
+//	LEFT,
+//	RIGHT
+//	
+//};
+
 class EnemyTribale : public j1Enemy
 {
 
@@ -39,8 +41,9 @@ public:
 	void OnCollision(Collider *c1, Collider *c2);
 
 	bool Gravity = true;
-	void Move();
-	/*p2DynArray<State> wheretogo(const p2DynArray<iPoint>& path);*/
+	void Move(const p2DynArray<iPoint>&path, float dt);
+	bool DetectThePlayer();
+	EntityDirection NewMovement(const p2DynArray<iPoint>*EntityPath);
 public:
 
 	p2DynArray<iPoint>* enemy_path;
@@ -48,35 +51,40 @@ public:
 
 	SDL_Rect pathrect;
 	SDL_Rect TribaleRect;
+	SDL_Rect RightTribaleColliderSensorRect;
+	SDL_Rect LeftTribaleColliderSensorRect;
+
 	MasterTimer pathfinding_recalc;
 	Collider* TribaleCollider;
+	Collider* RightTribaleColliderSensor;
+	Collider* LeftTribaleColliderSensor;
 private:
 
 	Animation idle;
 	Animation move_left;
 	Animation move_right;
-	Animation attack;
-
+	Animation attackleft;
+	Animation attackright;
+	Animation jump;
+	bool fromleft = false;
+	bool fromright = false;
+	bool firstiteration = true;
+	bool playerinrange = false;
     TribaleStates state = IDL;
 
 
 
 	//PATHFINDING
-	const p2DynArray<iPoint>* path = nullptr;
-	
-	p2DynArray<State> states;
-	unsigned int i;
+	 p2DynArray<iPoint>* Path = nullptr;
+
+	//p2DynArray<State> states;
+
 	bool move = false;
 
-	iPoint PosToGo;
-	
-	State xstate;
-	State ystate;
-	bool leftdone = false;
-	bool rightdone = false;
-	bool updone = false;
-	bool downdone = false;
-	
+	int i = 0;
+	bool change_iterator = false;
+
+	EntityDirection curr_direction;
 };
 
 #endif

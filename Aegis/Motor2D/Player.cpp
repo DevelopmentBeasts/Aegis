@@ -110,7 +110,7 @@ bool PlayerClass::Start() {
 	LOG("LOADING PLAYER TEXTURES");
 
 	player_texture = App->tex->Load("textures/Fire_Wisp/fireSheet.png");
-
+	playerlives = 3;
 	current_animation = &move;
 
 	LOG("CREATING PLAYER COLLIDER");
@@ -126,7 +126,15 @@ bool PlayerClass::Start() {
 
 bool PlayerClass::Update(float dt) {
 	BROFILER_CATEGORY("PlayerUpdate();", Profiler::Color::Green);
-    
+	/*if (App->input->GetKey(SDL_SCANCODE_P) == j1KeyState::KEY_DOWN) {
+		stop = !stop;
+	}
+	if (stop) {
+		dt = 0;
+	}*/
+
+	
+
 	//FRAMERATE CONTROL
 	if (App->framerate_cap_activated) {
 		dt = 30;
@@ -139,39 +147,44 @@ bool PlayerClass::Update(float dt) {
 		idle.speed *= (dt / 30);
 		move.speed *= (dt / 30);
 	}
-
-	//GOD MODE
-	if (App->input->GetKey(SDL_SCANCODE_F10) == j1KeyState::KEY_DOWN) {
-		godmode_activated = !godmode_activated;
-	}
-	 
 	if (!godmode_activated && die) {
 		DieNow();
 	}
-	//INPUTS
-	if (ExternalInput(inputs))
-				process_fsm(inputs, dt);
-	
-	//Move the player
-	if (!godmode_activated) {
-			
-		position.x += velocity.x*(dt/30);
-		if (Gravity) {
-			velocity.y += GravityValue * (dt / 30);
-			position.y += velocity.y*(dt/30);
+	if (!die) {
+		if (App->input->GetKey(SDL_SCANCODE_SPACE) == j1KeyState::KEY_DOWN) {
+			App->j1entity_manager->CreateEntity(position.x, position.y, ENTITY_TYPE::FIRE_BALL);
 		}
+		//GOD MODE
+		if (App->input->GetKey(SDL_SCANCODE_F10) == j1KeyState::KEY_DOWN) {
+			godmode_activated = !godmode_activated;
+		}
+
+		
+		//INPUTS
+		if (ExternalInput(inputs))
+			process_fsm(inputs, dt);
+
+		//Move the player
+		if (!godmode_activated) {
+
+			position.x += velocity.x*(dt / 30);
+			if (Gravity) {
+				velocity.y += GravityValue * (dt / 30);
+				position.y += velocity.y*(dt / 30);
+			}
+		}
+		else
+			GodMode(dt);
+
+		
+		
+		//Move the colliders
+		player_collider->SetPos(position.x, position.y);
+		sensor_collider1->SetPos(position.x - 10 + player_rect.w, position.y);
+		sensor_collider2->SetPos(position.x - 300, position.y);
 	}
-	else
-		GodMode(dt);
-	
-	//SPEEDPOWER
-	
-	
-	//Move the colliders
-	player_collider->SetPos(position.x, position.y);
-	sensor_collider1->SetPos(position.x-10+player_rect.w, position.y);
-	sensor_collider2->SetPos(position.x - 300, position.y);
-	
+
+
 	//DRAW THE PLAYER
 	CurrentAnimationRect = current_animation->GetCurrentFrame();
 	
@@ -627,13 +640,28 @@ void PlayerClass::GodMode(float dt) {
 }
 
 void PlayerClass::DieNow() {
-	position.x = App->map->data.start_position.x;
-	position.y = App->map->data.start_position.y;
+	
 	current_animation = &death;
+	player_collider->SetPos(App->map->data.start_position.x, App->map->data.start_position.y);
 	if (current_animation->Finished()) {
-		App->render->find_player = true;
-		die = false;
+		if (playerlives >= 0) {
+			position.x = App->map->data.start_position.x;
+			position.y = App->map->data.start_position.y;
+			App->render->find_player = true;
+			if (playerlives >= 0 && die == true) {
+				die = false;
+				velocity.x = 0;
+				velocity.y = 0;
+				playerlives--;
+			}
+			death.Reset();
+			velocity.x = 0;
+			velocity.y = 0;
+			die = false;
+		}
+		
 	}
+	
 
 }
 

@@ -108,6 +108,10 @@ j1Entity *j1EntityManager::CreateEntity(int x, int y, ENTITY_TYPE eType) {
 		break;
 	case ENTITY_TYPE::WIN:
 		Entity = new WinClass(iPoint(x, y));
+		break;
+	case ENTITY_TYPE::FIRE_BALL:
+		Entity = new FireBallClass(iPoint(x, y));
+		break;
 	default:
 		break;
 	}
@@ -126,8 +130,10 @@ j1Entity* j1EntityManager::CreateEnemy(int x, int y, ENEMY_TYPE Type) {
 	switch (Type) {
 	case ENEMY_TYPE::WORM:
 		Entity = new EnemyWorm(iPoint(x, y));
+		break;
 	case ENEMY_TYPE::TRIBALE:
 		Entity = new EnemyTribale(iPoint(x, y));
+		break;
 	}
 	entities_list.add(Entity);
 	Entity->Start();
