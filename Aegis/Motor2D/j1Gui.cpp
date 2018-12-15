@@ -10,6 +10,8 @@
 j1Gui::j1Gui() : j1Module()
 {
 	name.create("gui");
+
+	
 }
 
 // Destructor
@@ -373,3 +375,4 @@ void UiCheckBox::Act()
 	bool_ptr = !bool_ptr;
 
 }
+
