@@ -215,9 +215,14 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="EntitiesConfig.xml" />
     <Xml Include="EntitiesConfig.xml">
       <Filter>Entities</Filter>
+    </Xml>
+    <Xml Include="EntitiesConfig.xml">
+      <Filter>Pugi</Filter>
+    </Xml>
+    <Xml Include="UiConfig.xml">
+      <Filter>Pugi</Filter>
     </Xml>
   </ItemGroup>
   <ItemGroup>

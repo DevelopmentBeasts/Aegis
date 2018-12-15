@@ -73,6 +73,8 @@ bool j1Gui::PostUpdate()
 	{
 		for (ui_element = ui_elements.start; ui_element != nullptr; ui_element = ui_element->next)
 		{
+			ui_element->data->position.x -= App->render->camera.x;
+			ui_element->data->position.y -= App->render->camera.y;
 			if (ui_element->data->active) {
 
 				//If two elements are nested, the parent will take care of the Draw() function
@@ -136,6 +138,16 @@ UiCheckBox* j1Gui::AddCheckBox(iPoint position, bool* boolean, char* label)
 
 	ui_elements.add(item);
 	active_elements.add(item);
+
+	return item;
+}
+
+UiWindow* j1Gui::AddWindow(iPoint position)
+{
+	UiWindow* item = new UiWindow(position);
+	
+	ui_elements.add(item);
+
 
 	return item;
 }
@@ -293,7 +305,7 @@ void UiButton::Draw()
 
 void UiButton::Act()
 {
-	//callback->ButtonAction(this);
+	callback->ButtonAction(this);
 }
 
 UiLabel* UiButton::NestLabel(iPoint label_position, char* text)
@@ -376,3 +388,61 @@ void UiCheckBox::Act()
 
 }
 
+//=================================================
+//Window
+UiWindow::UiWindow(iPoint position) : UiElement(position)
+{
+	atlas = App->gui->GetAtlas();
+
+	section = {20,100,500,500};
+}
+
+void UiWindow::CleanUp()
+{
+	p2List_item<UiElement*>* item;
+
+	for (item = element_list.start; item != nullptr; item = item->next)
+	{
+		item->data->CleanUp();
+		RELEASE(item->data);
+	}
+	element_list.clear();
+}
+
+void UiWindow::Draw()
+{
+	App->render->Blit(atlas, position.x, position.y, &section);
+
+	p2List_item<UiElement*>* item;
+	for (item = element_list.start; item != nullptr; item = item->next)
+	{
+		item->data->Draw();
+	}
+}
+
+void UiWindow::NestImage(iPoint image_position, SDL_Rect section)
+{
+	UiImage* item = new UiImage({ image_position.x + position.x, image_position.y + position.y }, section);
+	item->parent = this;
+
+	element_list.add(item);
+
+}
+
+void UiWindow::NestLabel(iPoint label_position, char*text, _TTF_Font* font)
+{
+	UiLabel* item = new UiLabel({ label_position.x + position.x, label_position.y + position.y }, text, font);
+	item->parent = this;
+
+	element_list.add(item);
+}
+
+UiButton* UiWindow::NestButton(iPoint button_position, ButtonSize size, j1Module* callback)
+{
+	UiButton* item = new UiButton({ button_position.x + position.x, button_position.y + position.y }, size, callback);
+	item->parent = this;
+
+	element_list.add(item);
+
+	return item;
+}

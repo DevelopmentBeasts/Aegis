@@ -44,6 +44,9 @@ bool j1Scene::Awake()
 // Called before the first frame
 bool j1Scene::Start()
 {	
+	App->render->camera.x = -1000;
+
+	fade_step = FadeStep::fade_none;
 	fade_time = 2000;
 	fade_rect.w = App->render->camera.w;
 	fade_rect.h = App->render->camera.h;
@@ -74,8 +77,7 @@ bool j1Scene::PreUpdate()
 // Called each loop iteration
 bool j1Scene::Update(float dt)
 {
-	static const p2DynArray<iPoint>* path=nullptr;
-
+	
 	if (SceneLoaded) {
 		PlayerPt->position.x = App->map->data.start_position.x;
 		PlayerPt->position.y = App->map->data.start_position.y;
@@ -104,11 +106,14 @@ bool j1Scene::Update(float dt)
 		//App->render->FindPlayer(dt);
 	}
 
+	if (current_level == &intro)
+		App->render->camera.x -= 1 * dt / 15;
+
+
 	//Draw the map
 	current_map->Draw();
 
-	
-	
+	//Fade
 	UpdateFade();
 
 	return true;
@@ -169,10 +174,15 @@ void j1Scene::LoadLevel(p2SString &level_to_load) {
 
 		PlayerPt->position.x = App->map->data.start_position.x;
 		PlayerPt->position.y = App->map->data.start_position.y;
+		
 		App->render->CenterCamera();
+		
 		SceneLoaded = true;
+		
 		App->render->camera.x = -100;
+		
 		App->render->find_player = true;
+		
 
 }
 
@@ -223,4 +233,7 @@ void j1Scene::FadeToBlack(p2SString &leveltoload)
 
 }
 
-
+void j1Scene::ButtonAction(UiButton* button)
+{
+	int i = 0;
+}

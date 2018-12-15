@@ -7,6 +7,11 @@
 
 #define CURSOR_WIDTH 2
 
+enum class ButtonFunction
+{
+	LOAD_LEVEL1,
+	NONE
+};
 
 enum class UiType {
 
@@ -157,9 +162,8 @@ public:
 
 	//Ui label or Ui image, depending on what
 	//   !!!CANT ADD AN ACTIVE ELEMENT OR A WINDOW!!!!
-	UiElement* son_element;
+	UiElement* son_element=nullptr;
 };
-
 
 class UiCheckBox : public UiActiveElement
 {
@@ -190,6 +194,35 @@ private:
 
 	//Value we want to switch
 	bool &bool_ptr;
+
+};
+
+class UiWindow:public UiElement
+{
+
+public:
+
+	UiWindow(iPoint position);
+
+	void CleanUp();
+
+	void Draw();
+
+	void NestImage(iPoint image_position, SDL_Rect section);
+	void NestLabel(iPoint label_position, char* text = nullptr, _TTF_Font* font = App->fonts->default);
+	UiButton* NestButton(iPoint button_position, ButtonSize size, j1Module* callback = nullptr);
+
+public:
+
+
+
+private:
+
+	SDL_Rect section;
+
+	SDL_Texture* atlas=nullptr;
+
+	p2List<UiElement*> element_list;
 
 };
 
@@ -224,6 +257,7 @@ public:
 	UiLabel*	AddLabel(iPoint position, char* label, _TTF_Font* font = App->fonts->default);
 	UiButton*	AddButton(iPoint position, ButtonSize size, j1Module* callback = nullptr);
 	UiCheckBox*	AddCheckBox(iPoint position, bool * boolean, char* label);
+	UiWindow*	AddWindow(iPoint position);
 
 	//Call Draw() function of all the UiElements
 	void DrawUi() const;
