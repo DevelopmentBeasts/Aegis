@@ -51,22 +51,31 @@ public:
 
 	SDL_Rect pathrect;
 	SDL_Rect TribaleRect;
+	SDL_Rect RightTribaleColliderSensorRect;
+	SDL_Rect LeftTribaleColliderSensorRect;
 
 	MasterTimer pathfinding_recalc;
 	Collider* TribaleCollider;
+	Collider* RightTribaleColliderSensor;
+	Collider* LeftTribaleColliderSensor;
 private:
 
 	Animation idle;
 	Animation move_left;
 	Animation move_right;
-	Animation attack;
-
+	Animation attackleft;
+	Animation attackright;
+	Animation jump;
+	bool fromleft = false;
+	bool fromright = false;
+	bool firstiteration = true;
+	bool playerinrange = false;
     TribaleStates state = IDL;
 
 
 
 	//PATHFINDING
-	 p2DynArray<iPoint>* path = nullptr;
+	 p2DynArray<iPoint>* Path = nullptr;
 
 	//p2DynArray<State> states;
 

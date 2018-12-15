@@ -63,6 +63,10 @@ public:
 
 public:
 
+	Animation idle;							///In all the animations the character is facing the left side 
+	Animation move;
+	Animation death;
+
 	//Texture
 	SDL_Texture* texture = nullptr;
 	
@@ -70,7 +74,7 @@ public:
 	Animation* current_animation=nullptr;
 	Animation* win_explosion = nullptr;
 	void Die();
-
+	bool die = false;
 
 };
 

@@ -24,6 +24,7 @@ EnemyWorm::EnemyWorm(iPoint pos): j1Enemy(pos, ENEMY_TYPE::WORM) {
 	position.x = pos.x;
 	position.y = pos.y;
 
+
 }
 
 EnemyWorm::~EnemyWorm() {}
@@ -40,23 +41,23 @@ bool EnemyWorm::Start() {
 
 bool EnemyWorm::Update(float dt) {
 	
-	if (App->input->GetKey(SDL_SCANCODE_SPACE) == j1KeyState::KEY_DOWN && (position.x - App->scene->PlayerPt->position.x < 700))
-	{
-		path = App->pathfinding->CreatePath(App->map->WorldToMap(position.x, position.y), App->map->WorldToMap(App->scene->PlayerPt->position.x, App->scene->PlayerPt->position.y));
-		//path = App->pathfinding->GetLastPath();
+	//if (App->input->GetKey(SDL_SCANCODE_O) == j1KeyState::KEY_DOWN && (position.x - App->scene->PlayerPt->position.x < 700))
+	//{
+	//	path = App->pathfinding->CreatePath(App->map->WorldToMap(position.x, position.y), App->map->WorldToMap(App->scene->PlayerPt->position.x, App->scene->PlayerPt->position.y));
+	//	//path = App->pathfinding->GetLastPath();
 
-		i = 0;
-		change_iterator = false;
-	}
+	//	i = 0;
+	//	change_iterator = false;
+	//}
 
- 	if (path != nullptr) {
-		App->pathfinding->DrawPath(path);
-		Move(*path, dt);
-	}
+ //	if (path != nullptr) {
+	//	App->pathfinding->DrawPath(path);
+	//	Move(*path, dt);
+	//}
 
 	
 
-	Draw();
+	Draw(0,0);
 
 	return true;
 }

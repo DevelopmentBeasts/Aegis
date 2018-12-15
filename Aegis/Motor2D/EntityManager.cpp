@@ -7,6 +7,7 @@
 #include "Player.h"
 #include "EnemyTribale.h"
 #include "WinClass.h"
+#include "Fireball.h"
 j1EntityManager::j1EntityManager()
 {
 	name.create("entities");
@@ -107,6 +108,10 @@ j1Entity *j1EntityManager::CreateEntity(int x, int y, ENTITY_TYPE eType) {
 		break;
 	case ENTITY_TYPE::WIN:
 		Entity = new WinClass(iPoint(x, y));
+		break;
+	case ENTITY_TYPE::FIRE_BALL:
+		Entity = new FireBallClass(iPoint(x, y));
+		break;
 	default:
 		break;
 	}

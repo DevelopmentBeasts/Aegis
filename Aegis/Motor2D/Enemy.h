@@ -28,7 +28,7 @@ public:
 
 	void j1Enemy::OnCollision(Collider *c1, Collider *c2) override;
 
-	void Draw();
+	void Draw(int extrax,int extray);
 
 public:
 

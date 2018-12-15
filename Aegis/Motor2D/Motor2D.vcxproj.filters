@@ -25,6 +25,9 @@
     <ClCompile Include="WinClass.cpp">
       <Filter>Entities</Filter>
     </ClCompile>
+    <ClCompile Include="Fireball.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
@@ -54,6 +57,9 @@
       <Filter>Entities\Enemies</Filter>
     </ClCompile>
     <ClInclude Include="WinClass.h">
+      <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Fireball.h">
       <Filter>Entities</Filter>
     </ClInclude>
   </ItemGroup>

@@ -9,7 +9,6 @@
     <StaminaRect w ="13" h="40" x="30" y="700"/>
     <sensors sensor_distance="300"/>
   </player>/>
- 
 </config>
   
 
