@@ -98,7 +98,7 @@ public:
 
 	SDL_Texture* player_texture = nullptr;
 	
-	bool die = false;
+	//bool die = false;
 
 
 	//Colliders
@@ -130,17 +130,15 @@ public:
 	int                     CurrFrame = 0;
 	
 	Animation* current_animation = nullptr;	///Animation being shown at the moment
-private:
+
 
 	//Call godmode if true	
 	bool godmode_activated = false;
 
-	//Animationss
-	
-	Animation idle;							///In all the animations the character is facing the left side 
-	Animation move;
-	Animation death;
 
+	int playerlives;
+	
+private:
 	//Inputs list
 	p2Queue<player_inputs> inputs;
 
@@ -155,7 +153,7 @@ private:
 	pugi::xml_node PlayerXmlNode_;
 	p2SString			folder;
 
-	 
+	bool stop = false;
 
 };
 

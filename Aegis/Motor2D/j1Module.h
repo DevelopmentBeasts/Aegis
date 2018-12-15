@@ -9,6 +9,7 @@
 #include "p2SString.h"
 #include "PugiXml\src\pugixml.hpp"
 
+class UiButton;
 class j1App;
 struct Collider;
 
@@ -71,6 +72,8 @@ public:
 	}
 
 	virtual void OnCollision(Collider*, Collider*) {}
+
+	virtual void ButtonAction(UiButton* button){}
 
 public:
 

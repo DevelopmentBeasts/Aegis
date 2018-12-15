@@ -311,9 +311,9 @@ bool j1Map::Load(const char* file_name)
 	//LOAD ENTITIES
 	
 	App->j1entity_manager->CreateEntity(2570, 565, ENTITY_TYPE::WIN);
-	App->j1entity_manager->CreateEnemy(500, 200, ENEMY_TYPE::TRIBALE);
 
-
+	App->j1entity_manager->CreateEnemy(700, 300, ENEMY_TYPE::WORM);
+	App->j1entity_manager->CreateEnemy(600,300, ENEMY_TYPE::TRIBALE);
 
 	map_loaded = ret;
 

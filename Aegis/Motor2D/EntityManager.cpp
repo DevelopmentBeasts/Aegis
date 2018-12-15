@@ -7,6 +7,7 @@
 #include "Player.h"
 #include "EnemyTribale.h"
 #include "WinClass.h"
+
 j1EntityManager::j1EntityManager()
 {
 	name.create("entities");
@@ -14,9 +15,7 @@ j1EntityManager::j1EntityManager()
 	//Load the document of all the properties
 	pugi::xml_parse_result result = properties_doc.load_file("EntitiesConfig.xml");
 
-
 }
-
 
 j1EntityManager::~j1EntityManager() {}
 
@@ -61,6 +60,7 @@ bool j1EntityManager::Update(float dt) {
 
 	return true;
 }
+
 bool j1EntityManager::PostUpdate() {
 
 	p2List_item<j1Entity*>*item = entities_list.start;
@@ -72,6 +72,7 @@ bool j1EntityManager::PostUpdate() {
 
 	return true;
 }
+
 bool j1EntityManager::CleanUp() {
 
 	LOG("Clean Up Entity Manager");
@@ -107,6 +108,7 @@ j1Entity *j1EntityManager::CreateEntity(int x, int y, ENTITY_TYPE eType) {
 		break;
 	case ENTITY_TYPE::WIN:
 		Entity = new WinClass(iPoint(x, y));
+		break;
 	default:
 		break;
 	}
@@ -125,8 +127,10 @@ j1Entity* j1EntityManager::CreateEnemy(int x, int y, ENEMY_TYPE Type) {
 	switch (Type) {
 	case ENEMY_TYPE::WORM:
 		Entity = new EnemyWorm(iPoint(x, y));
+		break;
 	case ENEMY_TYPE::TRIBALE:
 		Entity = new EnemyTribale(iPoint(x, y));
+		break;
 	}
 	entities_list.add(Entity);
 	Entity->Start();

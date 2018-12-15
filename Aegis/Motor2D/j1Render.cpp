@@ -308,19 +308,19 @@ void j1Render::FreeMovement() {
 void j1Render::FollowPlayer(float dt) {
 	//LOG("CAMERA X = %i",camera.x);
 	if (App->scene->PlayerExists) {
-		if (camera.x < -10) {
+	/*	if (camera.x < -10) {*/
 			if ((App->scene->PlayerPt->position.x) < (-camera.x + left_border)) {				//Move the camera to the left if the player is going back and behnid the left border
 
 				camera.x -= App->scene->PlayerPt->velocity.x*(dt / 30);
-			}
+			/*}*/
 			
 		}
-		if (camera.x > -1600) {
+	/*	if (camera.x > -1600) {*/
 			if ((App->scene->PlayerPt->position.x) > (-camera.x + camera.w - right_border)) {	//Move the camera to the right if the player is advancing and ahead of the border
 
 				camera.x -= App->scene->PlayerPt->velocity.x*(dt / 30);
 			}
-		}
+		/*}*/
 		camera.y = 0;
 		
 	}
@@ -329,14 +329,14 @@ void j1Render::FollowPlayer(float dt) {
 void j1Render::FindPlayer(float dt) {
 	
 		int vel = 20;
-		if (camera.x < -1600) {
+		/*if (camera.x < -1600) {*/
 			if ((App->scene->PlayerPt->position.x) > (-camera.x + camera.w - right_border))
 				camera.x -= vel * (dt / 30);
-		}
-		if (camera.x > 10) {
+		/*}*/
+		/*if (camera.x > 10) {*/
 			if ((App->scene->PlayerPt->position.x) < (-camera.x + left_border))
 				camera.x += vel * (dt / 30);
-		}
+		/*}*/
 
 		//if ((App->scene->PlayerPt->position.y) < (-camera.y + top_border))
 		//	camera.y += vel * (dt / 30);

@@ -8,7 +8,17 @@
 #include "Animation.h"
 #include "j1Collision.h"
 
-
+enum EntityDirection {
+	UP,
+	DOWN,
+	LEFT,
+	RIGHT,
+	UP_RIGHT,
+	UP_LEFT,
+	DOWN_RIGHT,
+	DOWN_LEFT,
+	NO_DIRECTION
+};
 class j1EntityManager;
 struct SDL_Texture;
 struct SDL_Rect;
@@ -53,6 +63,10 @@ public:
 
 public:
 
+	Animation idle;							///In all the animations the character is facing the left side 
+	Animation move;
+	Animation death;
+
 	//Texture
 	SDL_Texture* texture = nullptr;
 	
@@ -60,7 +74,7 @@ public:
 	Animation* current_animation=nullptr;
 	Animation* win_explosion = nullptr;
 	void Die();
-
+	bool die = false;
 
 };
 

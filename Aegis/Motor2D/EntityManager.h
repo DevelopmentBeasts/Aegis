@@ -13,6 +13,7 @@ enum class ENTITY_TYPE {
 	ENEMY,
 	PLAYER,
 	WIN,
+	FIRE_BALL,
 	UNKNOWN = 2
 
 };

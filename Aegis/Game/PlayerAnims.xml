@@ -20,7 +20,7 @@
       <PushBack x="146" y="57" w="31" h="23"/>
     </move_left>
 
-    <death loop =" false" speed ="0.5">
+    <death loop =" false" speed ="0.1">
       <PushBack x="215" y="142" w="26" h="27"/>
       <PushBack x="273" y="140" w="27" h="27"/>
       <PushBack x="25" y="181" w="25" h="28"/>

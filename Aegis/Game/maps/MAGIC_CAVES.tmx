@@ -42033,7 +42033,7 @@
    <tile gid="0"/>
   </data>
  </layer>
- <layer name="Capa de patrones 2" width="200" height="70">
+ <layer name="Capa de patrones 2" width="200" height="70" visible="0">
   <data>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -56037,7 +56037,7 @@
    <tile gid="0"/>
   </data>
  </layer>
- <layer name="Capa de Patrones 1" width="200" height="70">
+ <layer name="Capa de Patrones 1" width="200" height="70" visible="0">
   <properties>
    <property name="Navigation" type="int" value="1"/>
   </properties>
@@ -70061,14 +70061,14 @@
   <object id="35" x="1184.67" y="609.667" width="46" height="510"/>
   <object id="36" x="1443.17" y="529.333" width="327.167" height="122.333"/>
   <object id="40" x="110" y="300" width="48.3333" height="821"/>
-  <object id="41" x="17.091" y="257.773" width="63.4545" height="38.7273"/>
-  <object id="42" x="27.045" y="175.136" width="32" height="42.9091"/>
-  <object id="43" x="83.909" y="185.773" width="28.3636" height="49.4545"/>
-  <object id="44" x="235.364" y="73.909" width="19.2727" height="42.5455"/>
-  <object id="45" x="184.227" y="89.818" width="24" height="48.1818"/>
-  <object id="46" x="133.5" y="115" width="24.5455" height="32.1818"/>
-  <object id="47" x="290.182" y="52.682" width="23.6364" height="29.0909"/>
-  <object id="48" x="323.591" y="70.364" width="26.1818" height="23.2727"/>
+  <object id="41" x="107.091" y="259.773" width="63.4545" height="38.7273"/>
+  <object id="42" x="176.045" y="218.136" width="32" height="42.9091"/>
+  <object id="43" x="157.909" y="231.773" width="28.3636" height="49.4545"/>
+  <object id="44" x="239.364" y="169.909" width="19.2727" height="42.5455"/>
+  <object id="45" x="216.227" y="182.818" width="24" height="48.1818"/>
+  <object id="46" x="198.5" y="214" width="24.5455" height="32.1818"/>
+  <object id="47" x="255.182" y="167.682" width="23.6364" height="29.0909"/>
+  <object id="48" x="275.591" y="154.364" width="26.1818" height="23.2727"/>
   <object id="49" x="273.091" y="107.636" width="484.364" height="66.9091"/>
   <object id="50" x="747.455" y="132.364" width="30.5455" height="24.5455"/>
   <object id="51" x="772" y="111.818" width="24.3636" height="28.1818"/>
@@ -70096,7 +70096,7 @@
   <object id="75" x="194" y="466.5" width="123" height="43.5"/>
  </objectgroup>
  <objectgroup name="Spawn">
-  <object id="3" x="464" y="231.75" width="0.25" height="0.25"/>
+  <object id="3" x="454.591" y="315.489" width="11.7045" height="16.7955"/>
   <object id="4" x="802.167" y="294.333" width="28.5" height="67.5"/>
  </objectgroup>
  <objectgroup name="Wall">
