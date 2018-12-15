@@ -6,6 +6,7 @@
 #include "PugiXml\src\pugixml.hpp"
 #include "MasterTimer.h"
 #include "Timer.h"
+
 // Modules
 class j1Window;
 class j1Input;
@@ -18,6 +19,8 @@ class j1Collision;
 class j1EntityManager;
 class j1EntityManeger;
 class j1PathFinding;
+class j1Fonts;
+class j1Gui;
 
 class j1App
 {
@@ -81,17 +84,19 @@ private:
 public:
 
 	// Modules
-	j1Window*			win;
-	j1Input*			input;
-	j1Render*			render;
-	j1Textures*			tex;
-	j1Audio*			audio;
-	j1Scene*			scene;
-	j1Map*				map;
-	j1Collision*		collision;
-	j1PathFinding*		pathfinding;
+	j1Window*			win			= nullptr;
+	j1Input*			input		= nullptr;
+	j1Render*			render		= nullptr;
+	j1Textures*			tex			= nullptr;
+	j1Audio*			audio		= nullptr;
+	j1Scene*			scene		= nullptr;
+	j1Map*				map			= nullptr;
+	j1Collision*		collision	= nullptr;
+	j1PathFinding*		pathfinding = nullptr;
+	j1Fonts*			fonts		= nullptr;
+	j1Gui*				gui			= nullptr;
 	
-	j1EntityManager*    j1entity_manager;
+	j1EntityManager*    j1entity_manager	= nullptr;
 
 public:
 	bool                framerate_cap_activated;

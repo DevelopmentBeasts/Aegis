@@ -17,6 +17,10 @@
     <fullscreen value="false"/>
     <borderless value="false"/>
     <resizable value="true"/>
+    <resolution width="1024" height="768" scale="1"/>
+    <fullscreen value="false"/>
+    <borderless value="false"/>
+    <resizable value="false"/>
     <fullscreen_window value="false"/>
   </window>
   
@@ -30,6 +34,10 @@
   <file_system>
     <path>data.zip</path>
   </file_system>
+
+<gui>
+    <atlas file="gui/atlas.png"/>
+  </gui>
 
   <map>
     <folder>maps/</folder>

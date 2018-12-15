@@ -38,8 +38,8 @@ void j1Map::Draw()
 	p2List_item <MapLayer*>*layer_item = data.layers.start;
 	MapLayer* layer;
 
-	//Scale at which we draw the game
-	int scale = App->win->GetScale();
+	//Global scale affects everything (rects, colliders, etc)
+	int global_scale = App->win->GetScale();
 
 	//Camera rect
 	SDL_Rect camera_pos = App->render->camera;
@@ -51,23 +51,26 @@ void j1Map::Draw()
 		//Parralax of the layer
 		float parallax = layer->parallax;	
 
+		//Extra escale only affects the blit function
+		float extra_scale = layer->scale;
+
 		//We only want to print the tiles that appear on the screen
 		
 		int y;
 		if (camera_pos.y > 0)
 			y = 0;
 		else
-			y = WorldToMap(0, -camera_pos.y*parallax / scale).y;
+			y = WorldToMap(0, -camera_pos.y*parallax / (global_scale * extra_scale)).y;
 
-		for (y;  y < layer->height && y < WorldToMap(0, -camera_pos.y*parallax / scale + camera_pos.h).y; y++) {
+		for (y;  y < layer->height && y < WorldToMap(0, -camera_pos.y*parallax/ global_scale * extra_scale + camera_pos.h).y; y++) {
 			
 			int  x;
 			if (camera_pos.x > 0)
 				x = 0;
 			else
-				x = WorldToMap(-camera_pos.x*parallax/scale, 0).x;
+				x = WorldToMap(-camera_pos.x*parallax/(global_scale  * extra_scale), 0).x;
 
-			for (x; x < layer->width  && x < WorldToMap(-camera_pos.x*parallax / scale + camera_pos.w, 0).x ; x++) {
+			for (x; x < layer->width  && x < WorldToMap(-camera_pos.x*parallax*extra_scale / global_scale * extra_scale + camera_pos.w, 0).x ; x++) {
 				
 				int tile_id = layer->Get(x, y);
 				if (tile_id > 0) {
@@ -77,7 +80,7 @@ void j1Map::Draw()
 						SDL_Rect rect = tileset->GetTileRect(tile_id);
 						iPoint pos = MapToWorld(x, y);
 						
-						App->render->Blit(tileset->texture,pos.x, pos.y, &rect, parallax, 0, SDL_FLIP_NONE, NULL, NULL, 1);
+						App->render->Blit(tileset->texture,pos.x*extra_scale, pos.y*extra_scale, &rect, parallax, 0, SDL_FLIP_NONE, NULL, NULL, extra_scale);
 
 					}
 				}
@@ -468,6 +471,9 @@ bool j1Map::LoadLayer(pugi::xml_node& node, MapLayer* layer)
 
 		if (property_name == "Navigation")
 			layer->navigation = property.attribute("value").as_int(0);
+
+		if (property_name == "Scale")
+			layer->scale = property.attribute("value").as_float(1.0f);
 	}
 
 	//Load data

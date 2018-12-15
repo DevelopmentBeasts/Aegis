@@ -14,13 +14,18 @@
 #include "Enemy.h"
 #include "EnemyWorm.h"
 #include "j1Pathfinding.h"
+#include "j1Gui.h"
+
 
 j1Scene::j1Scene() : j1Module()
 {
 	name.create("scene");
 
+	intro = "Main_menu.tmx";
 	level1 = "MAGIC_CAVES.tmx";
 	level2 = "AEGIS_RUN.tmx";
+
+	
 }
 
 // Destructor
@@ -39,6 +44,13 @@ bool j1Scene::Awake()
 // Called before the first frame
 bool j1Scene::Start()
 {	
+	App->render->camera.x = -1000;
+
+	fade_step = FadeStep::fade_none;
+	fade_time = 2000;
+	fade_rect.w = App->render->camera.w;
+	fade_rect.h = App->render->camera.h;
+
 	current_map = App->map;
 
 	PlayerPt = App->j1entity_manager->CreateEntity(App->map->data.start_position.x, App->map->data.start_position.y, ENTITY_TYPE::PLAYER);
@@ -47,7 +59,7 @@ bool j1Scene::Start()
 		PlayerExists = true;
 	}	
 
-	LoadLevel(level1);
+	LoadLevel(intro);
 
 	return true;
 }
@@ -55,41 +67,23 @@ bool j1Scene::Start()
 // Called each loop iteration
 bool j1Scene::PreUpdate()
 {
+
+	fade_rect.x = -App->render->camera.x;
+	fade_rect.y = -App->render->camera.y;
+
 	return true;
 }
 
 // Called each loop iteration
 bool j1Scene::Update(float dt)
 {
-	static const p2DynArray<iPoint>* path=nullptr;
-
-	//if (App->input->GetKey(SDL_SCANCODE_SPACE) == j1KeyState::KEY_DOWN)
-	//	App->render->CenterCamera(); 
-
+	
 	if (SceneLoaded) {
 		PlayerPt->position.x = App->map->data.start_position.x;
 		PlayerPt->position.y = App->map->data.start_position.y;
 		SceneLoaded = false;
 		PlayerExists = true;//no hace falta pero por si acaso
 	}
-	/*if (App->render->find_player) {
-		App->render->FindPlayer(dt);
-	}*/
-
-	/*if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN) {
-		App->pathfinding->CreatePath({ 0,0 }, {12,5 });
-	}
-
-	const p2DynArray<iPoint>* path = App->pathfinding->GetLastPath();*/
-
-	/*for (uint i = 0; i < path->Count(); ++i)
-	{
-		iPoint lemao;
-		lemao = App->map->MapToWorld(path->At(i)->x, path->At(i)->y);
-		
-		SDL_Rect rect = {lemao.x , lemao.y, 32, 32 };
-		App->render->DrawQuad(rect,150,150,150);
-	}*/
 	
 	if(App->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)			//Save game
 		App->LoadGame("save_game.xml");
@@ -97,29 +91,14 @@ bool j1Scene::Update(float dt)
 	if(App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)			//Save game
 		App->SaveGame("save_game.xml");
 
-	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN) {		//Load game
-	/*	LoadLevel(level1);*/
-		LoadLevel1NOW = true;
-	}
+	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN) 		//Load game
+		FadeToBlack(level1);
+
 	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)		//Load game
-		LoadLevel2NOW = true;
-		
-	if (LoadLevel1NOW && (PlayerPt->velocity.y * -1 > 0)) {
-		LoadLevel(level1);
-		LoadLevel1NOW = false;
-	}
-	if (LoadLevel2NOW && (PlayerPt->velocity.y * -1 > 0)) {
-		LoadLevel(level2);
-		LoadLevel2NOW = false;
-	}
-
+		FadeToBlack(level2);
+	
 	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)			//Load game
-	{
-		PlayerPt->position.x = App->map->data.start_position.x;
-		PlayerPt->position.y = App->map->data.start_position.y;
-
-		App->render->CenterCamera();
-	}
+		FadeToBlack(*current_level);
 
 	if (PlayerPt->position.x >= App->map->data.wincondition) {
 
@@ -127,8 +106,15 @@ bool j1Scene::Update(float dt)
 		//App->render->FindPlayer(dt);
 	}
 
+	if (current_level == &intro)
+		App->render->camera.x -= 1 * dt / 15;
+
+
 	//Draw the map
 	current_map->Draw();
+
+	//Fade
+	UpdateFade();
 
 	return true;
 }
@@ -188,9 +174,66 @@ void j1Scene::LoadLevel(p2SString &level_to_load) {
 
 		PlayerPt->position.x = App->map->data.start_position.x;
 		PlayerPt->position.y = App->map->data.start_position.y;
+		
 		App->render->CenterCamera();
+		
 		SceneLoaded = true;
+		
 		App->render->camera.x = -100;
+		
 		App->render->find_player = true;
+		
 
+}
+
+void j1Scene::UpdateFade() 
+{
+	if (fade_step == FadeStep::fade_none)
+		return;
+
+	static uint phase_fade_time = fade_time/2;
+
+	Uint32 now = SDL_GetTicks() - fade_start_time;
+	float normalized = MIN(1.0f, (float)now / (float)fade_time);
+
+	switch (fade_step)
+	{
+	case FadeStep::fade_to_black:
+		if (now >= fade_time)
+		{
+			App->render->DrawQuad(fade_rect, 0, 0, 0, (Uint8)(normalized * 255.0f));
+			LoadLevel(*level_to_load);
+			fade_start_time = SDL_GetTicks();
+			fade_step = FadeStep::fade_from_black;
+		}
+		break;
+	case FadeStep::fade_from_black:
+
+		normalized = 1.0f - normalized;
+		
+		if (now > fade_time)
+		{
+			fade_step = FadeStep::fade_none;
+		}
+		break;
+	}
+
+	App->render->DrawQuad(fade_rect, 0, 0, 0, (Uint8)(normalized * 255.0f));
+
+}
+
+void j1Scene::FadeToBlack(p2SString &leveltoload)
+{
+	if (fade_step == FadeStep::fade_none)
+	{
+		fade_start_time = SDL_GetTicks();
+		fade_step = FadeStep::fade_to_black;
+		level_to_load = &leveltoload;
+	}
+
+}
+
+void j1Scene::ButtonAction(UiButton* button)
+{
+	int i = 0;
 }

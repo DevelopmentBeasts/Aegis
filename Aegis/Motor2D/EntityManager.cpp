@@ -7,7 +7,7 @@
 #include "Player.h"
 #include "EnemyTribale.h"
 #include "WinClass.h"
-#include "Fireball.h"
+
 j1EntityManager::j1EntityManager()
 {
 	name.create("entities");
@@ -15,9 +15,7 @@ j1EntityManager::j1EntityManager()
 	//Load the document of all the properties
 	pugi::xml_parse_result result = properties_doc.load_file("EntitiesConfig.xml");
 
-
 }
-
 
 j1EntityManager::~j1EntityManager() {}
 
@@ -62,6 +60,7 @@ bool j1EntityManager::Update(float dt) {
 
 	return true;
 }
+
 bool j1EntityManager::PostUpdate() {
 
 	p2List_item<j1Entity*>*item = entities_list.start;
@@ -73,6 +72,7 @@ bool j1EntityManager::PostUpdate() {
 
 	return true;
 }
+
 bool j1EntityManager::CleanUp() {
 
 	LOG("Clean Up Entity Manager");
