@@ -179,8 +179,6 @@ void j1Scene::LoadLevel(p2SString &level_to_load) {
 		
 		SceneLoaded = true;
 		
-		App->render->camera.x = -100;
-		
 		App->render->find_player = true;
 		
 

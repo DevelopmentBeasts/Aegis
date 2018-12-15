@@ -109,9 +109,6 @@ j1Entity *j1EntityManager::CreateEntity(int x, int y, ENTITY_TYPE eType) {
 	case ENTITY_TYPE::WIN:
 		Entity = new WinClass(iPoint(x, y));
 		break;
-	case ENTITY_TYPE::FIRE_BALL:
-		Entity = new FireBallClass(iPoint(x, y));
-		break;
 	default:
 		break;
 	}
