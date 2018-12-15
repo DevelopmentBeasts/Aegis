@@ -26,17 +26,7 @@ enum TribaleStates {
 //	RIGHT
 //	
 //};
-enum EntityDirection {
-	UP,
-	DOWN,
-	LEFT,
-	RIGHT,
-	UP_RIGHT,
-	UP_LEFT,
-	DOWN_RIGHT,
-	DOWN_LEFT,
-	NO_DIRECTION
-};
+
 class EnemyTribale : public j1Enemy
 {
 
@@ -51,7 +41,7 @@ public:
 	void OnCollision(Collider *c1, Collider *c2);
 
 	bool Gravity = true;
-	void Move(const p2DynArray<iPoint>*path, float dt);
+	void Move(const p2DynArray<iPoint>&path, float dt);
 	bool DetectThePlayer();
 	EntityDirection NewMovement(const p2DynArray<iPoint>*EntityPath);
 public:
@@ -76,8 +66,8 @@ private:
 
 
 	//PATHFINDING
-	const p2DynArray<iPoint>* path = nullptr;
-	
+	 p2DynArray<iPoint>* path = nullptr;
+
 	//p2DynArray<State> states;
 
 	bool move = false;

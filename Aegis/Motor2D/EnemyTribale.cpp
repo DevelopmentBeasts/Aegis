@@ -46,18 +46,19 @@ bool EnemyTribale::Start() {
 
 bool EnemyTribale::Update(float dt) {
 
- 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == j1KeyState::KEY_DOWN && (position.x - App->scene->PlayerPt->position.x < 700))
-	{
- 	    App->pathfinding->CreatePath(App->map->WorldToMap(position.x, position.y), App->map->WorldToMap(App->scene->PlayerPt->position.x, App->scene->PlayerPt->position.y));
-	    path = App->pathfinding->GetLastPath();	
-		i = 0;
-		change_iterator = false;
-    }
+ //	if (App->input->GetKey(SDL_SCANCODE_SPACE) == j1KeyState::KEY_DOWN && (position.x - App->scene->PlayerPt->position.x < 700))
+	//{
+ //	    path = App->pathfinding->CreatePath(App->map->WorldToMap(position.x, position.y), App->map->WorldToMap(App->scene->PlayerPt->position.x, App->scene->PlayerPt->position.y));
+	//	//path = App->pathfinding->GetLastPath();
+	//	
+	//	i = 0;
+	//	change_iterator = false;
+ //   }
 
-	if (path != nullptr) {
-		App->pathfinding->DrawPath(path);
-		Move(path, dt);
-	}
+	//if (path !=nullptr) {
+	//	App->pathfinding->DrawPath(path);
+	//	Move(*path, dt);
+	//}
 		
 
 	if (App->framerate_cap_activated) {
@@ -94,11 +95,11 @@ void EnemyTribale::OnCollision(Collider *c1, Collider *c2) {
 	}
 }
 
-void EnemyTribale::Move(const p2DynArray<iPoint>*path, float dt) {
+void EnemyTribale::Move(const p2DynArray<iPoint>&path, float dt) {
 
-	const p2DynArray<iPoint>* Path = path;
+	//const p2DynArray<iPoint>* Path = path;
 
-	curr_direction = NewMovement(Path);
+	curr_direction = NewMovement(&path);
 
 	
 

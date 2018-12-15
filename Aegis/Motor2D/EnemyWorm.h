@@ -18,7 +18,9 @@ public:
 
 	bool Update(float dt) override;
 	void OnCollision(Collider *c1, Collider *c2);
-	void DrawPath();
+	void Move(const p2DynArray<iPoint>&path, float dt);
+	EntityDirection NewMovement(const p2DynArray<iPoint>*EntityPath);
+	bool DetectThePlayer();
 public:
 
 	SDL_Rect WormRect;
@@ -38,11 +40,16 @@ private:
 
 
 	//PATHFINDING
-	const p2DynArray<iPoint>* path = nullptr;
+	p2DynArray<iPoint>* path = nullptr;
 
 	//p2DynArray<State> states;
 
 	bool move = false;
+
+	int i = 0;
+	bool change_iterator = false;
+
+	EntityDirection curr_direction;
 };
 
 #endif

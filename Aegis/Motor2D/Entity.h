@@ -8,7 +8,17 @@
 #include "Animation.h"
 #include "j1Collision.h"
 
-
+enum EntityDirection {
+	UP,
+	DOWN,
+	LEFT,
+	RIGHT,
+	UP_RIGHT,
+	UP_LEFT,
+	DOWN_RIGHT,
+	DOWN_LEFT,
+	NO_DIRECTION
+};
 class j1EntityManager;
 struct SDL_Texture;
 struct SDL_Rect;
