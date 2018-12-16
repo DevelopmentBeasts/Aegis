@@ -17,6 +17,8 @@
 #include "j1Gui.h"
 #include "SDL_mixer/include/SDL_mixer.h"
 
+#include "stdio.h"
+
 //#pragma comment( lib, "SDL_mixer/libx86/SDL2_mixer.lib" )
 j1Scene::j1Scene() : j1Module()
 {
@@ -51,17 +53,14 @@ bool j1Scene::Start()
 
 	current_map = App->map;
 
-	PlayerPt = App->j1entity_manager->CreateEntity(App->map->data.start_position.x, App->map->data.start_position.y, ENTITY_TYPE::PLAYER);
-
-	EnemyTribale1 = App->j1entity_manager->CreateEnemy(600, 100, ENEMY_TYPE::TRIBALE);
-	//EnemyWorm1 = App->j1entity_manager->CreateEnemy(1400, 250, ENEMY_TYPE::WORM);
-	CoinPt = App->j1entity_manager->CreateEntity(300, 300, ENTITY_TYPE::COIN);
-
 	if (PlayerPt != nullptr) {
 		PlayerExists = true;
 	}	
 
 	LoadLevel(mainmenu);
+	App->audio->PlayMusic("audio/music/Audionautix_SportsAction.ogg");
+
+	timer.Start();
 	
 	App->audio->PlayMusic("audio/music/Audionautix_SportsAction.ogg");
 
@@ -86,7 +85,8 @@ bool j1Scene::Update(float dt)
 	static bool create_menu= ui_main_menu.Create();
 	static bool create_pause_menu = CreatePauseWindow();
 	static bool create_settings_window = CreateSettingsWindow();
-	
+	static bool start_gems= player_gems.Start();
+
 	if (close_app)
 		return false;
 	
@@ -122,6 +122,9 @@ bool j1Scene::Update(float dt)
 	//Draw the map
 	current_map->Draw();
 	
+	timer.Update();
+
+	player_gems.Update();
 
 	return true;
 }
@@ -158,6 +161,12 @@ bool j1Scene::Load(pugi::xml_node& data)
 
 	FadeToBlack(load);
 
+	if (PlayerPt != nullptr)
+	{
+		PlayerPt->position.x = data.attribute("playerx").as_int();
+		PlayerPt->position.y = data.attribute("playery").as_int();
+	}
+
 	return true;
 }
 
@@ -167,6 +176,13 @@ bool j1Scene::Save(pugi::xml_node& data)const
 	const char* level = current_level.GetString();
 
 	data.append_attribute("level") = level;
+
+	if (PlayerPt != nullptr)
+	{
+		data.append_attribute("playerx") = PlayerPt->position.x;
+
+		data.append_attribute("playery") = PlayerPt->position.y;
+	}
 
 	return true;
 }
@@ -188,17 +204,6 @@ void j1Scene::LoadLevel(const char* level_to_load) {
 
 	}
 	
-
-	if (PlayerPt!=nullptr)
-	{
-		PlayerPt->position.x = App->map->data.start_position.x;
-		PlayerPt->position.y = App->map->data.start_position.y;
-		
-		App->render->CenterCamera();
-		App->render->find_player = true;
-		SceneLoaded = true;
-	}
-	
 }
 
 void j1Scene::UpdateFade() 
@@ -216,14 +221,19 @@ void j1Scene::UpdateFade()
 	case FadeStep::fade_to_black:
 		if (now >= fade_time)
 		{
+			App->j1entity_manager->CleanEntities();
 			App->render->DrawQuad(fade_rect, 0, 0, 0, (Uint8)(normalized * 255.0f));
 			LoadLevel(level_to_load.GetString());
 			fade_start_time = SDL_GetTicks();
 			fade_step = FadeStep::fade_from_black;
 
+			
+
 			//UI
-			if (level_to_load != mainmenu)
+			if (level_to_load != mainmenu) {
 				ui_main_menu.Hide();
+				timer.start_time = SDL_GetTicks();
+			}
 			else
 			{
 				ui_pause_window->ChangeState();
@@ -232,6 +242,21 @@ void j1Scene::UpdateFade()
 
 			if (ui_settings_window->active)
 				ui_settings_window->ChangeState();
+
+			if (PlayerPt == nullptr) {
+				PlayerPt = App->j1entity_manager->CreateEntity(App->map->data.start_position.x, App->map->data.start_position.y, ENTITY_TYPE::PLAYER);
+				PlayerExists = true;
+			}
+			
+			else if (PlayerPt != nullptr)
+			{
+				PlayerPt->position.x = App->map->data.start_position.x;
+				PlayerPt->position.y = App->map->data.start_position.y;
+
+				App->render->CenterCamera();
+				App->render->find_player = true;
+				SceneLoaded = true;
+			}
 		}
 		break;
 	case FadeStep::fade_from_black:
@@ -425,4 +450,53 @@ float j1Scene::GetMusicVolume()
 
 	else 
 		return 1.0;
+}
+
+bool GameTimer::Start()
+{
+	seconds_label = App->gui->AddLabel({ 500,30 }, "");
+	minutes_label = App->gui->AddLabel({ 420,30 }, "");
+
+	return true;
+}
+
+void GameTimer::Update()
+{
+	//TIMER
+	current_time = SDL_GetTicks() - start_time;
+	
+	int minutes =current_time / 60000 ;
+
+	sprintf_s(seconds_text, 10, "%.2d", (current_time- minutes*60000)/1000);
+	seconds_label->text = seconds_text;
+
+	sprintf_s(minutes_text, 10, "%.2d", minutes);
+	minutes_label->text = minutes_text;
+
+}
+
+void GameTimer::ChangeState()
+{
+	minutes_label->active = !minutes_label->active;
+	seconds_label->active = !seconds_label->active;
+}
+
+bool PlayerGems::Start()
+{
+	gems_label = App->gui->AddLabel({300,30},"");
+	gems_image = App->gui->AddImage({250,30}, App->gui->gem);
+	return true;
+}
+
+bool PlayerGems::Update()
+{
+	sprintf_s(gems_text,10,"%d", 0);
+	gems_label->text=gems_text;
+	return true;
+}
+
+void PlayerGems::ChangeState()
+{
+	gems_label->active = !gems_label->active;
+	gems_image->active = !gems_image->active;
 }

@@ -12,6 +12,8 @@ class j1Map;
 
 class UiWindow;
 class UiDragBar;
+class UiLabel;
+class UiImage;
 
 struct UiMainMenu
 {
@@ -36,6 +38,36 @@ enum class FadeStep {
 	fade_none,
 	fade_to_black,
 	fade_from_black
+};
+
+struct GameTimer
+{
+	int start_time;
+
+	//prints the seconds
+	UiLabel* seconds_label = nullptr;
+	char seconds_text[10];
+
+	//prints the minutes
+	UiLabel* minutes_label = nullptr;
+	char minutes_text[10];
+
+	int current_time;
+
+	bool Start();
+	void Update();
+	void ChangeState();
+};
+
+struct PlayerGems
+{
+	bool Start();
+	bool Update();
+	void ChangeState();
+
+	UiLabel* gems_label = nullptr;
+	char gems_text[10];
+	UiImage* gems_image = nullptr;
 };
 
 class j1Scene : public j1Module
@@ -122,14 +154,12 @@ public:
 private:
 
 	//Fade
-	uint fade_time;				//Time for each phase of the fade
-	uint fade_start_time;		//Time at which we start the fade
-	SDL_Rect fade_rect;			//Square
+	uint		 fade_time;				//Time for each phase of the fade
+	uint		fade_start_time;		//Time at which we start the fade
+	SDL_Rect	 fade_rect;			//Square
 	FadeStep fade_step;			//Fading vs unfading
 	p2SString level_to_load;	//Level we want to load
-
-	//Level that is loaded at the moment
-	
+	iPoint load_position;
 
 	//UI
 	//Turn this true to close the app
@@ -145,6 +175,9 @@ private:
 	//settings sound
 	UiDragBar* fx_bar = nullptr;
 	UiDragBar* music_bar = nullptr;
+
+	GameTimer timer;
+	PlayerGems player_gems;
 };
 
 

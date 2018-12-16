@@ -37,16 +37,19 @@ EnemyTribale::EnemyTribale(iPoint pos) : j1Enemy(pos, ENEMY_TYPE::TRIBALE) {
 	LeftTribaleColliderSensorRect.y = pos.y ;
 	LeftTribaleColliderSensorRect.w = 65;
 	LeftTribaleColliderSensorRect.h = 20;
+
+	TribaleCollider = App->collision->AddEntCollider(TribaleRect, COLLIDER_ENEMY, this);
+	RightTribaleColliderSensor = App->collision->AddEntCollider(RightTribaleColliderSensorRect, COLLIDER_ENEMY_SENSOR, this);
+	LeftTribaleColliderSensor = App->collision->AddEntCollider(LeftTribaleColliderSensorRect, COLLIDER_ENEMY_SENSOR, this);
+	texture = App->tex->Load("textures/tribale_sprites.png");
 }
 
 EnemyTribale::~EnemyTribale() {}
 
 bool EnemyTribale::Start() {
-	TribaleCollider = App->collision->AddEntCollider(TribaleRect, COLLIDER_ENEMY, this);
-	RightTribaleColliderSensor = App->collision->AddEntCollider(RightTribaleColliderSensorRect, COLLIDER_ENEMY_SENSOR, this);
-	LeftTribaleColliderSensor = App->collision->AddEntCollider(LeftTribaleColliderSensorRect, COLLIDER_ENEMY_SENSOR, this);
-
+	
 	texture = App->j1entity_manager->tribale_texture;
+	
 	current_animation = &idle;
 	velocity.x = 8;
 	velocity.y = 12;
@@ -63,9 +66,9 @@ bool EnemyTribale::Update(float dt) {
 	if (App->input->GetKey(SDL_SCANCODE_F9) == j1KeyState::KEY_DOWN) {
 		DebugDraw = !DebugDraw;
 	}
-	if (App->input->GetKey(SDL_SCANCODE_G) == j1KeyState::KEY_DOWN) {
-		Gravity = true;
-	}
+	
+	Gravity = true;
+	
 	
 	if (current_animation == &move_left)
 		current_animation = &idle;
@@ -341,7 +344,4 @@ EntityDirection EnemyTribale::NewMovement(const p2DynArray<iPoint>*EntityPath) {
 		else return NO_DIRECTION; // SI NO ENCAJA DENTO DE "i+2"
 	}
 	
-
-	
-
 }

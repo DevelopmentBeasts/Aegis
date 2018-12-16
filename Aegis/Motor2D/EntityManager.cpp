@@ -72,6 +72,7 @@ bool j1EntityManager::PostUpdate() {
 
 	accumulated_time = 0.0f;
 
+
 	return true;
 }
 
@@ -83,9 +84,10 @@ bool j1EntityManager::CleanUp() {
 	item = entities_list.start;
 
 	while (item != nullptr) {
-
-		RELEASE(item->data);
-		item = item->next;
+		
+			RELEASE(item->data);
+			item = item->next;
+		
 	}
 
 	entities_list.clear();
@@ -161,4 +163,29 @@ void j1EntityManager::DestroyEntity(j1Entity *Entity) {
 
 		item = item->next;
 	}
+}
+
+void j1EntityManager::DestroyAllEntities() {
+	p2List_item<j1Entity*>* item;
+	item = entities_list.start;
+
+	while (item != nullptr) {
+		if (item->data->type != ENTITY_TYPE::PLAYER) {
+			RELEASE(item->data);
+			item = item->next;
+		}
+	}
+}
+
+void j1EntityManager::CleanEntities() 
+{
+	p2List_item<j1Entity*>* item;
+	for (item = entities_list.start; item != nullptr; item = item->next)
+	{
+		if (item->data->collider != nullptr)
+			item->data->collider->to_delete = true;
+
+		item->data->CleanUp();
+	}
+
 }

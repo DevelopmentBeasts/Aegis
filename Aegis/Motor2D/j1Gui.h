@@ -105,10 +105,12 @@ public:
 
 	void Draw();
 
-private:
-
 	//Text we want to print
 	p2SString text;
+
+private:
+
+	
 
 	//Font
 	_TTF_Font* font;
@@ -329,9 +331,10 @@ public:
 	//Icons 
 	SDL_Rect settings;
 	SDL_Rect exit;
-
+	SDL_Rect gem;
 	Mix_Chunk* button_hover;
 	Mix_Chunk* button_click;
+
 private:
 
 	//List with all the UI elements

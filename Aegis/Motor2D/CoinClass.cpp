@@ -11,6 +11,7 @@
 #include "CoinClass.h"
 #include "SDL_mixer/include/SDL_mixer.h"
 
+
 CoinClass::CoinClass(iPoint pos) :j1Entity(pos, ENTITY_TYPE::WIN) {
 	position = pos;
 
@@ -31,13 +32,22 @@ bool CoinClass::Start() {
 	bool ret = true;
 	//Tex = App->j1entity_manager->Coin_Texture;
 	texture = App->tex->Load("textures/tribale_sprites.png");
-	CoinCollider = App->collision->AddEntCollider({ position.x,position.y,20,30 }, COLLIDER_COIN, this);
+	CoinCollider = App->collision->AddEntCollider({ position.x-10,position.y-10,10,20 }, COLLIDER_COIN, this);
 	current_animation = &CoinAnim;
 	
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 1, 2048);
 	coindropsound = Mix_LoadWAV("audio/fx/coindrop.wav");
 
 	return ret;
+}
+
+bool CoinClass::CleanUp()
+{
+	App->tex->UnLoad(texture);
+	if (CoinCollider !=nullptr)
+		CoinCollider->to_delete = true;
+
+	return true;
 }
 
 bool CoinClass::Update(float dt) {
@@ -48,13 +58,12 @@ bool CoinClass::Update(float dt) {
 void CoinClass::OnCollision(Collider* c1, Collider* c2) {
 	if (c2->type == COLLIDER_PLAYER) {
 		//sonidito.WAV
-	
-		
-			App->scene->PlayerPt->PlayerCoins++;
-			App->scene->CoinPt->CoinCollider->to_delete = true;
-			App->scene->CoinPt->texture = nullptr;
-			Mix_PlayChannel(1, coindropsound, 1);
-			//Mix_FreeChunk(coindropsound);
+		App->scene->PlayerPt->PlayerCoins++;
+		CoinCollider->to_delete = true;
+		App->tex->UnLoad(texture);
+
+		App->scene->PlayerPt->PlayerCoins++;
+		Mix_PlayChannel(1, coindropsound, 1);
 			
 	}
 }

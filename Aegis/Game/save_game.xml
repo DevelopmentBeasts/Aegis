@@ -5,13 +5,12 @@
 	<textures />
 	<audio />
 	<map />
-	<scene level="MAGIC_CAVES.tmx" />
+	<scene level="MAGIC_CAVES.tmx" playerx="904" playery="276" />
 	<entities />
-	<:anonymous />
 	<pathfinding />
 	<fonts />
 	<gui />
 	<renderer>
-		<camera x="-174" y="0" />
+		<camera x="-292" y="0" />
 	</renderer>
 </game_state>

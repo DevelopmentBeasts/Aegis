@@ -221,6 +221,9 @@ void j1Collision::DebugDraw()
 		case COLLIDER_ENEMY_SENSOR://strange yellow
 			App->render->DrawQuad(colliders[i]->rect, 150,150, 0, alpha);
 			break;
+		case COLLIDER_COIN://strange yellow
+			App->render->DrawQuad(colliders[i]->rect, 0, 255, 0, alpha);
+			break;
 		}
 	
 	}

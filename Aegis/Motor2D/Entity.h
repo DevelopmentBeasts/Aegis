@@ -66,12 +66,12 @@ public:
 
 	//sounds 
 	Mix_Chunk* coindropsound;
-
+	
 public:
 
 
 
-	Animation idle;							///In all the animations the character is facing the left side 
+	//Animation idle;							///In all the animations the character is facing the left side 
 	Animation move;
 	Animation death;
 
@@ -84,6 +84,22 @@ public:
 	void Die();
 	bool die = false;
 	bool godmode_activated = false;
+
+public:
+	//TRIBALE
+	Collider* TribaleCollider = nullptr;
+	Collider* RightTribaleColliderSensor = nullptr;
+	Collider* LeftTribaleColliderSensor = nullptr;
+
+	Animation idle;
+	Animation move_left;
+	Animation move_right;
+	Animation attackleft;
+	Animation attackright;
+	Animation jump;
+public:
+	//WORM
+
 };
 
 #endif

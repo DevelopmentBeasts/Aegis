@@ -55,17 +55,11 @@ public:
 	SDL_Rect LeftTribaleColliderSensorRect;
 
 	MasterTimer pathfinding_recalc;
-	Collider* TribaleCollider;
-	Collider* RightTribaleColliderSensor;
-	Collider* LeftTribaleColliderSensor;
+	
 private:
 
-	Animation idle;
-	Animation move_left;
-	Animation move_right;
-	Animation attackleft;
-	Animation attackright;
-	Animation jump;
+	
+
 	bool fromleft = false;
 	bool fromright = false;
 	bool firstiteration = true;
