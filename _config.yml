@@ -1,1 +1,4 @@
 theme: jekyll-theme-time-machine
+github:
+  zip_url: https://github.com/DevelopmentBeasts/Aegis/releases
+  tar_url: 
