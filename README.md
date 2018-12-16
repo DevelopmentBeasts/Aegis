@@ -48,7 +48,7 @@ UML HEREE and explanation
 
 ### GUI System
 
-ui sistem here!!!!!! png and explanation
+ui sistem here!
 
 ![](https://github.com/DevelopmentBeasts/Aegis-Developement_Beasts/blob/master/docs/descargauml.png)
 
