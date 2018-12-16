@@ -466,7 +466,6 @@ void GameTimer::Update()
 
 	sprintf_s(minutes_text, 10, "%.2d", minutes);
 	minutes_label->text = minutes_text;
-	minutes_text[3] = 'A';
 
 
 }
