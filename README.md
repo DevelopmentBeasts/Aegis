@@ -74,15 +74,15 @@ Menu works in the start of the aplication and you can acces it throught the esc 
 
 Debug purposes:
 
-F1
-F2
-F3
-F4
-F5
-F6
-F7
-F8
-F9
-F10
+F1 load level 1
+F2 load level 2
+F3 load current level
+
+F5 save game
+F6 load game
+
+F8 free camera
+F9 colliders and pathfinding debug mode
+F10 god mode (fly + no dead)
 
 
