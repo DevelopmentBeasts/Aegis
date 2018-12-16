@@ -44,13 +44,13 @@ avoid confusing code and build an easier work flow.
 
 
 UML HEREE and explanation
-![](https://github.com/DevelopmentBeasts/Aegis-Developement_Beasts/blob/master/docs/descargauml.png)
+![]()
 
-### UI System
+### GUI System
 
 ui sistem here!!!!!! png and explanation
 
-![]()
+![](https://github.com/DevelopmentBeasts/Aegis-Developement_Beasts/blob/master/docs/descargauml.png)
 
 ### Innovations
 *flipping of textures.
