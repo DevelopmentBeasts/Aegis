@@ -27,7 +27,7 @@ IA for all entities, 1/4 of the pathfinding, FPS control, debug functionalities,
 * [Github]() @jas3
 
 Joan Marín
-![https://github.com/DevelopmentBeasts/Aegis/blob/master/docs/unknown.png]()
+![](https://github.com/DevelopmentBeasts/Aegis/blob/master/docs/unknown.png)
 GUI, 3/4 of the Pathfinding, render logic 1/2, Tile info reading.
 * [Github](https://github.com/X0KA) @X0KA
 
