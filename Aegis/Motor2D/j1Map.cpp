@@ -8,6 +8,7 @@
 #include "Brofiler/Brofiler.h"
 #include "EntityManager.h"
 #include "j1Window.h"
+#include "j1Scene.h"
 
 j1Map::j1Map() : j1Module(), map_loaded(false)
 {
@@ -266,16 +267,25 @@ bool j1Map::Load(const char* file_name)
 			data.start_position.y = objectgroup.child("object").attribute("y").as_int();
 			
 		}
-		if(objectname == "Win") {
+		/*if(objectname == "Win") {
 			data.wincondition = objectgroup.child("object").attribute("x").as_int();
-		}
+		}*/
 		if (objectname == "Death colliders") {
 			LoadColliders(objectgroup, &data.colliders, COLLIDER_DEATH);
 		}
 		if (objectname == "Wall colliders") {
 			LoadColliders(objectgroup, &data.colliders, COLLIDER_WALL);
 		}
-		
+		if (objectname == "Tribale") {
+			App->j1entity_manager->CreateEnemy(objectgroup.child("object").attribute("x").as_int(), objectgroup.child("object").attribute("y").as_int(), ENEMY_TYPE::TRIBALE);
+		}
+		if (objectname == "Win") {
+			App->j1entity_manager->CreateEntity(objectgroup.child("object").attribute("x").as_int(), objectgroup.child("object").attribute("y").as_int(), ENTITY_TYPE::WIN);
+		}
+		if (objectname == "Coins") {
+			App->j1entity_manager->CreateEntity(objectgroup.child("object").attribute("x").as_int(), objectgroup.child("object").attribute("y").as_int(), ENTITY_TYPE::COIN);		
+		}
+	
 
 		
 	}

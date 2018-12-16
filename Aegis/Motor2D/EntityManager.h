@@ -40,7 +40,7 @@ public:
 	void DestroyEntity(j1Entity *Entity);
 
 	p2List<j1Entity*> entities_list;
-
+	void DestroyAllEntities();
 	float accumulated_time;
 	float update_ms_cycle;
 

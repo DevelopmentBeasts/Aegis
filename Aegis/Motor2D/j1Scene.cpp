@@ -45,7 +45,7 @@ bool j1Scene::Awake()
 bool j1Scene::Start()
 {	
 	
-	App->audio->PlayMusic("audio/music/Audionautix_SportsAction.ogg");
+	
 	
 
 	fade_step = FadeStep::fade_none;
@@ -57,16 +57,17 @@ bool j1Scene::Start()
 
 	PlayerPt = App->j1entity_manager->CreateEntity(App->map->data.start_position.x, App->map->data.start_position.y, ENTITY_TYPE::PLAYER);
 
-	EnemyTribale1 = App->j1entity_manager->CreateEnemy(600, 100, ENEMY_TYPE::TRIBALE);
-	//EnemyWorm1 = App->j1entity_manager->CreateEnemy(1400, 250, ENEMY_TYPE::WORM);
-	CoinPt = App->j1entity_manager->CreateEntity(300, 300, ENTITY_TYPE::COIN);
+	//EnemyTribale1 = App->j1entity_manager->CreateEnemy(600, 100, ENEMY_TYPE::TRIBALE);
+	EnemyWorm1 = App->j1entity_manager->CreateEnemy(1400, 250, ENEMY_TYPE::WORM);
+	//CoinPt = App->j1entity_manager->CreateEntity(300, 300, ENTITY_TYPE::COIN);
+	
 
 	if (PlayerPt != nullptr) {
 		PlayerExists = true;
 	}	
 
 	LoadLevel(mainmenu);
-	
+	App->audio->PlayMusic("audio/music/Audionautix_SportsAction.ogg");
 	return true;
 }
 

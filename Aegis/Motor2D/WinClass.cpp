@@ -41,11 +41,12 @@ bool WinClass::Update(float dt) {
 	if (Explosion && win_explosion->Finished()) {
 		Explosion = false;
 		CleanUp();
+		App->scene->LoadLevel(App->scene->level2);
 	}
 	return true;
 }
 void WinClass::OnCollision(Collider* c1, Collider* c2) {
-	if (c2->type == COLLIDER_PLAYER) {
+	if (c2->type == COLLIDER_PLAYER && App->scene->PlayerPt->PlayerCoins != 0) {
 		Explosion = true;
 		
 	}
