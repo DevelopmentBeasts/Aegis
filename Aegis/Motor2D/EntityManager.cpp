@@ -30,7 +30,7 @@ bool j1EntityManager::Start() {
 
 	//Load textures
 	player_texture	= App->tex->Load("textures/Fire_Wisp/fireSheet.png");
-	worm_texture	= App->tex->Load("textures/worm_sprites.png");
+	worm_texture	= App->tex->Load("textures/worm_sprites1.png");
 	tribale_texture = App->tex->Load("textures/tribale_sprites.png");
 	debug_texture	= App->tex->Load(("textures/walkability.png"));
 	Win_Texture     = App->tex->Load("textures/explosions.png");
@@ -109,9 +109,6 @@ j1Entity *j1EntityManager::CreateEntity(int x, int y, ENTITY_TYPE eType) {
 	case ENTITY_TYPE::WIN:
 		Entity = new WinClass(iPoint(x, y));
 		break;
-	case ENTITY_TYPE::FIRE_BALL:
-		Entity = new FireBallClass(iPoint(x, y));
-		break;
 	default:
 		break;
 	}
@@ -142,7 +139,7 @@ j1Entity* j1EntityManager::CreateEnemy(int x, int y, ENEMY_TYPE Type) {
 
 void j1EntityManager::DestroyEntity(j1Entity *Entity) {
 
-	p2List_item<j1Entity*>*item = entities_list.start;
+	/*p2List_item<j1Entity*>*item = entities_list.start;
 
 	while (item != nullptr) {
 
@@ -154,5 +151,5 @@ void j1EntityManager::DestroyEntity(j1Entity *Entity) {
 		}
 
 		item = item->next;
-	}
+	}*/
 }

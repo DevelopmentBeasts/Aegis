@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<game_state>
+	<input />
+	<window />
+	<textures />
+	<audio />
+	<map />
+	<scene level="MAGIC_CAVES.tmx" />
+	<entities />
+	<:anonymous />
+	<pathfinding />
+	<fonts />
+	<gui />
+	<renderer>
+		<camera x="-100" y="0" />
+	</renderer>
+</game_state>

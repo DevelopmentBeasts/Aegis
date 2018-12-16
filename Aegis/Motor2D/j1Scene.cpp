@@ -53,6 +53,13 @@ bool j1Scene::Start()
 
 	current_map = App->map;
 
+	//LOAD ENTITIES
+
+	MagicRock1 = App->j1entity_manager->CreateEntity(2570, 565, ENTITY_TYPE::WIN);
+
+	EnemyWorm1 = App->j1entity_manager->CreateEnemy(700, 300, ENEMY_TYPE::WORM);
+	EnemyTribale1 = App->j1entity_manager->CreateEnemy(600, 300, ENEMY_TYPE::TRIBALE);
+
 	PlayerPt = App->j1entity_manager->CreateEntity(App->map->data.start_position.x, App->map->data.start_position.y, ENTITY_TYPE::PLAYER);
 
 	if (PlayerPt != nullptr) {
@@ -178,8 +185,6 @@ void j1Scene::LoadLevel(p2SString &level_to_load) {
 		App->render->CenterCamera();
 		
 		SceneLoaded = true;
-		
-		App->render->camera.x = -100;
 		
 		App->render->find_player = true;
 		

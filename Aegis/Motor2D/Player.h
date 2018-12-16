@@ -100,7 +100,7 @@ public:
 	
 	//bool die = false;
 
-
+	bool FirstIteration = true;
 	//Colliders
 	Collider *        player_collider;
 	Collider *        sensor_collider1;

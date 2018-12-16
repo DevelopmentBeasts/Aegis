@@ -18,13 +18,21 @@ EnemyWorm::EnemyWorm(iPoint pos): j1Enemy(pos, ENEMY_TYPE::WORM) {
 
 	WormRect.x = pos.x;
 	WormRect.y = pos.y;
-	WormRect.h = 20;
-	WormRect.w = 20;
+	WormRect.h = 60;
+	WormRect.w = 60;
 
 	position.x = pos.x;
 	position.y = pos.y;
 
+	RightWormColliderSensorRect.x = WormRect.x + WormRect.w;
+	RightWormColliderSensorRect.y = WormRect.y;
+	RightWormColliderSensorRect.w = 70;
+	RightWormColliderSensorRect.h = 90;
 
+	LeftWormColliderSensorRect.x = WormRect.x -70;
+	LeftWormColliderSensorRect.y = WormRect.y;
+	LeftWormColliderSensorRect.w = 70;
+	LeftWormColliderSensorRect.h = 90;
 }
 
 EnemyWorm::~EnemyWorm() {}
@@ -32,32 +40,46 @@ EnemyWorm::~EnemyWorm() {}
 bool EnemyWorm::Start() {
 
 	texture= App->j1entity_manager->worm_texture;
-	debug_texture = App->j1entity_manager->debug_texture;
 	current_animation = &idle;
+	current_animation->Reset();
 	velocity.x = 8;
 	velocity.y = 8;
+	
+
+	WormCollider = App->collision->AddEntCollider(WormRect, COLLIDER_ENEMY, this);
+	RightWormColliderSensor = App->collision->AddEntCollider(RightWormColliderSensorRect, COLLIDER_ENEMY_SENSOR, this);
+	LeftWormColliderSensor = App->collision->AddEntCollider(LeftWormColliderSensorRect, COLLIDER_ENEMY_SENSOR, this);
+
 	return true;
 }
 
 bool EnemyWorm::Update(float dt) {
-	
-	//if (App->input->GetKey(SDL_SCANCODE_O) == j1KeyState::KEY_DOWN && (position.x - App->scene->PlayerPt->position.x < 700))
-	//{
-	//	path = App->pathfinding->CreatePath(App->map->WorldToMap(position.x, position.y), App->map->WorldToMap(App->scene->PlayerPt->position.x, App->scene->PlayerPt->position.y));
-	//	//path = App->pathfinding->GetLastPath();
+	/*if (App->input->GetKey(SDL_SCANCODE_F9) == j1KeyState::KEY_DOWN) {*/
+		//DrawPath = !DrawPath;
+	/*}*/
+	DrawPath = true;
+	if (App->input->GetKey(SDL_SCANCODE_O) == j1KeyState::KEY_DOWN && (position.x - App->scene->PlayerPt->position.x < 700))
+	{
+		path = App->pathfinding->CreatePath(App->map->WorldToMap(position.x, position.y+30), App->map->WorldToMap(App->scene->PlayerPt->position.x, App->scene->PlayerPt->position.y));
+		LOG("WORM PATHFINDING");
+		i = 0;
+		change_iterator = false;
+	}
 
-	//	i = 0;
-	//	change_iterator = false;
-	//}
+ 	if (path != nullptr) {
+		if(DrawPath)
+			App->pathfinding->DrawPath(path);
 
- //	if (path != nullptr) {
-	//	App->pathfinding->DrawPath(path);
-	//	Move(*path, dt);
-	//}
+		Move(*path, dt);
+	}
 
-	
+	DetectThePlayer();
 
 	Draw(0,0);
+
+	/*WormCollider->SetPos(position.x, position.y);
+	RightWormColliderSensor->SetPos(position.x + WormCollider->rect.w, position.y);
+	LeftWormColliderSensor->SetPos(position.x - LeftWormColliderSensor->rect.w, position.y);*/
 
 	return true;
 }
@@ -91,33 +113,42 @@ void EnemyWorm::Move(const p2DynArray<iPoint>&path, float dt) {
 	case UP_RIGHT:
 		position.x += velocity.x;
 		position.y -= velocity.y;
+		current_animation = &moving;
 		break;
 	case UP_LEFT:
 		position.x -= velocity.x;
 		position.y -= velocity.y;
+		current_animation = &moving;
 		break;
 	case DOWN_RIGHT:
 		position.x += velocity.x;
 		position.y += velocity.y;
+		current_animation = &moving;
 		break;
 	case DOWN_LEFT:
 		position.x -= velocity.x;
 		position.y += velocity.y;
+		current_animation = &moving;
 		break;
 	case RIGHT:
 		position.x += velocity.x;
+		current_animation = &moving;
 		break;
 	case LEFT:
 		position.x -= velocity.x;
+		current_animation = &moving;
 		break;
 	case UP:
 		position.y -= velocity.y;
+		current_animation = &moving;
 		break;
 	case DOWN:
 		position.y += velocity.y;
+		current_animation = &moving;
 		break;
 	case NO_DIRECTION:
-		LOG("NOT MOVING");
+		//LOG("NOT MOVING");
+		current_animation = &idle;
 	}
 }
 EntityDirection EnemyWorm::NewMovement(const p2DynArray<iPoint>*EntityPath) {
@@ -181,17 +212,19 @@ EntityDirection EnemyWorm::NewMovement(const p2DynArray<iPoint>*EntityPath) {
 }
 bool EnemyWorm::DetectThePlayer() {
 	iPoint player;
+	iPoint Position;
 	player.x = App->scene->PlayerPt->position.x;
 	player.y = App->scene->PlayerPt->position.y;
-	int xdistance = player.x - position.x;
-	if (xdistance*-1 > 0) {
-		xdistance *= -1;
+	player = App->map->WorldToMap(player.x, player.y);
+	Position = App->map->WorldToMap(position.x, position.y);
+	int xdistance = player.x - Position.x;
+	if (player.x - Position.x < 2) {
+		flip = SDL_FLIP_NONE;
 	}
-	int ydistance = player.y - position.y;
-	if (ydistance*-1 > 0) {
-		ydistance *= -1;
-	}
-	if (xdistance < 3 && ydistance < 3) {
-		return true;
-	}
+	else if (player.x - Position.x > 3)
+		flip = SDL_FLIP_HORIZONTAL;
+
+	
+	return true;
+
 }

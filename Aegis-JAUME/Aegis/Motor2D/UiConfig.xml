@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Ui configuration -->
+
+<properties>
+  
+  <button_properties>
+    <big_button>
+      <idle_section x="10" y ="10" w="10" h="10"/>
+      <active_section x="10" y ="10" w="10" h="10"/>
+    </big_button>
+
+    <small_button>
+      <idle_section x="10" y="10" w ="10" h="10"/>
+      <active_section x="10" y ="10" w="10" h="10"/>
+    </small_button>
+    
+    
+  </button_properties>
+
+</properties>

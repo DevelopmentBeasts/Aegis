@@ -172,8 +172,8 @@ p2DynArray<iPoint>* j1PathFinding::CreatePath(const iPoint& origin, const iPoint
 {
 	
 
-	if (!IsWalkable(origin) || !IsWalkable(destination))
-		return nullptr;
+	/*if (!IsWalkable(origin) || !IsWalkable(destination))
+		return nullptr;*/
 
 	PathList open;
 	PathList closed;

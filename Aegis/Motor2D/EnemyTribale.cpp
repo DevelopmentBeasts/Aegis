@@ -48,6 +48,7 @@ bool EnemyTribale::Start() {
 
 	texture = App->j1entity_manager->tribale_texture;
 	current_animation = &idle;
+	
 	velocity.x = 8;
 	velocity.y = 8;
 	Gravity = 0;
@@ -55,7 +56,9 @@ bool EnemyTribale::Start() {
 }
 
 bool EnemyTribale::Update(float dt) {
-	Gravity = true;
+	
+	Gravity = false;
+	//Gravity = true;
 	if (current_animation == &move_left)
 		current_animation = &idle;
 	if(current_animation == &jump)
@@ -69,9 +72,15 @@ bool EnemyTribale::Update(float dt) {
 		current_animation = &idle;
 		firstiteration = false;
 	}
+	/*if (App->input->GetKey(SDL_SCANCODE_F9) == j1KeyState::KEY_DOWN) {*/
+		//DrawPath = !DrawPath;
+	/*}*/
+	DrawPath = true;
  	if (App->input->GetKey(SDL_SCANCODE_O) == j1KeyState::KEY_DOWN && (position.x - App->scene->PlayerPt->position.x < 700))
 	{
- 	    Path = App->pathfinding->CreatePath(App->map->WorldToMap(position.x, position.y), App->map->WorldToMap(App->scene->PlayerPt->position.x, App->scene->PlayerPt->position.y));
+
+ 	    Path = App->pathfinding->CreatePath(App->map->WorldToMap(position.x, position.y+30), App->map->WorldToMap(App->scene->PlayerPt->position.x, App->scene->PlayerPt->position.y));
+		LOG("TRIBALE PATHFINDING");
 		//path = App->pathfinding->GetLastPath();
 		
 		i = 0;
@@ -79,7 +88,9 @@ bool EnemyTribale::Update(float dt) {
     }
 
 	if (Path !=nullptr) {
-		App->pathfinding->DrawPath(Path);
+		if(DrawPath)
+			App->pathfinding->DrawPath(Path);
+
 		if(position.y - App->scene->PlayerPt->position.y < 100)
 			Move(*Path, dt);			
 	}
@@ -124,7 +135,8 @@ void EnemyTribale::OnCollision(Collider *c1, Collider *c2) {
 			if (current_animation->GetCurrentFrame().x == 200 && App->scene->PlayerPt->die != true) {
 				LOG("DIE MOTHERFUCKER!");
 				App->scene->PlayerPt->die = true;
-				
+				App->scene->PlayerPt->velocity.x = 0;
+				App->scene->PlayerPt->velocity.y = 0;
 			}
 	}
 

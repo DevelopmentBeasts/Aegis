@@ -89,7 +89,9 @@ public:
 
 	//Pointer to the player entity
 	j1Entity * PlayerPt;
-
+	j1Entity * EnemyWorm1;
+	j1Entity * EnemyTribale1;
+	j1Entity * MagicRock1;
 private:
 
 	//Fade

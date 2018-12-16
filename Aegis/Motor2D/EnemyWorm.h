@@ -30,6 +30,12 @@ public:
 
 	MasterTimer pathfinding_recalc;
 
+	Collider* WormCollider;
+	Collider* RightWormColliderSensor;
+	Collider* LeftWormColliderSensor;
+	SDL_Rect RightWormColliderSensorRect;
+	SDL_Rect LeftWormColliderSensorRect;
+
 private:
 
 	SDL_Texture* debug_texture;

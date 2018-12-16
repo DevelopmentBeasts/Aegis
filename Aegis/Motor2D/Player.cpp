@@ -133,7 +133,11 @@ bool PlayerClass::Update(float dt) {
 		dt = 0;
 	}*/
 
-	
+	if (FirstIteration) {
+		velocity.x = 0;
+		velocity.y = 0;
+		FirstIteration = false;
+	}
 
 	//FRAMERATE CONTROL
 	if (App->framerate_cap_activated) {

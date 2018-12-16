@@ -1,0 +1,46 @@
+<!-- Config file for the game -->
+
+<config>
+  <app>
+    <title>Game Development Testbed</title>
+    <organization>UPC</organization>
+  </app>
+	
+  <renderer>
+    <borders top="1" bot="3000" left="300" right="400"/>
+    <vsync value="false"/>
+    <framerate_cap value = "true"/>
+  </renderer>
+
+  <window>
+    <resolution width="2048" height="1536" scale="2"/>
+    <fullscreen value="false"/>
+    <borderless value="false"/>
+    <resizable value="true"/>
+    <resolution width="1024" height="768" scale="1"/>
+    <fullscreen value="false"/>
+    <borderless value="false"/>
+    <resizable value="false"/>
+    <fullscreen_window value="false"/>
+  </window>
+  
+  <UpdateInfo>
+    <player period="0.0033"/>  
+    <Astar>
+      <period value ="10"/>
+    </Astar>
+  </UpdateInfo>
+
+  <file_system>
+    <path>data.zip</path>
+  </file_system>
+
+<gui>
+    <atlas file="gui/atlas.png"/>
+  </gui>
+
+  <map>
+    <folder>maps/</folder>
+  </map>
+
+</config>

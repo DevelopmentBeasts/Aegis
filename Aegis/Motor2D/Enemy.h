@@ -31,7 +31,7 @@ public:
 	void Draw(int extrax,int extray);
 
 public:
-
+	bool DrawPath = false;
 	bool falling = false;
 
 	fPoint velocity;

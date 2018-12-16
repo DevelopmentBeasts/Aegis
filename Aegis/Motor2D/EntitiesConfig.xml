@@ -34,20 +34,7 @@
   </player>
 
   <worm>
-    <idle loop="true" speed="0.5">
-      <PushBack x="0" y="0" w="40" h="40"/>
-      <PushBack x="40" y="0" w="40" h="40"/>
-      <PushBack x="80" y="0" w="40" h="40"/>
-      <PushBack x="120" y="0" w="40" h="40"/>
-      <PushBack x="80" y="0" w="40" h="40"/>
-      <PushBack x="40" y="0" w="40" h="40"/>
-    </idle>
-
-    <move loop="true" speed="0.5">
-      <PushBack x="0" y="40" w="40" h="40"/>
-      <PushBack x="40" y="40" w="40" h="40"/>
-      <PushBack x="80" y="40" w="40" h="40"/>
-      <PushBack x="120" y="40" w="40" h="40"/>
-    </move>
+   
+   
   </worm>
 </properties>
