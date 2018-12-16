@@ -18,7 +18,7 @@ This game it's been done  using "Tile" program and it has two levels. It is full
 
 ## Developers
 
-![](https://github.com/lucho1/DevelopmentProject/blob/master/docs/teamphoto.jpg)
+![]()
 
 Jaume Avinyó
 IA for all entities, 1/4 of the pathfinding, FPS control, debug functionalities, main character logic, near full game art logic, youtube video and webpage, camera and render logic 1/2.
