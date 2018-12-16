@@ -61,7 +61,7 @@ bool j1Scene::Start()
 	App->audio->PlayMusic("audio/music/Audionautix_SportsAction.ogg");
 
 	timer.Start();
-
+	
 	return true;
 }
 
@@ -83,6 +83,7 @@ bool j1Scene::Update(float dt)
 	static bool create_menu= ui_main_menu.Create();
 	static bool create_pause_menu = CreatePauseWindow();
 	static bool create_settings_window = CreateSettingsWindow();
+	static bool start_gems= player_gems.Start();
 
 	if (close_app)
 		return false;
@@ -120,6 +121,8 @@ bool j1Scene::Update(float dt)
 	current_map->Draw();
 	
 	timer.Update();
+
+	player_gems.Update();
 
 	return true;
 }
@@ -448,8 +451,8 @@ float j1Scene::GetMusicVolume()
 
 bool GameTimer::Start()
 {
-	seconds_label = App->gui->AddLabel({ 500,500 }, "");
-	minutes_label = App->gui->AddLabel({ 420,500 }, "");
+	seconds_label = App->gui->AddLabel({ 500,30 }, "");
+	minutes_label = App->gui->AddLabel({ 420,30 }, "");
 
 	return true;
 }
@@ -467,11 +470,30 @@ void GameTimer::Update()
 	sprintf_s(minutes_text, 10, "%.2d", minutes);
 	minutes_label->text = minutes_text;
 
-
 }
 
 void GameTimer::ChangeState()
 {
 	minutes_label->active = !minutes_label->active;
 	seconds_label->active = !seconds_label->active;
+}
+
+bool PlayerGems::Start()
+{
+	gems_label = App->gui->AddLabel({300,30},"");
+	gems_image = App->gui->AddImage({250,30}, App->gui->gem);
+	return true;
+}
+
+bool PlayerGems::Update()
+{
+	sprintf_s(gems_text,10,"%d", 0);
+	gems_label->text=gems_text;
+	return true;
+}
+
+void PlayerGems::ChangeState()
+{
+	gems_label->active = !gems_label->active;
+	gems_image->active = !gems_image->active;
 }

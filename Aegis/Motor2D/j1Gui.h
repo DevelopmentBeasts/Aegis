@@ -332,6 +332,7 @@ public:
 	//Icons 
 	SDL_Rect settings;
 	SDL_Rect exit;
+	SDL_Rect gem;
 private:
 
 	//List with all the UI elements

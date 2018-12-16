@@ -25,6 +25,13 @@ j1Gui::j1Gui() : j1Module()
 				icon_data.child("exit").attribute("w").as_int(),
 				icon_data.child("exit").attribute("h").as_int() };
 
+	gem = { icon_data.child("gem").attribute("x").as_int(),
+				icon_data.child("gem").attribute("y").as_int(),
+				icon_data.child("gem").attribute("w").as_int(),
+				icon_data.child("gem").attribute("h").as_int() };
+
+
+
 }
 
 // Destructor

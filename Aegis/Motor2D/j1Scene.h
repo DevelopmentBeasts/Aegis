@@ -13,6 +13,7 @@ class j1Map;
 class UiWindow;
 class UiDragBar;
 class UiLabel;
+class UiImage;
 
 struct UiMainMenu
 {
@@ -56,6 +57,17 @@ struct GameTimer
 	bool Start();
 	void Update();
 	void ChangeState();
+};
+
+struct PlayerGems
+{
+	bool Start();
+	bool Update();
+	void ChangeState();
+
+	UiLabel* gems_label = nullptr;
+	char gems_text[10];
+	UiImage* gems_image = nullptr;
 };
 
 class j1Scene : public j1Module
@@ -166,6 +178,7 @@ private:
 	UiDragBar* music_bar = nullptr;
 
 	GameTimer timer;
+	PlayerGems player_gems;
 };
 
 
