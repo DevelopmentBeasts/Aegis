@@ -21,6 +21,7 @@ This game it's been done  using "Tile" program and it has two levels. It is full
 
 
 Jaume Avinyó
+<img src ="https://github.com/DevelopmentBeasts/Aegis/blob/master/docs/descarga.png"width = "500"/>
 ![https://github.com/DevelopmentBeasts/Aegis/blob/master/docs/descarga.png]()
 IA for all entities, 1/4 of the pathfinding, FPS control, debug functionalities, main character logic, near full game art logic, youtube video and webpage, camera and render logic 1/2.
 * [Github]() @jas3
