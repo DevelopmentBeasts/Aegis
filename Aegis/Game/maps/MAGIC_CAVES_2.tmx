@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="400" height="70" tilewidth="16" tileheight="16" nextobjectid="37">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="400" height="70" tilewidth="16" tileheight="16" nextobjectid="41">
  <tileset firstgid="1" name="pixelcave_tileset_map" tilewidth="16" tileheight="16" tilecount="1024" columns="32">
   <image source="pixelcave_tileset_map.png" width="512" height="512"/>
  </tileset>
@@ -140078,11 +140078,14 @@
  </objectgroup>
  <objectgroup name="Tribale">
   <object id="32" x="1440" y="374.667" width="16" height="25.3333"/>
-  <object id="33" x="858.667" y="570.667" width="22.6667" height="33.3333"/>
+  <object id="33" x="843.667" y="533.667" width="22.6667" height="33.3333"/>
  </objectgroup>
  <objectgroup name="Worm">
   <object id="34" x="2713.33" y="344" width="20" height="32"/>
   <object id="35" x="3882.67" y="473.333" width="25.3333" height="38.6667"/>
   <object id="36" x="5656" y="425.333" width="22.6667" height="36"/>
+ </objectgroup>
+ <objectgroup name="Win">
+  <object id="39" x="5984" y="474" width="48" height="39"/>
  </objectgroup>
 </map>

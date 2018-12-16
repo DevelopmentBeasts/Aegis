@@ -46,11 +46,11 @@ struct GameTimer
 
 	//prints the seconds
 	UiLabel* seconds_label = nullptr;
-	char seconds_text[10];
+	char seconds_text[10] = ("0");
 
 	//prints the minutes
 	UiLabel* minutes_label = nullptr;
-	char minutes_text[10];
+	char minutes_text[10] = ("0");
 
 	int current_time;
 
@@ -66,7 +66,7 @@ struct PlayerGems
 	void ChangeState();
 
 	UiLabel* gems_label = nullptr;
-	char gems_text[10];
+	char gems_text[10]=("0");
 	UiImage* gems_image = nullptr;
 };
 

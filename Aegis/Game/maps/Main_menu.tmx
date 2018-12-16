@@ -10135,7 +10135,7 @@
    <tile gid="0"/>
   </data>
  </layer>
- <layer name="Title" width="100" height="30" visible="0">
+ <layer name="Title" width="100" height="30">
   <properties>
    <property name="Parallax" type="float" value="0"/>
    <property name="Scale" type="float" value="1"/>
