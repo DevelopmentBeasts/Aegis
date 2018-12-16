@@ -15,17 +15,19 @@
 #include "EnemyWorm.h"
 #include "j1Pathfinding.h"
 #include "j1Gui.h"
+#include "SDL_mixer/include/SDL_mixer.h"
 
+#include "stdio.h"
 
+//#pragma comment( lib, "SDL_mixer/libx86/SDL2_mixer.lib" )
 j1Scene::j1Scene() : j1Module()
 {
 	name.create("scene");
 
-	intro = "Main_menu.tmx";
+	mainmenu = "Main_menu.tmx";
 	level1 = "MAGIC_CAVES.tmx";
-	level2 = "AEGIS_RUN.tmx";
+	level2 = "MAGIC_CAVES_2.tmx";
 
-	
 }
 
 // Destructor
@@ -44,22 +46,23 @@ bool j1Scene::Awake()
 // Called before the first frame
 bool j1Scene::Start()
 {	
-	App->render->camera.x = -1000;
-
 	fade_step = FadeStep::fade_none;
-	fade_time = 2000;
+	fade_time = 1000;
 	fade_rect.w = App->render->camera.w;
 	fade_rect.h = App->render->camera.h;
 
 	current_map = App->map;
 
-	PlayerPt = App->j1entity_manager->CreateEntity(App->map->data.start_position.x, App->map->data.start_position.y, ENTITY_TYPE::PLAYER);
-
 	if (PlayerPt != nullptr) {
 		PlayerExists = true;
 	}	
 
-	LoadLevel(intro);
+	LoadLevel(mainmenu);
+	App->audio->PlayMusic("audio/music/Audionautix_SportsAction.ogg");
+
+	timer.Start();
+	
+	App->audio->PlayMusic("audio/music/Audionautix_SportsAction.ogg");
 
 	return true;
 }
@@ -67,7 +70,7 @@ bool j1Scene::Start()
 // Called each loop iteration
 bool j1Scene::PreUpdate()
 {
-
+	
 	fade_rect.x = -App->render->camera.x;
 	fade_rect.y = -App->render->camera.y;
 
@@ -77,6 +80,15 @@ bool j1Scene::PreUpdate()
 // Called each loop iteration
 bool j1Scene::Update(float dt)
 {
+	//This should be in Start(), but for some reason it doesn't work
+	//So I call it here
+	static bool create_menu= ui_main_menu.Create();
+	static bool create_pause_menu = CreatePauseWindow();
+	static bool create_settings_window = CreateSettingsWindow();
+	static bool start_gems= player_gems.Start();
+
+	if (close_app)
+		return false;
 	
 	if (SceneLoaded) {
 		PlayerPt->position.x = App->map->data.start_position.x;
@@ -88,8 +100,11 @@ bool j1Scene::Update(float dt)
 	if(App->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)			//Save game
 		App->LoadGame("save_game.xml");
 
-	if(App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)			//Save game
+	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN) 
+	{		//Save game
 		App->SaveGame("save_game.xml");
+		game_saved = true;
+	}
 
 	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN) 		//Load game
 		FadeToBlack(level1);
@@ -97,24 +112,19 @@ bool j1Scene::Update(float dt)
 	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)		//Load game
 		FadeToBlack(level2);
 	
-	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)			//Load game
-		FadeToBlack(*current_level);
+	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)		//Load game
+		FadeToBlack(current_level.GetString());
 
-	if (PlayerPt->position.x >= App->map->data.wincondition) {
-
-		LoadLevel(level2);
-		//App->render->FindPlayer(dt);
-	}
-
-	if (current_level == &intro)
-		App->render->camera.x -= 1 * dt / 15;
+	if (current_level == mainmenu)
+		App->render->camera.x -= 1 * dt / 30;
 
 
 	//Draw the map
 	current_map->Draw();
+	
+	timer.Update();
 
-	//Fade
-	UpdateFade();
+	player_gems.Update();
 
 	return true;
 }
@@ -124,15 +134,21 @@ bool j1Scene::PostUpdate()
 {
 	bool ret = true;
 
-	if(App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
-		ret = false;
+	//Fade
+	UpdateFade();
 
+	if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
+	{
+		if (current_level != mainmenu)
+			ui_pause_window->ChangeState();
+	}
 	return ret;
 }
 
 // Called before quitting
 bool j1Scene::CleanUp()
 {
+
 	LOG("Freeing scene");
 
 	return true;
@@ -141,47 +157,53 @@ bool j1Scene::CleanUp()
 // Load Game State
 bool j1Scene::Load(pugi::xml_node& data)
 {
-	
-	LoadLevel(p2SString(data.attribute("level").as_string()));
+	const char* load = data.attribute("level").as_string();
+
+	FadeToBlack(load);
+
+	if (PlayerPt != nullptr)
+	{
+		PlayerPt->position.x = data.attribute("playerx").as_int();
+		PlayerPt->position.y = data.attribute("playery").as_int();
+	}
 
 	return true;
 }
 
 // Save Game State
-bool j1Scene::Save(pugi::xml_node& data) const
+bool j1Scene::Save(pugi::xml_node& data)const 
 {
+	const char* level = current_level.GetString();
 
-	data.append_attribute("level") = current_level->GetString();
+	data.append_attribute("level") = level;
+
+	if (PlayerPt != nullptr)
+	{
+		data.append_attribute("playerx") = PlayerPt->position.x;
+
+		data.append_attribute("playery") = PlayerPt->position.y;
+	}
 
 	return true;
 }
 
-void j1Scene::LoadLevel(p2SString &level_to_load) {
+void j1Scene::LoadLevel(const char* level_to_load) {
 	
-	if (&level_to_load != current_level)
+	
+	if (p2SString(level_to_load) != current_level)
 	{
-		App->map->CleanUp();
-		App->map->Load(level_to_load.GetString());
-		current_level = &level_to_load;
+			App->map->CleanUp();
+			App->map->Load(level_to_load);
+			current_level = level_to_load;
 
-		int w, h;
-		uchar* data = NULL;
-		if (App->map->CreateWalkabilityMap(w, h, &data))
-			App->pathfinding->SetMap(w, h, data);
-		RELEASE_ARRAY(data);
+			int w, h;
+			uchar* data = NULL;
+			if (App->map->CreateWalkabilityMap(w, h, &data))
+				App->pathfinding->SetMap(w, h, data);
+			RELEASE_ARRAY(data);
 
 	}
-
-		PlayerPt->position.x = App->map->data.start_position.x;
-		PlayerPt->position.y = App->map->data.start_position.y;
-		
-		App->render->CenterCamera();
-		
-		SceneLoaded = true;
-		
-		App->render->find_player = true;
-		
-
+	
 }
 
 void j1Scene::UpdateFade() 
@@ -199,10 +221,42 @@ void j1Scene::UpdateFade()
 	case FadeStep::fade_to_black:
 		if (now >= fade_time)
 		{
+			App->j1entity_manager->CleanEntities();
 			App->render->DrawQuad(fade_rect, 0, 0, 0, (Uint8)(normalized * 255.0f));
-			LoadLevel(*level_to_load);
+			LoadLevel(level_to_load.GetString());
 			fade_start_time = SDL_GetTicks();
 			fade_step = FadeStep::fade_from_black;
+
+			
+
+			//UI
+			if (level_to_load != mainmenu) {
+				ui_main_menu.Hide();
+				timer.start_time = SDL_GetTicks();
+			}
+			else
+			{
+				ui_pause_window->ChangeState();
+				ui_main_menu.Show();
+			}
+
+			if (ui_settings_window->active)
+				ui_settings_window->ChangeState();
+
+			if (PlayerPt == nullptr) {
+				PlayerPt = App->j1entity_manager->CreateEntity(App->map->data.start_position.x, App->map->data.start_position.y, ENTITY_TYPE::PLAYER);
+				PlayerExists = true;
+			}
+			
+			else if (PlayerPt != nullptr)
+			{
+				PlayerPt->position.x = App->map->data.start_position.x;
+				PlayerPt->position.y = App->map->data.start_position.y;
+
+				App->render->CenterCamera();
+				App->render->find_player = true;
+				SceneLoaded = true;
+			}
 		}
 		break;
 	case FadeStep::fade_from_black:
@@ -220,18 +274,229 @@ void j1Scene::UpdateFade()
 
 }
 
-void j1Scene::FadeToBlack(p2SString &leveltoload)
+void j1Scene::FadeToBlack(const char* leveltoload)
 {
 	if (fade_step == FadeStep::fade_none)
 	{
 		fade_start_time = SDL_GetTicks();
 		fade_step = FadeStep::fade_to_black;
-		level_to_load = &leveltoload;
+		level_to_load = leveltoload;
 	}
 
 }
 
 void j1Scene::ButtonAction(UiButton* button)
 {
-	int i = 0;
+	switch (button->function)
+	{
+	case ButtonFunction::CLOSE_APP:
+
+		close_app = true;
+		break;
+
+	case ButtonFunction::HIDE_SETTINGS:
+		ui_settings_window->ChangeState();
+		break;
+
+	case ButtonFunction::HIDE_PAUSE:
+		ui_pause_window->ChangeState();
+		break;
+
+	case ButtonFunction::LOAD_MAIN_MENU:
+
+		FadeToBlack(mainmenu);
+		break;
+
+	case ButtonFunction::LOAD_LEVEL1:
+
+		FadeToBlack(level1);
+		break;
+
+	case ButtonFunction::SAVE_GAME:
+		App->SaveGame("save_game.xml");
+		game_saved = true;
+		break;
+
+	case ButtonFunction::LOAD_GAME:
+		App->LoadGame("save_game.xml");
+		break;
+
+	case ButtonFunction::OPEN_SETTINGS:
+		ui_settings_window->ChangeState();
+		break;
+
+	case ButtonFunction::OPEN_GITHUB:
+
+		ShellExecuteA(NULL, "open", "https://github.com/DevelopmentBeasts/Aegis", NULL, NULL, SW_SHOWNORMAL);
+		break;
+
+	}
+}
+
+bool j1Scene::CreatePauseWindow()
+{
+	ui_pause_window = App->gui->AddWindow({ 650,50 });
+
+	//Close window
+	UiButton* exit = ui_pause_window->NestButton({0,0}, ButtonSize::SMALL, App->scene, ButtonFunction::HIDE_PAUSE);
+	exit->NestImage({ 0, 0 }, App->gui->exit);
+	
+	//go to main menu
+	UiButton* main_menu = ui_pause_window->NestButton({170,700}, ButtonSize::EXTRA, App->scene, ButtonFunction::LOAD_MAIN_MENU);
+	main_menu->NestLabel({ 70,30 }, "MENU");
+
+	//load game
+	UiButton* load = ui_pause_window->NestButton({200,330}, ButtonSize::BIG,App->scene, ButtonFunction::LOAD_GAME);
+	load->NestLabel({55,30},"LOAD");
+
+	//save game
+	UiButton* save = ui_pause_window->NestButton({200,150}, ButtonSize::BIG, App->scene, ButtonFunction::SAVE_GAME);
+	save->NestLabel({55,30}, "SAVE");
+
+	//settings
+	UiButton* settings = ui_pause_window->NestButton({170,500}, ButtonSize::EXTRA, App->scene, ButtonFunction::OPEN_SETTINGS);
+	settings->NestLabel({15,30},"SETTINGS");
+
+	ui_pause_window->ChangeState();
+
+	return true;
+}
+
+bool UiMainMenu::Create()
+{
+
+	//play button
+	play = App->gui->AddButton({ 850,500 }, ButtonSize::BIG, App->scene, ButtonFunction::LOAD_LEVEL1);
+	play->NestLabel({ 55,30 }, "PLAY");
+
+	//exit button
+	exit = App->gui->AddButton({ 850,875 }, ButtonSize::BIG, App->scene, ButtonFunction::CLOSE_APP);
+	exit->NestLabel({ 55,30 }, "EXIT");
+
+	//settings button
+	settings = App->gui->AddButton({ 820,750 }, ButtonSize::EXTRA, App->scene, ButtonFunction::OPEN_SETTINGS);
+	settings->NestLabel({ 16,30 }, "SETTINGS");
+
+	//continue button | laod game
+	load = App->gui->AddButton({ 820,625 }, ButtonSize::EXTRA, App->scene, ButtonFunction::LOAD_GAME);
+	load->NestLabel({ 16, 30 }, "CONTINUE");
+	load->active = false;
+
+	//github
+	github = App->gui->AddButton({ 150, 775 }, ButtonSize::BIG, App->scene, ButtonFunction::OPEN_GITHUB);
+	github->NestLabel({20,30},"GITHUB");
+
+	return true;
+}
+
+void UiMainMenu::Hide()
+{
+	play->active = false;
+	exit->active = false;
+	settings->active = false;
+	load->active = false;
+	github->active = false;
+}
+
+void UiMainMenu::Show()
+{
+	play->active = true;
+	exit->active = true;
+	settings->active = true;
+	github->active = true;
+
+	if (App->scene->game_saved)
+		load->active = true;
+}
+
+bool j1Scene::CreateSettingsWindow()
+{
+
+	ui_settings_window = App->gui->AddWindow({1200,50});
+
+	//exit
+	UiButton* window_exit = ui_settings_window->NestButton({ 0,0 }, ButtonSize::SMALL, App->scene, ButtonFunction::HIDE_SETTINGS);
+	window_exit->NestImage({ 0,0 }, App->gui->exit);
+
+	//music bar
+	music_bar = ui_settings_window->NestBar({ 300,200 });
+	ui_settings_window->NestLabel({50,200},"MUSIC");
+
+	//sound bar
+	fx_bar= ui_settings_window->NestBar({ 300,450 });
+	ui_settings_window->NestLabel({50, 450 }, "FX");
+
+	//volume label
+	ui_settings_window->NestLabel({330,100},"VOLUME");
+
+	ui_settings_window->ChangeState();
+
+	return true;
+}
+
+float j1Scene::GetFxVolume()
+{
+	if (fx_bar != nullptr)
+		return fx_bar->GetValue();
+
+	else
+		return 1.0;
+}
+
+float j1Scene::GetMusicVolume()
+{
+	if (music_bar != nullptr)
+		return music_bar->GetValue();
+
+	else 
+		return 1.0;
+}
+
+bool GameTimer::Start()
+{
+	seconds_label = App->gui->AddLabel({ 500,30 }, "");
+	minutes_label = App->gui->AddLabel({ 420,30 }, "");
+
+	return true;
+}
+
+void GameTimer::Update()
+{
+	//TIMER
+	current_time = SDL_GetTicks() - start_time;
+	
+	int minutes =current_time / 60000 ;
+
+	sprintf_s(seconds_text, 10, "%.2d", (current_time- minutes*60000)/1000);
+	seconds_label->text = seconds_text;
+
+	sprintf_s(minutes_text, 10, "%.2d", minutes);
+	minutes_label->text = minutes_text;
+
+}
+
+void GameTimer::ChangeState()
+{
+	minutes_label->active = !minutes_label->active;
+	seconds_label->active = !seconds_label->active;
+}
+
+bool PlayerGems::Start()
+{
+	gems_label = App->gui->AddLabel({300,30},"");
+	gems_image = App->gui->AddImage({250,30}, App->gui->gem);
+	return true;
+}
+
+bool PlayerGems::Update()
+{
+	sprintf_s(gems_text,10,"%d", 0);
+	gems_label->text=gems_text;
+	return true;
+}
+
+void PlayerGems::ChangeState()
+{
+	gems_label->active = !gems_label->active;
+	gems_image->active = !gems_image->active;
 }

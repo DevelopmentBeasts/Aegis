@@ -25,7 +25,7 @@ PlayerClass::PlayerClass(iPoint pos) : j1Entity(pos, ENTITY_TYPE::PLAYER)  {   /
 
 
 	pugi::xml_parse_result result = AnimsDoc.load_file("PlayerAnims.xml");
-
+	
 	if (result == NULL ) {
 		LOG("The xml file that contains the pushbacks for the animations is not working.PlayerAnims.xml.  error: %s",result.description());
 	}
@@ -151,12 +151,12 @@ bool PlayerClass::Update(float dt) {
 		DieNow();
 	}
 	if (!die) {
-		if (App->input->GetKey(SDL_SCANCODE_SPACE) == j1KeyState::KEY_DOWN) {
-			App->j1entity_manager->CreateEntity(position.x, position.y, ENTITY_TYPE::FIRE_BALL);
-		}
 		//GOD MODE
 		if (App->input->GetKey(SDL_SCANCODE_F10) == j1KeyState::KEY_DOWN) {
 			godmode_activated = !godmode_activated;
+			velocity.x = 0;
+			velocity.y = 0;
+			
 		}
 
 		
@@ -234,17 +234,17 @@ bool PlayerClass::Load(pugi::xml_node& node) {
 
 bool PlayerClass::ExternalInput(p2Queue<player_inputs> &inputs) {
 	
-		if (App->input->GetKey(SDL_SCANCODE_G) == j1KeyState::KEY_DOWN) {
+		/*if (App->input->GetKey(SDL_SCANCODE_G) == j1KeyState::KEY_DOWN) {
 			Gravity = true;
-		}
-		if (App->input->GetKey(SDL_SCANCODE_N) == j1KeyState::KEY_DOWN && !SpeedPowerActivatedLeft && DashEnergy>90) {
+		}*/
+		if (App->input->GetKey(SDL_SCANCODE_LEFT) == j1KeyState::KEY_DOWN && !SpeedPowerActivatedLeft && DashEnergy>30) {
 			if (!sensorcollidingleft) {
 				AvailableDistanceleft = PlayerXmlNode.child("sensors").attribute("sensor_distance").as_int();
 			}
 			SpeedPowerActivatedLeft = true;
 			AvailableDistanceRightNow = AvailableDistanceleft;
 		}
-		if (App->input->GetKey(SDL_SCANCODE_M) == j1KeyState::KEY_DOWN && !SpeedPowerActivatedRight  && DashEnergy > 90) {
+		if (App->input->GetKey(SDL_SCANCODE_RIGHT) == j1KeyState::KEY_DOWN && !SpeedPowerActivatedRight  && DashEnergy > 30) {
 			if (!sensorcollidingright) {
 				AvailableDistanceright = PlayerXmlNode.child("sensors").attribute("sensor_distance").as_int();
 			}
@@ -542,16 +542,12 @@ void PlayerClass::OnCollision(Collider *c1, Collider *c2) {
 		{
 			if (c1->type == COLLIDER_SENSOR) {
 				if (c1 == sensor_collider1) {
-					//LOG("RIGHT SENSOR ACTIVATED");
 					sensorcollidingright = true;
 					AvailableDistanceright = c2->rect.x - c1->rect.x;
-					//LOG(" AvailableDistance IS %i", AvailableDistanceright);
 				}
 				if (c1 == sensor_collider2) {
-					//LOG("LEFT SENSOR ACTIVATED");
 					sensorcollidingleft = true;
 					AvailableDistanceleft = 300 - ((c2->rect.x+c2->rect.w)-c1->rect.x);
-					//LOG(" AvailableDistance IS %i", AvailableDistanceleft);
 				}
 			}
 			if (c1->type == COLLIDER_PLAYER) 
@@ -613,30 +609,46 @@ void PlayerClass::OnCollision(Collider *c1, Collider *c2) {
 }
 
 void PlayerClass::GodMode(float dt) {
-
+	
 	current_animation = &idle;
 	
-	
-	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) {
-		    //LOG("<----GODMODE");
-		    velocity.x = 10 ;
-		    position.x -= velocity.x*(dt/30);
+	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN) {
+		    
+		    velocity.x -= 10 ;
 	}
-	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) {
-		    //LOG("GODMODE---->");
-			velocity.x = 10 ;
-			position.x += velocity.x*(dt / 30);
+	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_UP) {
+		
+		velocity.x += 10;
 	}
-	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) {
-		    //LOG("GODMODE UP");
-		    velocity.y = -10 ;
-		    position.y -= velocity.x*(dt / 30);
+
+	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_DOWN) {
+		    
+			velocity.x += 10 ;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_UP) {
+		
+		velocity.x -= 10;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN) {
+		    
+		    velocity.y -= 10 ;
 	}	
-	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) {
-		    //LOG("GODMODE DOWN");
-		    velocity.y =10 ;
-		    position.y += velocity.x*(dt / 30);
+	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_UP) {
+		
+		velocity.y += 10;
 	}
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN) {
+		    
+			velocity.y +=10 ;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_UP) {
+		
+		velocity.y -= 10;
+	}
+	
+	position.x += velocity.x*(dt/30);
+	position.y += velocity.y*(dt / 30);
+
 }
 
 void PlayerClass::DieNow() {

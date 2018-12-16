@@ -9,13 +9,15 @@
 #include "j1App.h"
 #include "j1Textures.h"
 
+enum class ENTITY_TYPE;
+enum class ENEMY_TYPE;
 
 struct ColliderData {
 	p2List<Collider*>			collider_list;
 
 	~ColliderData() {
 		for (int i = 0; i < collider_list.count(); ++i) {
-			if (collider_list[i] != nullptr)
+			if (collider_list[i] != nullptr /*&& collider_list[i]->to_delete ==false*/)
 				collider_list[i]->to_delete=true;
 		}
 	}
@@ -129,10 +131,14 @@ private:
 	bool LoadTilesetDetails(pugi::xml_node& tileset_node, TileSet* set);
 	bool LoadTilesetImage(pugi::xml_node& tileset_node, TileSet* set);
 	bool LoadLayer(pugi::xml_node& node, MapLayer* layer);
+	
 
 	//Add colliders
 	bool LoadColliders(pugi::xml_node& node, ColliderData* collider, COLLIDER_TYPE collider_type);		
 
+	bool LoadEntities(pugi::xml_node& node, ENTITY_TYPE entity_type);
+
+	bool LoadEnemies(pugi::xml_node& node, ENEMY_TYPE enemy_type);
 
 	TileSet* GetTilesetFromTileId(int id) const;
 

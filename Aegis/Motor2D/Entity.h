@@ -7,6 +7,8 @@
 #include "j1App.h"
 #include "Animation.h"
 #include "j1Collision.h"
+#include "SDL_mixer/include/SDL_mixer.h"
+
 
 enum EntityDirection {
 	UP,
@@ -47,7 +49,7 @@ public:
 	virtual void OnCollision(Collider*, Collider*) {}
 
 public:
-
+	int PlayerCoins = 0;
 	// x & y position
 	iPoint		position;
 	
@@ -56,14 +58,20 @@ public:
 
 	//Collider
 	Collider*	collider = nullptr;
+	Collider* CoinCollider = nullptr;
 	fPoint velocity = { 0,-3.0 };
 
 	//Node of the document with the properties
 	pugi::xml_node		properties_node;
 
+	//sounds 
+	Mix_Chunk* coindropsound;
+	
 public:
 
-	Animation idle;							///In all the animations the character is facing the left side 
+
+
+	//Animation idle;							///In all the animations the character is facing the left side 
 	Animation move;
 	Animation death;
 
@@ -75,6 +83,22 @@ public:
 	Animation* win_explosion = nullptr;
 	void Die();
 	bool die = false;
+	bool godmode_activated = false;
+
+public:
+	//TRIBALE
+	Collider* TribaleCollider = nullptr;
+	Collider* RightTribaleColliderSensor = nullptr;
+	Collider* LeftTribaleColliderSensor = nullptr;
+
+	Animation idle;
+	Animation move_left;
+	Animation move_right;
+	Animation attackleft;
+	Animation attackright;
+	Animation jump;
+public:
+	//WORM
 
 };
 

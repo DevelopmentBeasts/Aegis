@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Ui configuration -->
+
+<properties>
+  
+  <button_properties>
+    <big_button>
+      <idle_section x="663" y ="380" w="223" h="96"/>
+      <active_section x="664" y ="490" w="223" h="96"/>
+    </big_button>
+
+    <small_button>
+      <idle_section x="891" y="396" w ="64" h="64"/>
+      <active_section x="895" y ="512" w="64" h="64"/>
+    </small_button>
+      
+    <large_button>
+      <idle_section x="666" y="610" w ="287" h="96"/>
+      <active_section x="666" y ="728" w="287" h="96"/>
+    </large_button>
+
+    <micro_button>
+      <idle_section x="963" y="414" w ="32" h="32"/>
+      <active_section x="967" y ="525" w="32" h="32"/>
+    </micro_button>
+  </button_properties>
+
+  <window_properties>
+    <window_section x="25" y="111" w ="622" h="896"/>
+  </window_properties>
+
+  <dragable_bar>
+    <bar_section x="21" y="58" w ="272" h="36"/>
+  </dragable_bar>
+
+  <icons>
+    <play x="704" y="256" w ="64" h="64"/>
+    <settings x="768" y="256" w ="64" h="64"/>
+    <exit x="832" y="256" w ="64" h="64"/>
+    <gem x="722" y="216" w ="25" h="40"/>
+  </icons>
+  
+</properties>

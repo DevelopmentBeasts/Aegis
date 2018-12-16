@@ -2,6 +2,7 @@
 #include "p2Log.h"
 #include "j1App.h"
 #include "j1Audio.h"
+#include "j1Scene.h"
 
 #include "SDL/include/SDL.h"
 #include "SDL_mixer\include\SDL_mixer.h"
@@ -9,6 +10,7 @@
 
 j1Audio::j1Audio() : j1Module()
 {
+
 	music = NULL;
 	name.create("audio");
 }
@@ -16,6 +18,17 @@ j1Audio::j1Audio() : j1Module()
 // Destructor
 j1Audio::~j1Audio()
 {}
+
+bool j1Audio::Update(float dt)
+{
+
+	Mix_VolumeMusic(App->scene->GetMusicVolume()*128);
+
+	Mix_Volume(1, App->scene->GetFxVolume() * 128);
+
+	return true;
+
+}
 
 // Called before render is available
 bool j1Audio::Awake(pugi::xml_node& config)

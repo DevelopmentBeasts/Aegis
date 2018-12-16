@@ -37,25 +37,39 @@ EnemyTribale::EnemyTribale(iPoint pos) : j1Enemy(pos, ENEMY_TYPE::TRIBALE) {
 	LeftTribaleColliderSensorRect.y = pos.y ;
 	LeftTribaleColliderSensorRect.w = 65;
 	LeftTribaleColliderSensorRect.h = 20;
+
+	TribaleCollider = App->collision->AddEntCollider(TribaleRect, COLLIDER_ENEMY, this);
+	RightTribaleColliderSensor = App->collision->AddEntCollider(RightTribaleColliderSensorRect, COLLIDER_ENEMY_SENSOR, this);
+	LeftTribaleColliderSensor = App->collision->AddEntCollider(LeftTribaleColliderSensorRect, COLLIDER_ENEMY_SENSOR, this);
+	texture = App->tex->Load("textures/tribale_sprites.png");
 }
 
 EnemyTribale::~EnemyTribale() {}
 
 bool EnemyTribale::Start() {
-	TribaleCollider = App->collision->AddEntCollider(TribaleRect, COLLIDER_ENEMY, this);
-	RightTribaleColliderSensor = App->collision->AddEntCollider(RightTribaleColliderSensorRect, COLLIDER_ENEMY_SENSOR, this);
-	LeftTribaleColliderSensor = App->collision->AddEntCollider(LeftTribaleColliderSensorRect, COLLIDER_ENEMY_SENSOR, this);
-
+	
 	texture = App->j1entity_manager->tribale_texture;
+	
 	current_animation = &idle;
 	velocity.x = 8;
-	velocity.y = 8;
-	Gravity = 0;
+	velocity.y = 12;
+	
+	
+
+	Gravity = false;
 	return true;
 }
 
 bool EnemyTribale::Update(float dt) {
+	
+	DT += dt;
+	if (App->input->GetKey(SDL_SCANCODE_F9) == j1KeyState::KEY_DOWN) {
+		DebugDraw = !DebugDraw;
+	}
+	
 	Gravity = true;
+	
+	
 	if (current_animation == &move_left)
 		current_animation = &idle;
 	if(current_animation == &jump)
@@ -69,19 +83,36 @@ bool EnemyTribale::Update(float dt) {
 		current_animation = &idle;
 		firstiteration = false;
 	}
- 	if (App->input->GetKey(SDL_SCANCODE_O) == j1KeyState::KEY_DOWN && (position.x - App->scene->PlayerPt->position.x < 700))
+	int ActiveTarget = position.x - App->scene->PlayerPt->position.x;
+	if (ActiveTarget*-1 > 0) {
+		ActiveTarget *= -1;
+	}
+
+ 	if (/*App->input->GetKey(SDL_SCANCODE_O) == j1KeyState::KEY_REPEAT &&*/Gravity && ActiveTarget<400)
 	{
- 	    Path = App->pathfinding->CreatePath(App->map->WorldToMap(position.x, position.y), App->map->WorldToMap(App->scene->PlayerPt->position.x, App->scene->PlayerPt->position.y));
-		//path = App->pathfinding->GetLastPath();
+		DT = 0;
+		iPoint initial_pos = App->map->WorldToMap(position.x, (position.y - 15));
+		iPoint final_pos = App->map->WorldToMap(App->scene->PlayerPt->position.x, App->scene->PlayerPt->position.y-25);
+
+		if (App->pathfinding->IsWalkable(initial_pos) && App->pathfinding->IsWalkable(final_pos) /*&& App->input->GetKey(SDL_SCANCODE_O) == j1KeyState::KEY_REPEAT*/) {
+
+			Path = App->pathfinding->CreatePath(initial_pos, final_pos);
+			//LOG("TRIBALE PATHFINDING");
+		}
 		
 		i = 0;
 		change_iterator = false;
     }
 
-	if (Path !=nullptr) {
-		App->pathfinding->DrawPath(Path);
-		if(position.y - App->scene->PlayerPt->position.y < 100)
-			Move(*Path, dt);			
+	if ( Path !=nullptr) {
+		if (DebugDraw) {
+			App->pathfinding->DrawPath(Path);
+		}
+		
+		if (position.y - App->scene->PlayerPt->position.y < 150)
+			Move(*Path, dt);
+		Path->Clear();
+	
 	}
 	
 	DetectThePlayer();
@@ -93,11 +124,21 @@ bool EnemyTribale::Update(float dt) {
 		velocity.y += GravityValue * (dt / 30);
 		position.y += velocity.y*(dt / 30);
 	}
-
+	if (!(App->framerate_cap_activated)) {
+		idle.speed *= (dt / 30);
+		move_left.speed *= (dt / 30);
+		attackleft.speed *= (dt / 30);
+	}
 	TribaleCollider->SetPos(position.x+65, position.y);
 	RightTribaleColliderSensor->SetPos(TribaleCollider->rect.x+TribaleCollider->rect.w, position.y);
-	LeftTribaleColliderSensor->SetPos(position.x+15, position.y);
+	LeftTribaleColliderSensor->SetPos(position.x, position.y);
 	Draw(10,-50);
+
+	//directly connected with the enemy jump, change enemy jump to 8 if this is commented or erased
+	if (velocity.y != 0 & current_animation == &jump) {
+		velocity.y += 0.25;
+	}
+	//App->render->Blit(texture, position.x + 10, position.y + -50, &current_animation->GetCurrentFrame(), 1/*Parallax*/, 0.0/*rotation*/, flip, NULL, NULL, 1.5);
 
 	return true;
 }
@@ -109,21 +150,22 @@ void EnemyTribale::OnCollision(Collider *c1, Collider *c2) {
 
 			//position.x -= (c1->rect.x + c1->rect.w) - c2->rect.x + 8;
 			if (velocity.y == 0 && velocity.x != 0)
-				velocity.y -= 9;
+				velocity.y -=11;
 		}
 		else if (c1->rect.x <= c2->rect.x + c2->rect.w && c1->rect.x >= c2->rect.x + c2->rect.w - ((velocity.x*-1) - velocity.x)) { //Colliding Right (going left)
 			//LOG("sensor COLLIDING FROM RIGHT");
 
 			//position.x += (c2->rect.x + c2->rect.w) - c1->rect.x + 8;
 			if (velocity.y == 0 && velocity.x != 0)
-				velocity.y -= 9;
+				velocity.y -= 11;
 		}
 	}
 	if (c1->type == COLLIDER_ENEMY_SENSOR && c2->type == COLLIDER_PLAYER) {
 			current_animation = &attackleft;
 			if (current_animation->GetCurrentFrame().x == 200 && App->scene->PlayerPt->die != true) {
 				LOG("DIE MOTHERFUCKER!");
-				App->scene->PlayerPt->die = true;
+				if(!(App->scene->PlayerPt->godmode_activated))
+					App->scene->PlayerPt->die = true;
 				
 			}
 	}
@@ -140,13 +182,13 @@ void EnemyTribale::OnCollision(Collider *c1, Collider *c2) {
 		}
 		if (c1->rect.x + c1->rect.w >= c2->rect.x && c1->rect.x + c1->rect.w <= c2->rect.x + velocity.x) { //Colliding Left (going right)
 				//	LOG("COLLIDING FROM LEFT");
-		
+			//velocity.y = 0;
 			position.x -= (c1->rect.x + c1->rect.w) - c2->rect.x + 8;
 			
 		}
 		else if (c1->rect.x <= c2->rect.x + c2->rect.w && c1->rect.x >= c2->rect.x + c2->rect.w - ((velocity.x*-1) - velocity.x)) { //Colliding Right (going left)
 				//LOG("COLLIDING FROM RIGHT");
-			
+			//velocity.y = 0;
 			position.x += (c2->rect.x + c2->rect.w) - c1->rect.x + 8;
 			
 		}
@@ -157,6 +199,7 @@ void EnemyTribale::OnCollision(Collider *c1, Collider *c2) {
 }
 
 void EnemyTribale::Move(const p2DynArray<iPoint>&path, float dt) {
+
 	fromright = false;
 	fromleft = false;
 	//const p2DynArray<iPoint>* Path = path;
@@ -169,40 +212,40 @@ void EnemyTribale::Move(const p2DynArray<iPoint>&path, float dt) {
 		switch (curr_direction) {
 
 		case UP_RIGHT:
-			position.x += velocity.x;
-			position.y -= velocity.y;
+			position.x += velocity.x*(dt / 30);
+			//position.y -= velocity.y*(dt / 30);
 			break;
 		case UP_LEFT:
-			position.x -= velocity.x;
-			position.y -= velocity.y;
+			position.x -= velocity.x*(dt / 30);
+			//position.y -= velocity.y*(dt / 30);
 			break;
 		case DOWN_RIGHT:
-			position.x += velocity.x;
-			position.y += velocity.y;
+			position.x += velocity.x*(dt / 30);
+		//	position.y += velocity.y*(dt / 30);
 			break;
 		case DOWN_LEFT:
-			position.x -= velocity.x;
-			position.y += velocity.y;
+			position.x -= velocity.x*(dt / 30);
+		//	position.y += velocity.y*(dt / 30);
 			break;
 		case RIGHT:
 			//LOG("MOVING RIGHT");
-			position.x += velocity.x;
+			position.x += velocity.x*(dt / 30);
 			current_animation = &move_left;
 			fromleft = false;
 			fromright = true;
 			break;
 		case LEFT:
 			//LOG("MOVING LEFT");
-			position.x -= velocity.x;
+			position.x -= velocity.x*(dt / 30);
 			current_animation = &move_left;
 			fromleft = true;
 			fromright = false;
 			break;
 		case UP:
-			position.y -= velocity.y;
+			position.y -= velocity.y*(dt / 30);
 			break;
 		case DOWN:
-			position.y += velocity.y;
+			position.y += velocity.y*(dt / 30);
 			break;
 		case NO_DIRECTION:
 			//LOG("NOT MOVING");
@@ -210,6 +253,8 @@ void EnemyTribale::Move(const p2DynArray<iPoint>&path, float dt) {
 			//current_animation = &idle;
 		}
 	}
+	//else
+	//	Path->Clear();
 }
 bool EnemyTribale::DetectThePlayer() {
 	iPoint player;
@@ -234,11 +279,11 @@ bool EnemyTribale::DetectThePlayer() {
 EntityDirection EnemyTribale::NewMovement(const p2DynArray<iPoint>*EntityPath) {
 	int themagicnumber;
 	if (flip == SDL_FLIP_HORIZONTAL) {
-		themagicnumber = 9;
+		themagicnumber = 5;
 	}
 	else
-		themagicnumber = 2;
-	if (EntityPath->Count() >= themagicnumber) {
+		themagicnumber = 1;
+	if (EntityPath->Count() >= 3) {
 		if (EntityPath->At(i + themagicnumber) != nullptr)
 		{
 			iPoint current_Tile;
@@ -299,7 +344,4 @@ EntityDirection EnemyTribale::NewMovement(const p2DynArray<iPoint>*EntityPath) {
 		else return NO_DIRECTION; // SI NO ENCAJA DENTO DE "i+2"
 	}
 	
-
-	
-
 }

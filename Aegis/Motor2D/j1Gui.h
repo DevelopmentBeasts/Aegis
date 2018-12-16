@@ -5,13 +5,10 @@
 #include "j1Fonts.h"
 #include "j1App.h"
 
+class Mix_Chunk;
+
 #define CURSOR_WIDTH 2
 
-enum class ButtonFunction
-{
-	LOAD_LEVEL1,
-	NONE
-};
 
 enum class UiType {
 
@@ -26,7 +23,22 @@ enum class UiType {
 
 enum class ButtonSize {
 	BIG,
+	EXTRA,
 	SMALL,
+	MICRO,
+	NONE
+};
+
+enum class ButtonFunction {
+	CLOSE_APP,
+	HIDE_PAUSE,
+	HIDE_SETTINGS,
+	LOAD_MAIN_MENU,
+	LOAD_LEVEL1,
+	SAVE_GAME,
+	LOAD_GAME,
+	OPEN_SETTINGS,
+	OPEN_GITHUB,
 	NONE
 };
 
@@ -50,6 +62,7 @@ public:
 
 	//Position of the element
 	iPoint position;
+	iPoint draw_position;
 
 	//Type of ui element
 	UiType type;
@@ -92,10 +105,12 @@ public:
 
 	void Draw();
 
-private:
-
 	//Text we want to print
 	p2SString text;
+
+private:
+
+	
 
 	//Font
 	_TTF_Font* font;
@@ -142,7 +157,7 @@ class UiButton : public UiActiveElement
 public:
 
 	//Constructor
-	UiButton(iPoint position, ButtonSize size, j1Module* callback);
+	UiButton(iPoint position, ButtonSize size, j1Module* callback = nullptr, ButtonFunction function = ButtonFunction::NONE);
 
 	void Start();
 	void Update();
@@ -163,6 +178,9 @@ public:
 	//Ui label or Ui image, depending on what
 	//   !!!CANT ADD AN ACTIVE ELEMENT OR A WINDOW!!!!
 	UiElement* son_element=nullptr;
+
+	//This will tell the button what to do when we click on it
+	ButtonFunction function;
 };
 
 class UiCheckBox : public UiActiveElement
@@ -197,6 +215,44 @@ private:
 
 };
 
+
+class UiDragBar : public UiElement
+{
+public:
+	UiDragBar(iPoint position);
+
+	bool MouseOnTop() const;
+
+	void Act();
+
+	void CleanUp();
+
+	float GetValue() { return value; }
+
+	void Draw();
+
+public:
+	//click in this area in order to make this element act
+	SDL_Rect action_area;
+
+private:
+	//Goes from 0 to 1 
+	float value;
+
+	//length of the bar
+	uint bar_length;
+
+	//section we draw
+	SDL_Rect section;
+
+	//Atlas
+	SDL_Texture* atlas;
+
+	//button to drag
+	UiButton* button;
+
+};
+
 class UiWindow:public UiElement
 {
 
@@ -208,9 +264,13 @@ public:
 
 	void Draw();
 
-	void NestImage(iPoint image_position, SDL_Rect section);
-	void NestLabel(iPoint label_position, char* text = nullptr, _TTF_Font* font = App->fonts->default);
-	UiButton* NestButton(iPoint button_position, ButtonSize size, j1Module* callback = nullptr);
+	//turn visible or invisible
+	void ChangeState();
+
+	UiImage* NestImage(iPoint image_position, SDL_Rect section);
+	UiLabel* NestLabel(iPoint label_position, char* text = nullptr, _TTF_Font* font = App->fonts->default);
+	UiButton* NestButton(iPoint button_position, ButtonSize size, j1Module* callback = nullptr, ButtonFunction function=ButtonFunction::NONE);
+	UiDragBar* NestBar(iPoint bar_position);
 
 public:
 
@@ -225,7 +285,6 @@ private:
 	p2List<UiElement*> element_list;
 
 };
-
 
 // ---------------------------------------------------
 class j1Gui : public j1Module
@@ -246,6 +305,8 @@ public:
 	// Called before all Updates
 	bool PreUpdate();
 
+	bool Update(float dt);
+
 	// Called after all Updates
 	bool PostUpdate();
 
@@ -255,14 +316,24 @@ public:
 	// Gui creation functions
 	UiImage*	AddImage(iPoint position, SDL_Rect section);
 	UiLabel*	AddLabel(iPoint position, char* label, _TTF_Font* font = App->fonts->default);
-	UiButton*	AddButton(iPoint position, ButtonSize size, j1Module* callback = nullptr);
+	UiButton*	AddButton(iPoint position, ButtonSize size, j1Module* callback = nullptr, ButtonFunction function = ButtonFunction::NONE);
 	UiCheckBox*	AddCheckBox(iPoint position, bool * boolean, char* label);
 	UiWindow*	AddWindow(iPoint position);
-
-	//Call Draw() function of all the UiElements
-	void DrawUi() const;
+	UiDragBar*	AddDragBar(iPoint position);
 
 	SDL_Texture* GetAtlas() const;
+
+public:
+
+	//Document with all the data needed for the UI elements
+	pugi::xml_document ui_data;
+
+	//Icons 
+	SDL_Rect settings;
+	SDL_Rect exit;
+	SDL_Rect gem;
+	Mix_Chunk* button_hover;
+	Mix_Chunk* button_click;
 
 private:
 
@@ -272,8 +343,12 @@ private:
 	//List with all the elements we can interact with
 	p2List<UiActiveElement*> active_elements;
 
+	p2List<UiDragBar*> ui_bars;
+
 	SDL_Texture* atlas;
 	p2SString atlas_file_name;
+
+	
 };
 
 #endif // __j1GUI_H__

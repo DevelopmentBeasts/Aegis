@@ -90,6 +90,7 @@ bool j1Render::Update(float dt)
 
 	if (App->input->GetKey(SDL_SCANCODE_F8) == KEY_DOWN && debug == false) {
 		debug = !debug;
+
 	}else if (App->input->GetKey(SDL_SCANCODE_F8) == KEY_DOWN && debug == true) {
 		debug = !debug;
 		find_player = true;
@@ -292,35 +293,33 @@ void j1Render::CenterCamera(){ // only called at the load level (the center came
 }
 
 void j1Render::FreeMovement() {
-	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
+	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_REPEAT)
 		camera.y += 30;
 
-	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
+	if (App->input->GetKey(SDL_SCANCODE_C) == KEY_REPEAT)
 		camera.y -= 30;
 
-	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
+	if (App->input->GetKey(SDL_SCANCODE_X) == KEY_REPEAT)
 		camera.x += 30;
 
-	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
+	if (App->input->GetKey(SDL_SCANCODE_V) == KEY_REPEAT)
 		camera.x -= 30;
 }
 
 void j1Render::FollowPlayer(float dt) {
 	//LOG("CAMERA X = %i",camera.x);
 	if (App->scene->PlayerExists) {
-	/*	if (camera.x < -10) {*/
-			if ((App->scene->PlayerPt->position.x) < (-camera.x + left_border)) {				//Move the camera to the left if the player is going back and behnid the left border
+	
+			if ((App->scene->PlayerPt->position.x) < (-camera.x + left_border) && camera.x <-15) {				//Move the camera to the left if the player is going back and behnid the left border
 
 				camera.x -= App->scene->PlayerPt->velocity.x*(dt / 30);
-			/*}*/
-			
-		}
-	/*	if (camera.x > -1600) {*/
-			if ((App->scene->PlayerPt->position.x) > (-camera.x + camera.w - right_border)) {	//Move the camera to the right if the player is advancing and ahead of the border
+		
+			}
+			if ((App->scene->PlayerPt->position.x) > (-camera.x + camera.w - right_border)) {					//Move the camera to the right if the player is advancing and ahead of the border
 
 				camera.x -= App->scene->PlayerPt->velocity.x*(dt / 30);
 			}
-		/*}*/
+		
 		camera.y = 0;
 		
 	}

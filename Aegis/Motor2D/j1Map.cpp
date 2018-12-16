@@ -8,6 +8,7 @@
 #include "Brofiler/Brofiler.h"
 #include "EntityManager.h"
 #include "j1Window.h"
+#include "j1Scene.h"
 
 j1Map::j1Map() : j1Module(), map_loaded(false)
 {
@@ -266,16 +267,24 @@ bool j1Map::Load(const char* file_name)
 			data.start_position.y = objectgroup.child("object").attribute("y").as_int();
 			
 		}
-		if(objectname == "Win") {
-			data.wincondition = objectgroup.child("object").attribute("x").as_int();
-		}
 		if (objectname == "Death colliders") {
 			LoadColliders(objectgroup, &data.colliders, COLLIDER_DEATH);
 		}
 		if (objectname == "Wall colliders") {
 			LoadColliders(objectgroup, &data.colliders, COLLIDER_WALL);
 		}
-		
+		if (objectname == "Tribale") {
+			LoadEnemies(objectgroup, ENEMY_TYPE::TRIBALE);
+		}
+		if (objectname == "Worm") {
+			LoadEnemies(objectgroup, ENEMY_TYPE::WORM);
+		}
+		if (objectname == "Coins") {
+			LoadEntities(objectgroup, ENTITY_TYPE::COIN);
+		}
+		if (objectname == "Win") {
+			LoadEntities(objectgroup, ENTITY_TYPE::WIN);
+		}
 
 		
 	}
@@ -307,13 +316,6 @@ bool j1Map::Load(const char* file_name)
 			item_layer = item_layer->next;
 		}
 	}
-
-	//LOAD ENTITIES
-	
-	App->j1entity_manager->CreateEntity(2570, 565, ENTITY_TYPE::WIN);
-
-	App->j1entity_manager->CreateEnemy(700, 300, ENEMY_TYPE::WORM);
-	App->j1entity_manager->CreateEnemy(600,300, ENEMY_TYPE::TRIBALE);
 
 	map_loaded = ret;
 
@@ -524,7 +526,47 @@ bool j1Map::LoadColliders(pugi::xml_node& node, ColliderData* collider, COLLIDER
 	return ret;
 }
 
+bool j1Map::LoadEntities(pugi::xml_node& node, ENTITY_TYPE type)
+{
+	bool ret = true;
+	pugi::xml_node& entities = node.child("object");
 
+	if (entities == NULL) {
+		LOG("Error parsing map xml file: Cannot find 'colliders' tag.");
+		ret = false;
+	}
+	else {
+		for (entities; entities; entities = entities.next_sibling("object")) {
+			iPoint spawn_position;
+			spawn_position.x = entities.attribute("x").as_int();
+			spawn_position.y = entities.attribute("y").as_int();
+
+			App->j1entity_manager->CreateEntity(spawn_position.x, spawn_position.y, type);
+		}
+	}
+	return ret;
+}
+
+bool j1Map::LoadEnemies(pugi::xml_node& node, ENEMY_TYPE type)
+{
+	bool ret = true;
+	pugi::xml_node& enemies = node.child("object");
+
+	if (enemies == NULL) {
+		LOG("Error parsing map xml file: Cannot find 'colliders' tag.");
+		ret = false;
+	}
+	else {
+		for (enemies; enemies; enemies = enemies.next_sibling("object")) {
+			iPoint spawn_position;
+			spawn_position.x = enemies.attribute("x").as_int();
+			spawn_position.y = enemies.attribute("y").as_int();
+
+			App->j1entity_manager->CreateEnemy(spawn_position.x, spawn_position.y, type);
+		}
+	}
+	return ret;
+}
 
 bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
 {
@@ -553,12 +595,9 @@ bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
 
 				if (tileset != NULL)
 				{
+
 					map[i] = (tile_id - tileset->firstgid) > 0 ? 0 : 1;
-					/*TileType* ts = tileset->GetTileType(tile_id);
-					if(ts != NULL)
-					{
-						map[i] = ts->properties.Get("walkable", 1);
-					}*/
+
 				}
 			}
 		}
@@ -573,3 +612,5 @@ bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
 
 	return ret;
 }
+
+
