@@ -13,15 +13,11 @@
   </renderer>
 
   <window>
-    <resolution width="2048" height="1536" scale="2"/>
-    <fullscreen value="false"/>
-    <borderless value="false"/>
-    <resizable value="true"/>
     <resolution width="1024" height="768" scale="1"/>
     <fullscreen value="false"/>
     <borderless value="false"/>
-    <resizable value="false"/>
-    <fullscreen_window value="false"/>
+    <resizable value="true"/>
+    <fullscreen_window value="true"/>
   </window>
   
   <UpdateInfo>

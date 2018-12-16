@@ -20,6 +20,8 @@ public:
 	// Called before render is available
 	bool Awake(pugi::xml_node&);
 
+	bool Update(float dt);
+
 	// Called before quitting
 	bool CleanUp();
 
@@ -36,6 +38,7 @@ private:
 
 	_Mix_Music*			music = NULL;
 	p2List<Mix_Chunk*>	fx;
+
 };
 
 #endif // __j1AUDIO_H__
