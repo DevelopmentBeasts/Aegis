@@ -292,16 +292,16 @@ void j1Render::CenterCamera(){ // only called at the load level (the center came
 }
 
 void j1Render::FreeMovement() {
-	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
+	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_REPEAT)
 		camera.y += 30;
 
-	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
+	if (App->input->GetKey(SDL_SCANCODE_C) == KEY_REPEAT)
 		camera.y -= 30;
 
-	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
+	if (App->input->GetKey(SDL_SCANCODE_X) == KEY_REPEAT)
 		camera.x += 30;
 
-	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
+	if (App->input->GetKey(SDL_SCANCODE_V) == KEY_REPEAT)
 		camera.x -= 30;
 }
 

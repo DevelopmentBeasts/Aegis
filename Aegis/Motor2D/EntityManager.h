@@ -13,7 +13,7 @@ enum class ENTITY_TYPE {
 	ENEMY,
 	PLAYER,
 	WIN,
-	FIRE_BALL,
+	COIN,
 	UNKNOWN = 2
 
 };
@@ -57,7 +57,7 @@ public:
 	SDL_Texture* tribale_texture;
 	SDL_Texture* debug_texture;
 	SDL_Texture* Win_Texture;
-
+	SDL_Texture* Coin_Texture;
 };
 
 #endif

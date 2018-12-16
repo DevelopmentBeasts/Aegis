@@ -72,8 +72,8 @@ private:
 	bool playerinrange = false;
     TribaleStates state = IDL;
 
-
-
+	float DT=0;
+	bool DebugDraw = false;
 	//PATHFINDING
 	 p2DynArray<iPoint>* Path = nullptr;
 

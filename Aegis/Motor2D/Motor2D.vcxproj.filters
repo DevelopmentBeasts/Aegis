@@ -71,6 +71,10 @@
     <ClCompile Include="j1Gui.cpp">
       <Filter>Modules</Filter>
     </ClCompile>
+    <ClCompile Include="Fireball.cpp" />
+    <ClCompile Include="CoinClass.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PugiXml\src\pugixml.cpp" />
@@ -189,6 +193,10 @@
     </ClInclude>
     <ClInclude Include="j1Gui.h">
       <Filter>Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Fireball.h" />
+    <ClInclude Include="CoinClass.h">
+      <Filter>Entities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

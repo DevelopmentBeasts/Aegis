@@ -5,13 +5,13 @@
 	<textures />
 	<audio />
 	<map />
-	<scene level="AEGIS_RUN.tmx" />
+	<scene level="MAGIC_CAVES.tmx" />
 	<entities />
 	<:anonymous />
 	<pathfinding />
 	<fonts />
 	<gui />
 	<renderer>
-		<camera x="-379" y="0" />
+		<camera x="-100" y="0" />
 	</renderer>
 </game_state>

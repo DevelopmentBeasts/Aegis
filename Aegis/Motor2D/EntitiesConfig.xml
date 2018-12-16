@@ -32,22 +32,165 @@
       <PushBack x="195" y="218" w="24" h="23"/>
     </death>
   </player>
-
   <worm>
-    <idle loop="true" speed="0.5">
+    <idle loop="true" speed="0.2">
       <PushBack x="0" y="0" w="40" h="40"/>
       <PushBack x="40" y="0" w="40" h="40"/>
       <PushBack x="80" y="0" w="40" h="40"/>
       <PushBack x="120" y="0" w="40" h="40"/>
-      <PushBack x="80" y="0" w="40" h="40"/>
-      <PushBack x="40" y="0" w="40" h="40"/>
     </idle>
-
-    <move loop="true" speed="0.5">
+    <move loop="true" speed="0.3">
+      <PushBack x="160" y="0" w="40" h="40"/>
+      <PushBack x="200" y="0" w="40" h="40"/>
       <PushBack x="0" y="40" w="40" h="40"/>
       <PushBack x="40" y="40" w="40" h="40"/>
+    </move>
+    <attack loop="true" speed="0.1">
       <PushBack x="80" y="40" w="40" h="40"/>
       <PushBack x="120" y="40" w="40" h="40"/>
-    </move>
+      <PushBack x="160" y="40" w="40" h="40"/>
+      <PushBack x="200" y="40" w="40" h="40"/>
+      <PushBack x="0" y="80" w="40" h="40"/>
+      <PushBack x="40" y="80" w="40" h="40"/>
+      <PushBack x="80" y="80" w="40" h="40"/>
+      <PushBack x="120" y="80" w="40" h="40"/>
+      <PushBack x="160" y="80" w="40" h="40"/>
+    </attack>
   </worm>
+
+  <Tribale>
+
+    <idle loop="true" speed="0.2">
+      <PushBack x="0" y="200" w="100" h="100"/>
+      <PushBack x="100" y="200" w="100" h="100"/>
+      <PushBack x="200" y="200" w="100" h="100"/>
+      <PushBack x="300" y="200" w="100" h="100"/>
+
+    </idle>
+
+    <move_left loop="true" speed="0.3">
+      <PushBack x="0" y="300" w="100" h="100"/>
+      <PushBack x="100" y="300" w="100" h="100"/>
+      <PushBack x="200" y="300" w="100" h="100"/>
+      <PushBack x="300" y="300" w="100" h="100"/>
+      <PushBack x="400" y="300" w="100" h="100"/>
+      <PushBack x="500" y="300" w="100" h="100"/>
+    </move_left>
+    <attackleft loop="true" speed="0.15">
+      <PushBack x="0" y="0" w="100" h="100"/>
+      <PushBack x="100" y="0" w="100" h="100"/>
+      <PushBack x="200" y="0" w="100" h="100"/>
+      <PushBack x="300" y="0" w="100" h="100"/>
+      <PushBack x="400" y="0" w="100" h="100"/>
+    </attackleft>
+    <die loop="false" speed="0.1">
+      <PushBack x="0" y="400" w="100" h="100"/>
+      <PushBack x="100" y="400" w="100" h="100"/>
+      <PushBack x="200" y="400" w="100" h="100"/>
+      <PushBack x="300" y="400" w="100" h="100"/>
+      <PushBack x="400" y="400" w="100" h="100"/>
+      <PushBack x="500" y="400" w="100" h="100"/>
+      <PushBack x="600" y="400" w="100" h="100"/>
+      <PushBack x="700" y="400" w="100" h="100"/>
+      <PushBack x="800" y="400" w="100" h="100"/>
+    </die>
+    <jump loop =" false" speed="0.3">
+      <PushBack x="0" y="500" w="100" h="100"/>
+      <PushBack x="100" y="500" w="100" h="100"/>
+      <PushBack x="200" y="500" w="100" h="100"/>
+      <PushBack x="300" y="500" w="100" h="100"/>
+      <PushBack x="400" y="500" w="100" h="100"/>
+    </jump>
+  </Tribale>
+
+  <Win>
+    <idl loop="true" speed="0.3">
+      <PushBack x="840  " y="721" w="80" h="80"/>
+      <PushBack x="920"  y="721" w="80" h="80"/>
+    </idl>
+    <Explosion loop="false" speed="0.7">
+      <PushBack x="0  " y="0" w="100" h="100"/>
+      <PushBack x="100" y="0" w="100" h="100"/>
+      <PushBack x="200" y="0" w="100" h="100"/>
+      <PushBack x="300" y="0" w="100" h="100"/>
+      <PushBack x="400" y="0" w="100" h="100"/>
+      <PushBack x="500" y="0" w="100" h="100"/>
+      <PushBack x="600" y="0" w="100" h="100"/>
+      <PushBack x="700" y="0" w="100" h="100"/>
+      <PushBack x="800" y="0" w="100" h="100"/>
+      <PushBack x="900" y="0" w="100" h="100"/>
+
+      <PushBack x="0" y="100" w="100" h="100"/>
+      <PushBack x="100" y="100" w="100" h="100"/>
+      <PushBack x="200" y="100" w="100" h="100"/>
+      <PushBack x="300" y="100" w="100" h="100"/>
+      <PushBack x="400" y="100" w="100" h="100"/>
+      <PushBack x="500" y="100" w="100" h="100"/>
+      <PushBack x="600" y="100" w="100" h="100"/>
+      <PushBack x="700" y="100" w="100" h="100"/>
+      <PushBack x="800" y="100" w="100" h="100"/>
+      <PushBack x="900" y="100" w="100" h="100"/>
+
+      <PushBack x="0" y="200" w="100" h="100"/>
+      <PushBack x="100" y="200" w="100" h="100"/>
+      <PushBack x="200" y="200" w="100" h="100"/>
+      <PushBack x="300" y="200" w="100" h="100"/>
+      <PushBack x="400" y="200" w="100" h="100"/>
+      <PushBack x="500" y="200" w="100" h="100"/>
+      <PushBack x="600" y="200" w="100" h="100"/>
+      <PushBack x="700" y="200" w="100" h="100"/>
+      <PushBack x="800" y="200" w="100" h="100"/>
+      <PushBack x="900" y="200" w="100" h="100"/>
+
+      <PushBack x="0" y="300" w="100" h="100"/>
+      <PushBack x="100" y="300" w="100" h="100"/>
+      <PushBack x="200" y="300" w="100" h="100"/>
+      <PushBack x="300" y="300" w="100" h="100"/>
+      <PushBack x="400" y="300" w="100" h="100"/>
+      <PushBack x="500" y="300" w="100" h="100"/>
+      <PushBack x="600" y="300" w="100" h="100"/>
+      <PushBack x="700" y="300" w="100" h="100"/>
+      <PushBack x="800" y="300" w="100" h="100"/>
+      <PushBack x="900" y="300" w="100" h="100"/>
+
+      <PushBack x="0" y="400" w="100" h="100"/>
+      <PushBack x="100" y="400" w="100" h="100"/>
+      <PushBack x="200" y="400" w="100" h="100"/>
+      <PushBack x="300" y="400" w="100" h="100"/>
+      <PushBack x="400" y="400" w="100" h="100"/>
+      <PushBack x="500" y="400" w="100" h="100"/>
+      <PushBack x="600" y="400" w="100" h="100"/>
+      <PushBack x="700" y="400" w="100" h="100"/>
+      <PushBack x="800" y="400" w="100" h="100"/>
+      <PushBack x="900" y="400" w="100" h="100"/>
+
+      <PushBack x="0" y="500" w="100" h="100"/>
+      <PushBack x="100" y="500" w="100" h="100"/>
+      <PushBack x="200" y="500" w="100" h="100"/>
+      <PushBack x="300" y="500" w="100" h="100"/>
+      <PushBack x="400" y="500" w="100" h="100"/>
+      <PushBack x="500" y="500" w="100" h="100"/>
+      <PushBack x="600" y="500" w="100" h="100"/>
+      <PushBack x="700" y="500" w="100" h="100"/>
+      <PushBack x="800" y="500" w="100" h="100"/>
+      <PushBack x="900" y="500" w="100" h="100"/>
+
+      <PushBack x="0" y="600" w="100" h="100"/>
+      <PushBack x="100" y="600" w="100" h="100"/>
+      <PushBack x="200" y="600" w="100" h="100"/>
+      <PushBack x="300" y="600" w="100" h="100"/>
+      <PushBack x="400" y="600" w="100" h="100"/>
+      <PushBack x="500" y="600" w="100" h="100"/>
+      <PushBack x="600" y="600" w="100" h="100"/>
+      <PushBack x="700" y="600" w="100" h="100"/>
+      <PushBack x="800" y="600" w="100" h="100"/>
+      <PushBack x="900" y="600" w="100" h="100"/>
+
+      <PushBack x="0" y="700" w="100" h="100"/>
+      <PushBack x="100" y="700" w="100" h="100"/>
+      <PushBack x="200" y="700" w="100" h="100"/>
+      <PushBack x="300" y="700" w="100" h="100"/>
+      <PushBack x="400" y="700" w="100" h="100"/>
+    </Explosion>
+  </Win>
 </properties>

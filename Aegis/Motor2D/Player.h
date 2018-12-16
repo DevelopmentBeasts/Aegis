@@ -133,7 +133,7 @@ public:
 
 
 	//Call godmode if true	
-	bool godmode_activated = false;
+	//bool godmode_activated = false;
 
 
 	int playerlives;

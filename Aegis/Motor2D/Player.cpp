@@ -154,6 +154,9 @@ bool PlayerClass::Update(float dt) {
 		//GOD MODE
 		if (App->input->GetKey(SDL_SCANCODE_F10) == j1KeyState::KEY_DOWN) {
 			godmode_activated = !godmode_activated;
+			velocity.x = 0;
+			velocity.y = 0;
+			
 		}
 
 		
@@ -231,17 +234,17 @@ bool PlayerClass::Load(pugi::xml_node& node) {
 
 bool PlayerClass::ExternalInput(p2Queue<player_inputs> &inputs) {
 	
-		if (App->input->GetKey(SDL_SCANCODE_G) == j1KeyState::KEY_DOWN) {
+		/*if (App->input->GetKey(SDL_SCANCODE_G) == j1KeyState::KEY_DOWN) {
 			Gravity = true;
-		}
-		if (App->input->GetKey(SDL_SCANCODE_N) == j1KeyState::KEY_DOWN && !SpeedPowerActivatedLeft && DashEnergy>90) {
+		}*/
+		if (App->input->GetKey(SDL_SCANCODE_LEFT) == j1KeyState::KEY_DOWN && !SpeedPowerActivatedLeft && DashEnergy>90) {
 			if (!sensorcollidingleft) {
 				AvailableDistanceleft = PlayerXmlNode.child("sensors").attribute("sensor_distance").as_int();
 			}
 			SpeedPowerActivatedLeft = true;
 			AvailableDistanceRightNow = AvailableDistanceleft;
 		}
-		if (App->input->GetKey(SDL_SCANCODE_M) == j1KeyState::KEY_DOWN && !SpeedPowerActivatedRight  && DashEnergy > 90) {
+		if (App->input->GetKey(SDL_SCANCODE_RIGHT) == j1KeyState::KEY_DOWN && !SpeedPowerActivatedRight  && DashEnergy > 90) {
 			if (!sensorcollidingright) {
 				AvailableDistanceright = PlayerXmlNode.child("sensors").attribute("sensor_distance").as_int();
 			}

@@ -29,6 +29,8 @@ public:
 	p2DynArray<iPoint>* last_enemy_path;
 
 	MasterTimer pathfinding_recalc;
+	int provisional = 0;
+	bool DebugDraw = false;
 
 private:
 
@@ -36,8 +38,13 @@ private:
 
 	Animation idle;
 	Animation moving;
+	Animation Attack;
 
-
+	Collider* WormCollider;
+	Collider* RightWormColliderSensor;
+	Collider* LeftWormColliderSensor;
+	SDL_Rect RightWormColliderSensorRect;
+	SDL_Rect LeftWormColliderSensorRect;
 
 	//PATHFINDING
 	p2DynArray<iPoint>* path = nullptr;

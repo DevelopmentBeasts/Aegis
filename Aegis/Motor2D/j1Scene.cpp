@@ -15,8 +15,7 @@
 #include "EnemyWorm.h"
 #include "j1Pathfinding.h"
 #include "j1Gui.h"
-
-#include "SDL_mixer\include\SDL_mixer.h"
+#include "SDL_mixer/include/SDL_mixer.h"
 
 //#pragma comment( lib, "SDL_mixer/libx86/SDL2_mixer.lib" )
 j1Scene::j1Scene() : j1Module()
@@ -25,7 +24,7 @@ j1Scene::j1Scene() : j1Module()
 
 	mainmenu = "Main_menu.tmx";
 	level1 = "MAGIC_CAVES.tmx";
-	level2 = "AEGIS_RUN.tmx";
+	level2 = "MAGIC_CAVES_2.tmx";
 
 }
 
@@ -56,6 +55,12 @@ bool j1Scene::Start()
 
 	current_map = App->map;
 
+	PlayerPt = App->j1entity_manager->CreateEntity(App->map->data.start_position.x, App->map->data.start_position.y, ENTITY_TYPE::PLAYER);
+
+	EnemyTribale1 = App->j1entity_manager->CreateEnemy(600, 100, ENEMY_TYPE::TRIBALE);
+	//EnemyWorm1 = App->j1entity_manager->CreateEnemy(1400, 250, ENEMY_TYPE::WORM);
+	CoinPt = App->j1entity_manager->CreateEntity(300, 300, ENTITY_TYPE::COIN);
+
 	if (PlayerPt != nullptr) {
 		PlayerExists = true;
 	}	
@@ -68,7 +73,7 @@ bool j1Scene::Start()
 // Called each loop iteration
 bool j1Scene::PreUpdate()
 {
-
+	
 	fade_rect.x = -App->render->camera.x;
 	fade_rect.y = -App->render->camera.y;
 

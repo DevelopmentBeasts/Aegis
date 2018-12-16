@@ -98,6 +98,11 @@ j1Collision::j1Collision()
 	matrix[COLLIDER_FIREBALL][COLLIDER_WALL] = true;
 	matrix[COLLIDER_FIREBALL][COLLIDER_NONE] = false;
 	matrix[COLLIDER_FIREBALL][COLLIDER_ENEMY_SENSOR] = false;
+
+
+	matrix[COLLIDER_COIN][COLLIDER_COIN] = false;
+	matrix[COLLIDER_COIN][COLLIDER_PLAYER] = true;
+
 }
 
 // Destructor

@@ -76,6 +76,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CoinClass.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnemyTribale.cpp" />
     <ClCompile Include="EnemyWorm.cpp" />
@@ -104,6 +105,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
+    <ClInclude Include="CoinClass.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyTribale.h" />
     <ClInclude Include="EnemyWorm.h" />

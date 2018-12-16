@@ -15,15 +15,25 @@ EnemyWorm::EnemyWorm(iPoint pos): j1Enemy(pos, ENEMY_TYPE::WORM) {
 
 	idle.LoadPushbacks(properties_node.child("idle"));
 	moving.LoadPushbacks(properties_node.child("move"));
+	Attack.LoadPushbacks(properties_node.child("attack"));
 
 	WormRect.x = pos.x;
 	WormRect.y = pos.y;
-	WormRect.h = 20;
-	WormRect.w = 20;
+	WormRect.h = 30;
+	WormRect.w = 60;
 
 	position.x = pos.x;
 	position.y = pos.y;
 
+	RightWormColliderSensorRect.x = WormRect.x-30 + WormRect.w;
+	RightWormColliderSensorRect.y = WormRect.y;
+	RightWormColliderSensorRect.w = 40+30;
+	RightWormColliderSensorRect.h = 70;
+
+	LeftWormColliderSensorRect.x = WormRect.x - 40;
+	LeftWormColliderSensorRect.y = WormRect.y;
+	LeftWormColliderSensorRect.w = 40+30;
+	LeftWormColliderSensorRect.h = 70;
 
 }
 
@@ -36,34 +46,93 @@ bool EnemyWorm::Start() {
 	current_animation = &idle;
 	velocity.x = 8;
 	velocity.y = 8;
+	if (provisional = 1) {
+		WormCollider = App->collision->AddEntCollider(WormRect, COLLIDER_ENEMY, this);
+		RightWormColliderSensor = App->collision->AddEntCollider(RightWormColliderSensorRect, COLLIDER_ENEMY_SENSOR, this);
+		LeftWormColliderSensor = App->collision->AddEntCollider(LeftWormColliderSensorRect, COLLIDER_ENEMY_SENSOR, this);
+	}
+	provisional++;
+
 	return true;
 }
 
 bool EnemyWorm::Update(float dt) {
-	
-	//if (App->input->GetKey(SDL_SCANCODE_O) == j1KeyState::KEY_DOWN && (position.x - App->scene->PlayerPt->position.x < 700))
-	//{
-	//	path = App->pathfinding->CreatePath(App->map->WorldToMap(position.x, position.y), App->map->WorldToMap(App->scene->PlayerPt->position.x, App->scene->PlayerPt->position.y));
-	//	//path = App->pathfinding->GetLastPath();
 
-	//	i = 0;
-	//	change_iterator = false;
-	//}
+	if (App->input->GetKey(SDL_SCANCODE_F9) == j1KeyState::KEY_DOWN) {
+		DebugDraw = !DebugDraw;
+	}
 
- //	if (path != nullptr) {
-	//	App->pathfinding->DrawPath(path);
-	//	Move(*path, dt);
-	//}
+	if (current_animation == &Attack) {
+		if (current_animation->Finished()) {
+			current_animation = &idle;
+		}
+	}
+	int ActiveTarget = position.x - App->scene->PlayerPt->position.x;
+	if (ActiveTarget*-1 > 0) {
+		ActiveTarget *= -1;
+	}
+	if ((ActiveTarget<500))
+	{
+		iPoint initial_pos = App->map->WorldToMap(position.x, (position.y + 30));
+		iPoint final_pos = App->map->WorldToMap(App->scene->PlayerPt->position.x, App->scene->PlayerPt->position.y);
 
-	
+		if (App->pathfinding->IsWalkable(initial_pos) && App->pathfinding->IsWalkable(final_pos) /*&& App->input->GetKey(SDL_SCANCODE_O) == j1KeyState::KEY_REPEAT*/) {
+
+			path = App->pathfinding->CreatePath(initial_pos, final_pos);
+			//LOG("WORM PATHFINDING");
+
+			
+			//if (position.y - App->scene->PlayerPt->position.y < 100)
+				
+		}
+		i = 0;
+		change_iterator = false;
+	}
+
+ 	if (path != nullptr) {
+		if(DebugDraw)
+			App->pathfinding->DrawPath(path);
+		Move(*path, dt);
+		//path->Clear();
+	}
+
+	DetectThePlayer();
+
+	//WormCollider->SetPos(position.x, position.y);
+	RightWormColliderSensor->SetPos(position.x + WormCollider->rect.w-30, position.y);
+	LeftWormColliderSensor->SetPos(position.x - LeftWormColliderSensor->rect.w, position.y);
+
+
+	if (!(App->framerate_cap_activated)) {
+		idle.speed *= (dt / 30);
+		moving.speed *= (dt / 30);
+		Attack.speed *= (dt / 30);
+	}
+	if (velocity.y == 0)
+		LOG("Y NOT WORKING");
 
 	Draw(0,0);
+
+	//App->render->Blit(texture, position.x, position.y, &current_animation->GetCurrentFrame(), 1/*Parallax*/, 0.0/*rotation*/, flip, NULL, NULL, 1.5);
 
 	return true;
 }
 
 void EnemyWorm::OnCollision(Collider *c1, Collider *c2) {
-	if (c2->type == COLLIDER_WALL) {
+	if (c1->type == COLLIDER_ENEMY_SENSOR && c2->type == COLLIDER_PLAYER) {
+		current_animation = &Attack;
+
+		if (current_animation->GetCurrentFrame().x == 200 && App->scene->PlayerPt->die != true) {
+			if(current_animation->GetCurrentFrame().y == 80)
+			LOG("DIE MOTHERFUCKER!");
+			if (!(App->scene->PlayerPt->godmode_activated)) {
+				App->scene->PlayerPt->die = true;
+				App->scene->PlayerPt->velocity.x = 0;
+				App->scene->PlayerPt->velocity.y = 0;
+			}
+		}
+	}
+	if (c2->type == COLLIDER_WALL && c1->type != COLLIDER_ENEMY_SENSOR) {
 
 		//Calculating an error margin of collision to avoid problems with colliders corners
 
@@ -80,11 +149,11 @@ void EnemyWorm::OnCollision(Collider *c1, Collider *c2) {
 		//App->scene->PlayerPt.die
 	}
 }
-void EnemyWorm::Move(const p2DynArray<iPoint>&path, float dt) {
+void EnemyWorm::Move(const p2DynArray<iPoint>&path_, float dt) {
 
 	//const p2DynArray<iPoint>* Path = path;
 
-	curr_direction = NewMovement(&path);
+	curr_direction = NewMovement(&path_);
 
 	switch (curr_direction) {
 
@@ -116,15 +185,21 @@ void EnemyWorm::Move(const p2DynArray<iPoint>&path, float dt) {
 	case DOWN:
 		position.y += velocity.y;
 		break;
-	case NO_DIRECTION:
-		LOG("NOT MOVING");
+	//case NO_DIRECTION:
+		//LOG("NOT MOVING");
 	}
+
+	/*if (NewMovement(&path_) == NO_DIRECTION)
+		path->Clear();*/
+
 }
 EntityDirection EnemyWorm::NewMovement(const p2DynArray<iPoint>*EntityPath) {
-
-	if (EntityPath->Count() >= 2) {
-
-		if (EntityPath->At(i + 2) != nullptr) {
+	velocity.y = 8;
+	if (EntityPath->Count() >= 4) {
+		int o = 3;
+		if (SDL_FLIP_HORIZONTAL)
+			o = 6;
+		if (EntityPath->At(i + o) != nullptr) {
 			iPoint current_Tile;
 			current_Tile.x = EntityPath->At(i)->x;
 			current_Tile.y = EntityPath->At(i)->y;
@@ -181,17 +256,18 @@ EntityDirection EnemyWorm::NewMovement(const p2DynArray<iPoint>*EntityPath) {
 }
 bool EnemyWorm::DetectThePlayer() {
 	iPoint player;
+	iPoint Position;
 	player.x = App->scene->PlayerPt->position.x;
 	player.y = App->scene->PlayerPt->position.y;
-	int xdistance = player.x - position.x;
-	if (xdistance*-1 > 0) {
-		xdistance *= -1;
+	player = App->map->WorldToMap(player.x, player.y);
+	Position = App->map->WorldToMap(position.x, position.y);
+	int xdistance = player.x - Position.x;
+	if (player.x - Position.x < 2) {
+		flip = SDL_FLIP_NONE;
 	}
-	int ydistance = player.y - position.y;
-	if (ydistance*-1 > 0) {
-		ydistance *= -1;
-	}
-	if (xdistance < 3 && ydistance < 3) {
-		return true;
-	}
+	else if (player.x - Position.x > 2)
+		flip = SDL_FLIP_HORIZONTAL;
+
+	return true;
+
 }

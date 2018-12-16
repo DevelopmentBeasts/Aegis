@@ -7,6 +7,7 @@
 #include "Player.h"
 #include "EnemyTribale.h"
 #include "WinClass.h"
+#include "CoinClass.h"
 
 j1EntityManager::j1EntityManager()
 {
@@ -30,10 +31,11 @@ bool j1EntityManager::Start() {
 
 	//Load textures
 	player_texture	= App->tex->Load("textures/Fire_Wisp/fireSheet.png");
-	worm_texture	= App->tex->Load("textures/worm_sprites.png");
+	worm_texture	= App->tex->Load("textures/worm_sprites1.png");
 	tribale_texture = App->tex->Load("textures/tribale_sprites.png");
 	debug_texture	= App->tex->Load(("textures/walkability.png"));
 	Win_Texture     = App->tex->Load("textures/explosions.png");
+	Coin_Texture    = App->tex->Load("textures/tribale_sprites.png");
 	//Execute start() of every entity
 	p2List_item<j1Entity*>*item = entities_list.start;
 	for (; item != nullptr; item = item->next) {
@@ -92,6 +94,9 @@ bool j1EntityManager::CleanUp() {
 	App->tex->UnLoad(player_texture);
 	App->tex->UnLoad(debug_texture);
 	App->tex->UnLoad(worm_texture);
+	App->tex->UnLoad(tribale_texture);
+	App->tex->UnLoad(Win_Texture);
+	App->tex->UnLoad(Coin_Texture);
 	return true;
 }
 
@@ -108,6 +113,9 @@ j1Entity *j1EntityManager::CreateEntity(int x, int y, ENTITY_TYPE eType) {
 		break;
 	case ENTITY_TYPE::WIN:
 		Entity = new WinClass(iPoint(x, y));
+		break;
+	case ENTITY_TYPE::COIN:
+		Entity = new CoinClass(iPoint(x, y));
 		break;
 	default:
 		break;
@@ -132,6 +140,7 @@ j1Entity* j1EntityManager::CreateEnemy(int x, int y, ENEMY_TYPE Type) {
 		Entity = new EnemyTribale(iPoint(x, y));
 		break;
 	}
+
 	entities_list.add(Entity);
 	Entity->Start();
 	return Entity;

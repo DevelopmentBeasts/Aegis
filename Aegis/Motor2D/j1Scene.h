@@ -108,8 +108,13 @@ public:
 	bool game_saved=false;
 
 	//Pointer to the player entity
+	
 	j1Entity * PlayerPt=nullptr;
-
+	j1Entity * EnemyWorm1=nullptr;
+	j1Entity * EnemyTribale1=nullptr;
+	j1Entity * WinPt=nullptr;
+	j1Entity * CoinPt=nullptr;
+  
 	//Audio settings
 	float GetMusicVolume();
 	float GetFxVolume();
