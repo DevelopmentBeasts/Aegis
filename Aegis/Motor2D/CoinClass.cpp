@@ -48,16 +48,14 @@ bool CoinClass::Update(float dt) {
 void CoinClass::OnCollision(Collider* c1, Collider* c2) {
 	if (c2->type == COLLIDER_PLAYER) {
 		//sonidito.WAV
-		if (App->scene->current_level == App->scene->level2) {
-			App->scene->FadeToBlack(App->scene->level2);
-		}
-		else if (!(App->scene->current_level == App->scene->level2)) {
+	
+		
 			App->scene->PlayerPt->PlayerCoins++;
 			App->scene->CoinPt->CoinCollider->to_delete = true;
 			App->scene->CoinPt->texture = nullptr;
 			Mix_PlayChannel(1, coindropsound, 1);
 			//Mix_FreeChunk(coindropsound);
-		}		
+			
 	}
 }
 void CoinClass::Draw() {

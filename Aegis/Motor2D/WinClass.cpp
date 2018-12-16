@@ -39,14 +39,19 @@ bool WinClass::Start() {
 bool WinClass::Update(float dt) {
 	Draw();
 	if (Explosion && win_explosion->Finished()) {
-		Explosion = false;
-		CleanUp();
+		if (App->scene->current_level == App->scene->level2) {
+			App->scene->FadeToBlack(App->scene->mainmenu);
+			
+		}else	
+			Explosion = false;
+			CleanUp();
 	}
 	return true;
 }
 void WinClass::OnCollision(Collider* c1, Collider* c2) {
 	if (c2->type == COLLIDER_PLAYER) {
-		Explosion = true;
+		
+			Explosion = true;
 		
 	}
 }
