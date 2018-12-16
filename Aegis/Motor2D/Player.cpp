@@ -25,7 +25,7 @@ PlayerClass::PlayerClass(iPoint pos) : j1Entity(pos, ENTITY_TYPE::PLAYER)  {   /
 
 
 	pugi::xml_parse_result result = AnimsDoc.load_file("PlayerAnims.xml");
-
+	
 	if (result == NULL ) {
 		LOG("The xml file that contains the pushbacks for the animations is not working.PlayerAnims.xml.  error: %s",result.description());
 	}
@@ -151,9 +151,6 @@ bool PlayerClass::Update(float dt) {
 		DieNow();
 	}
 	if (!die) {
-		if (App->input->GetKey(SDL_SCANCODE_SPACE) == j1KeyState::KEY_DOWN) {
-			App->j1entity_manager->CreateEntity(position.x, position.y, ENTITY_TYPE::FIRE_BALL);
-		}
 		//GOD MODE
 		if (App->input->GetKey(SDL_SCANCODE_F10) == j1KeyState::KEY_DOWN) {
 			godmode_activated = !godmode_activated;

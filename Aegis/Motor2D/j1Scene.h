@@ -10,6 +10,27 @@
 struct SDL_Texture;
 class j1Map;
 
+class UiWindow;
+class UiDragBar;
+
+struct UiMainMenu
+{
+	UiButton* github = nullptr;
+	UiButton* play = nullptr;
+	UiButton* exit = nullptr;
+	UiButton* settings = nullptr;
+	UiButton* load = nullptr;
+
+	void Show();
+	void Hide();
+	bool Create();
+
+};
+
+struct Pause
+{
+	bool active;
+};
 
 enum class FadeStep {
 	fade_none,
@@ -46,10 +67,13 @@ public:
 
 	// Load / Save
 	bool Load(pugi::xml_node&);
-	bool Save(pugi::xml_node&) const;
+	bool Save(pugi::xml_node&)const;
 
-	//Called when we want the change the level
-	void LoadLevel(p2SString &level_to_load);
+	//Call this function in order to start a fade to load a level
+	void FadeToBlack(const char* leveltoload);
+
+	//Called when we want the change the level -> PRIVATE
+	void LoadLevel(const char* level_to_load);
 
 	void ButtonAction(UiButton* button);
 
@@ -59,15 +83,11 @@ private:
 	//Draws the fade 
 	void UpdateFade();
 
-	//Call this function in order to start a fade to load a level
-	void FadeToBlack(p2SString &leveltoload);
-
-
 public:
 
-	p2SString	intro  ;
-	p2SString	level1 ;		//Level 1
-	p2SString	level2 ;		//Level 2
+	const char*	mainmenu;
+	const char* level1 ;		//Level 1
+	const char*	level2 ;		//Level 2
 
 	////Pointer to the current map
 	j1Map* current_map=nullptr;
@@ -79,16 +99,16 @@ public:
 	float screeninity;
 
 	pugi::xml_document doc;
-public:
-	bool LoadLevel1NOW = false;
-	bool LoadLevel2NOW = false;
+
 	bool SceneLoaded = false;
 	bool PlayerExists = false;
 	bool findplayer = false;
-public:
+
+	//Turns true if we save the game
+	bool game_saved=false;
 
 	//Pointer to the player entity
-	j1Entity * PlayerPt;
+	j1Entity * PlayerPt=nullptr;
 
 private:
 
@@ -97,11 +117,25 @@ private:
 	uint fade_start_time;		//Time at which we start the fade
 	SDL_Rect fade_rect;			//Square
 	FadeStep fade_step;			//Fading vs unfading
-	p2SString* level_to_load;	//Level we want to load
+	p2SString level_to_load;	//Level we want to load
 
 	//Level that is loaded at the moment
-	p2SString* current_level = nullptr;
+	p2SString current_level;
 
+	//UI
+	//Turn this true to close the app
+	UiMainMenu ui_main_menu;
+	bool close_app= false;
+
+	bool CreatePauseWindow();
+	UiWindow* ui_pause_window=nullptr;
+
+	bool CreateSettingsWindow();
+	UiWindow* ui_settings_window = nullptr;
+
+	//settings sound
+	UiDragBar* fx_bar;
+	UiDragBar* music_bar;
 };
 
 

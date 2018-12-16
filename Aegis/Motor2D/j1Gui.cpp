@@ -11,7 +11,20 @@ j1Gui::j1Gui() : j1Module()
 {
 	name.create("gui");
 
+	pugi::xml_parse_result result=ui_data.load_file("UiConfig.xml");
 	
+	pugi::xml_node icon_data= ui_data.child("properties").child("icons");
+
+	settings = { icon_data.child("settings").attribute("x").as_int(),
+				icon_data.child("settings").attribute("y").as_int(),
+				icon_data.child("settings").attribute("w").as_int(),
+				icon_data.child("settings").attribute("h").as_int() };
+
+	exit = { icon_data.child("exit").attribute("x").as_int(),
+				icon_data.child("exit").attribute("y").as_int(),
+				icon_data.child("exit").attribute("w").as_int(),
+				icon_data.child("exit").attribute("h").as_int() };
+
 }
 
 // Destructor
@@ -43,9 +56,18 @@ bool j1Gui::PreUpdate()
 	return true;
 }
 
-// Called after all Updates
-bool j1Gui::PostUpdate()
+bool j1Gui::Update(float dt)
 {
+	p2List_item<UiDragBar*>* ui_dragbar;
+	if (ui_bars.count() > 0)
+	{
+		for (ui_dragbar = ui_bars.start; ui_dragbar != nullptr; ui_dragbar = ui_dragbar->next)
+		{
+			//Can't find an enum for the Mouse buttons, so I use numbers instead: 1 -> Left click, 2 -> Roll click , 3 -> Right click
+			if (ui_dragbar->data->active &&ui_dragbar->data->MouseOnTop() && App->input->GetMouseButtonDown(1) == KEY_REPEAT)
+				ui_dragbar->data->Act();
+		}
+	}
 
 	p2List_item<UiActiveElement*>* active_element;
 
@@ -73,8 +95,9 @@ bool j1Gui::PostUpdate()
 	{
 		for (ui_element = ui_elements.start; ui_element != nullptr; ui_element = ui_element->next)
 		{
-			ui_element->data->position.x -= App->render->camera.x;
-			ui_element->data->position.y -= App->render->camera.y;
+			ui_element->data->position.x = ui_element->data->draw_position.x - App->render->camera.x;
+			ui_element->data->position.y = ui_element->data->draw_position.y - App->render->camera.y;
+
 			if (ui_element->data->active) {
 
 				//If two elements are nested, the parent will take care of the Draw() function
@@ -83,6 +106,15 @@ bool j1Gui::PostUpdate()
 			}
 		}
 	}
+
+	return true;
+}
+
+// Called after all Updates
+bool j1Gui::PostUpdate()
+{
+
+	
 
 	return true;
 }
@@ -120,9 +152,9 @@ UiLabel* j1Gui::AddLabel(iPoint position, char* label, _TTF_Font* font)
 	return item;
 }
 
-UiButton* j1Gui::AddButton(iPoint position, ButtonSize size, j1Module* callback)
+UiButton* j1Gui::AddButton(iPoint position, ButtonSize size, j1Module* callback, ButtonFunction function)
 {
-	UiButton* item = new UiButton(position, size, callback);
+	UiButton* item = new UiButton(position, size, callback, function);
 	item->Start();
 
 	ui_elements.add(item);
@@ -148,6 +180,15 @@ UiWindow* j1Gui::AddWindow(iPoint position)
 	
 	ui_elements.add(item);
 
+	return item;
+}
+
+UiDragBar* j1Gui::AddDragBar(iPoint position)
+{
+	UiDragBar* item = new UiDragBar(position);
+
+	ui_bars.add(item);
+	ui_elements.add(item);
 
 	return item;
 }
@@ -169,7 +210,7 @@ void j1Gui::DrawUi() const
 }
 
 //UI Element
-UiElement::UiElement(iPoint position) :position(position)
+UiElement::UiElement(iPoint position) :position(position), draw_position(position)
 {
 	active = true;
 }
@@ -185,7 +226,7 @@ UiImage::UiImage(iPoint position, SDL_Rect section) : UiElement(position), secti
 
 void UiImage::Draw()
 {
-	App->render->Blit(atlas, position.x, position.y, &section, 0.0f);
+	App->render->Blit(atlas, position.x, position.y, &section);
 }
 
 void UiImage::CleanUp()
@@ -212,7 +253,7 @@ void UiLabel::CleanUp()
 void UiLabel::Draw()
 {
 	//White
-	SDL_Color color = { 255,255,255,100 };
+	SDL_Color color = { 150,100,220,0 };
 
 	SDL_Texture* texture = App->fonts->Print(text.GetString(), color, font);
 
@@ -249,30 +290,48 @@ bool UiActiveElement::MouseOnTop() const
 
 //=====================================================
 //UI button
-UiButton::UiButton(iPoint position, ButtonSize size, j1Module* callback) : UiActiveElement(position), callback(callback)
+UiButton::UiButton(iPoint position, ButtonSize size, j1Module* callback, ButtonFunction function) : UiActiveElement(position), callback(callback), function(function)
 {
+	//position of the action area
+	action_area.x = position.x;
+	action_area.y = position.y;
+
+
+	pugi::xml_node button_data;
+
 	switch (size)
 	{
 	case ButtonSize::BIG:
-		section_idle = { 5,115,215,71 };
-		section_selected = { 416,171,215,71 };
-
-		action_area.x = position.x;
-		action_area.y = position.y;
-		action_area.w = 215;
-		action_area.h = 71;
+		button_data = App->gui->ui_data.child("properties").child("button_properties").child("big_button");
 		break;
 
 	case ButtonSize::SMALL:
-		section_idle = { 813,77,38,38 };
-		section_selected = { 755,527,38,38 };
-
-		action_area.x = position.x;
-		action_area.y = position.y;
-		action_area.w = 38;
-		action_area.h = 38;
+		button_data = App->gui->ui_data.child("properties").child("button_properties").child("small_button");
 		break;
+
+	case ButtonSize::EXTRA:
+		button_data = App->gui->ui_data.child("properties").child("button_properties").child("large_button");
+		break;
+	case ButtonSize::MICRO:
+		button_data = App->gui->ui_data.child("properties").child("button_properties").child("micro_button");
+		break;
+
 	}
+
+
+	section_idle = {	button_data.child("idle_section").attribute("x").as_int(),
+						button_data.child("idle_section").attribute("y").as_int(),
+						button_data.child("idle_section").attribute("w").as_int(),
+						button_data.child("idle_section").attribute("h").as_int() };
+
+	section_selected = { button_data.child("active_section").attribute("x").as_int(),
+						button_data.child("active_section").attribute("y").as_int(),
+						button_data.child("active_section").attribute("w").as_int(),
+						button_data.child("active_section").attribute("h").as_int() };
+
+	
+	action_area.w = section_idle.w;
+	action_area.h = section_idle.h;
 
 	type = UiType::BUTTON;
 }
@@ -305,7 +364,8 @@ void UiButton::Draw()
 
 void UiButton::Act()
 {
-	callback->ButtonAction(this);
+	if (callback!=nullptr)
+		callback->ButtonAction(this);
 }
 
 UiLabel* UiButton::NestLabel(iPoint label_position, char* text)
@@ -362,8 +422,6 @@ void UiCheckBox::Draw()
 {
 	App->render->Blit(atlas, position.x, position.y, current_section);
 
-
-
 	if (bool_ptr == true)
 		tick->Draw();
 
@@ -394,7 +452,12 @@ UiWindow::UiWindow(iPoint position) : UiElement(position)
 {
 	atlas = App->gui->GetAtlas();
 
-	section = {20,100,500,500};
+	pugi::xml_node window_config= App->gui->ui_data.child("properties").child("window_properties").child("window_section");
+
+	section.x = window_config.attribute("x").as_int();
+	section.y = window_config.attribute("y").as_int();
+	section.w = window_config.attribute("w").as_int();
+	section.h = window_config.attribute("h").as_int();
 }
 
 void UiWindow::CleanUp()
@@ -437,12 +500,98 @@ void UiWindow::NestLabel(iPoint label_position, char*text, _TTF_Font* font)
 	element_list.add(item);
 }
 
-UiButton* UiWindow::NestButton(iPoint button_position, ButtonSize size, j1Module* callback)
+UiButton* UiWindow::NestButton(iPoint button_position, ButtonSize size, j1Module* callback, ButtonFunction function)
 {
-	UiButton* item = new UiButton({ button_position.x + position.x, button_position.y + position.y }, size, callback);
+	UiButton* item =App->gui->AddButton({ button_position.x + position.x, button_position.y + position.y }, size, callback, function);
 	item->parent = this;
 
 	element_list.add(item);
 
 	return item;
+}
+
+UiDragBar* UiWindow::NestBar(iPoint bar_position)
+{
+	UiDragBar* item = App->gui->AddDragBar({ position.x + bar_position.x, position.y + bar_position.y });
+	
+	element_list.add(item);
+	item->parent = this;
+
+	return item;
+}
+
+void UiWindow::ChangeState()
+{
+	active = !active;
+
+	p2List_item<UiElement*>* item;
+	
+	if (element_list.count()>0)
+		for (item = element_list.start; item != nullptr; item = item->next)
+			item->data->active = !item->data->active;
+}
+
+
+//==================================================================================================================
+//Dragable bar
+
+UiDragBar::UiDragBar(iPoint position) :UiElement(position)
+{
+	pugi::xml_node uiproperties = App->gui->ui_data.child("properties").child("dragable_bar").child("bar_section");
+
+	section = { uiproperties.attribute("x").as_int(),
+					uiproperties.attribute("y").as_int(),
+					uiproperties.attribute("w").as_int() ,
+					uiproperties.attribute("h").as_int() };
+
+	action_area.x = position.x;
+	action_area.y = position.y;
+	action_area.w = section.w;
+	action_area.h = section.h;
+
+	bar_length = section.w;
+
+	button = App->gui->AddButton(position, ButtonSize::MICRO);
+	button->parent = this;
+
+	atlas = App->gui->GetAtlas();
+}
+
+void UiDragBar::CleanUp()
+{
+	atlas = nullptr;
+}
+
+bool UiDragBar::MouseOnTop() const
+{
+	bool ret = false;
+
+	iPoint mouse_position;
+	App->input->GetMousePosition(mouse_position.x, mouse_position.y);
+
+	if (mouse_position.x > action_area.x &&
+		mouse_position.x < action_area.x + action_area.w &&
+		mouse_position.y > action_area.y &&
+		mouse_position.y < action_area.y + action_area.h)
+		ret = true;
+
+
+	return ret;
+}
+
+void UiDragBar::Draw()
+{
+	App->render->Blit(atlas, position.x, position.y, &section);
+
+	button->Draw();
+}
+
+void UiDragBar::Act()
+{
+	iPoint mouse_position;
+	App->input->GetMousePosition(mouse_position.x, mouse_position.y);
+
+	value = float(float(button->position.x -position.x)/bar_length);
+
+	button->draw_position.x = mouse_position.x;
 }

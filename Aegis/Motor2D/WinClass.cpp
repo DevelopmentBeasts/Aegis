@@ -39,7 +39,6 @@ bool WinClass::Start() {
 bool WinClass::Update(float dt) {
 	Draw();
 	if (Explosion && win_explosion->Finished()) {
-		App->scene->LoadLevel2NOW = true;
 		Explosion = false;
 		CleanUp();
 	}
