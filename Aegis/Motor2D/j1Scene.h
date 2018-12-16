@@ -150,7 +150,6 @@ public:
 	//Audio settings
 	float GetMusicVolume();
 	float GetFxVolume();
-	//Level that is loaded at the moment
 	p2SString current_level;
 private:
 

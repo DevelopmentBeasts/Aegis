@@ -5,6 +5,8 @@
 #include "j1Fonts.h"
 #include "j1App.h"
 
+class Mix_Chunk;
+
 #define CURSOR_WIDTH 2
 
 
@@ -319,9 +321,6 @@ public:
 	UiWindow*	AddWindow(iPoint position);
 	UiDragBar*	AddDragBar(iPoint position);
 
-	//Call Draw() function of all the UiElements
-	void DrawUi() const;
-
 	SDL_Texture* GetAtlas() const;
 
 public:
@@ -333,6 +332,9 @@ public:
 	SDL_Rect settings;
 	SDL_Rect exit;
 	SDL_Rect gem;
+	Mix_Chunk* button_hover;
+	Mix_Chunk* button_click;
+
 private:
 
 	//List with all the UI elements

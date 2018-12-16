@@ -62,6 +62,8 @@ bool j1Scene::Start()
 
 	timer.Start();
 	
+	App->audio->PlayMusic("audio/music/Audionautix_SportsAction.ogg");
+
 	return true;
 }
 
@@ -114,7 +116,7 @@ bool j1Scene::Update(float dt)
 		FadeToBlack(current_level.GetString());
 
 	if (current_level == mainmenu)
-		App->render->camera.x -= 1 * dt / 15;
+		App->render->camera.x -= 1 * dt / 30;
 
 
 	//Draw the map
@@ -409,6 +411,7 @@ void UiMainMenu::Show()
 
 bool j1Scene::CreateSettingsWindow()
 {
+
 	ui_settings_window = App->gui->AddWindow({1200,50});
 
 	//exit
