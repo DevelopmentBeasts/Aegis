@@ -18,13 +18,15 @@ This game it's been done  using "Tile" program and it has two levels. It is full
 
 ## Developers
 
-![]()
+
 
 Jaume Avinyó
+![https://github.com/DevelopmentBeasts/Aegis/blob/master/docs/descarga.png]()
 IA for all entities, 1/4 of the pathfinding, FPS control, debug functionalities, main character logic, near full game art logic, youtube video and webpage, camera and render logic 1/2.
-* [Github](https://github.com/Jaumeavinyo) @jas3
+* [Github]() @jas3
 
 Joan Marín
+![https://github.com/DevelopmentBeasts/Aegis/blob/master/docs/unknown.png]()
 GUI, 3/4 of the Pathfinding, render logic 1/2, Tile info reading.
 * [Github](https://github.com/X0KA) @X0KA
 
