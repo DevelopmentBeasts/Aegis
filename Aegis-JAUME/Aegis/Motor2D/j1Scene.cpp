@@ -23,7 +23,7 @@ j1Scene::j1Scene() : j1Module()
 
 	intro = "Main_menu.tmx";
 	level1 = "MAGIC_CAVES.tmx";
-	level2 = "AEGIS_RUN.tmx";
+	level2 = "MAGIC_CAVES_2.tmx";
 
 	
 }
@@ -56,7 +56,7 @@ bool j1Scene::Start()
 	PlayerPt = App->j1entity_manager->CreateEntity(App->map->data.start_position.x, App->map->data.start_position.y, ENTITY_TYPE::PLAYER);
 
 	EnemyTribale1 = App->j1entity_manager->CreateEnemy(600, 100, ENEMY_TYPE::TRIBALE);
-	EnemyWorm1 = App->j1entity_manager->CreateEnemy(1400, 250, ENEMY_TYPE::WORM);
+	//EnemyWorm1 = App->j1entity_manager->CreateEnemy(1400, 250, ENEMY_TYPE::WORM);
 	CoinPt = App->j1entity_manager->CreateEntity(300, 300, ENTITY_TYPE::COIN);
 	if (PlayerPt != nullptr) {
 		PlayerExists = true;
