@@ -6,6 +6,8 @@
 #include "j1Fonts.h"
 #include "j1Input.h"
 #include "j1Gui.h"
+#include "j1Audio.h"
+#include "SDL_mixer/include/SDL_mixer.h"
 
 j1Gui::j1Gui() : j1Module()
 {
@@ -47,6 +49,10 @@ bool j1Gui::Start()
 {
 	atlas = App->tex->Load(atlas_file_name.GetString());
 
+	button_hover = Mix_LoadWAV("audio/fx/hover_btn.wav");
+	App->audio->fx.add(button_hover);
+	button_click = Mix_LoadWAV("audio/fx/pressed_btn.wav");
+
 	return true;
 }
 
@@ -58,6 +64,19 @@ bool j1Gui::PreUpdate()
 
 bool j1Gui::Update(float dt)
 {
+	//UPDATE POSITION
+	p2List_item<UiElement*>* ui_item;
+
+	if (ui_elements.count() > 0)
+	{
+		for (ui_item = ui_elements.start; ui_item != nullptr; ui_item = ui_item->next)
+		{
+			ui_item->data->position.x = ui_item->data->draw_position.x - App->render->camera.x;
+			ui_item->data->position.y = ui_item->data->draw_position.y - App->render->camera.y;
+		}
+	}
+
+	
 	p2List_item<UiDragBar*>* ui_dragbar;
 	if (ui_bars.count() > 0)
 	{
@@ -81,8 +100,10 @@ bool j1Gui::Update(float dt)
 
 				//Can't find an enum for the Mouse buttons, so I use numbers instead: 1 -> Left click, 2 -> Roll click , 3 -> Right click
 				if (active_element->data->MouseOnTop() && App->input->GetMouseButtonDown(1) == KEY_UP)
+				{
 					active_element->data->Act();
-
+					Mix_PlayChannel(1, button_click,0);
+				}
 			}
 		}
 	}
@@ -95,9 +116,7 @@ bool j1Gui::Update(float dt)
 	{
 		for (ui_element = ui_elements.start; ui_element != nullptr; ui_element = ui_element->next)
 		{
-			ui_element->data->position.x = ui_element->data->draw_position.x - App->render->camera.x;
-			ui_element->data->position.y = ui_element->data->draw_position.y - App->render->camera.y;
-
+			
 			if (ui_element->data->active) {
 
 				//If two elements are nested, the parent will take care of the Draw() function
@@ -191,22 +210,6 @@ UiDragBar* j1Gui::AddDragBar(iPoint position)
 	ui_elements.add(item);
 
 	return item;
-}
-
-void j1Gui::DrawUi() const
-{
-
-	p2List_item<UiElement*>* item;
-
-	if (ui_elements.count() > 0)
-	{
-		for (item = ui_elements.start; item != nullptr; item = item->next)
-		{
-			//If two elements are nested, the parent will take care of the Draw() function
-			if (item->data->parent == nullptr && item->data->active)
-				item->data->Draw();
-		}
-	}
 }
 
 //UI Element
@@ -345,10 +348,20 @@ void UiButton::Update()
 {
 	if (MouseOnTop())
 	{
-		current_section = &section_selected;
+		if (current_section != &section_selected)
+		{
+			Mix_PlayChannel(1,App->gui->button_hover , 0);
+			current_section = &section_selected;
+		}
 	}
 	else
-		current_section = &section_idle;
+	{
+		if (current_section != &section_idle)
+		{
+			Mix_PlayChannel(1, App->gui->button_hover, 0);
+			current_section = &section_idle;
+		}
+	}
 
 }
 

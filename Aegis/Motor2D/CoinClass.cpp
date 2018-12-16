@@ -36,7 +36,7 @@ bool CoinClass::Start() {
 	
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 1, 2048);
 	coindropsound = Mix_LoadWAV("audio/fx/coindrop.wav");
-	
+
 	return ret;
 }
 
@@ -51,7 +51,7 @@ void CoinClass::OnCollision(Collider* c1, Collider* c2) {
 		App->scene->PlayerPt->PlayerCoins++;
 		App->scene->CoinPt->CoinCollider->to_delete = true;
 		App->scene->CoinPt->texture = nullptr;
-		Mix_PlayChannel(3, coindropsound, 1);
+		Mix_PlayChannel(1, coindropsound, 1);
 		//Mix_FreeChunk(coindropsound);
 	}
 }

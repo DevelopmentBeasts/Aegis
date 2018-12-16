@@ -10,6 +10,7 @@
 
 j1Audio::j1Audio() : j1Module()
 {
+
 	music = NULL;
 	name.create("audio");
 }
@@ -23,11 +24,7 @@ bool j1Audio::Update(float dt)
 
 	Mix_VolumeMusic(App->scene->GetMusicVolume()*128);
 
-	p2List_item<Mix_Chunk*>* fx_item;
-	for (fx_item = fx.start; fx_item != nullptr; fx_item = fx_item->next)
-	{
-		Mix_VolumeChunk(fx_item->data, App->scene->GetFxVolume()*128);
-	}
+	Mix_Volume(1, App->scene->GetFxVolume() * 128);
 
 	return true;
 

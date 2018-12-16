@@ -44,10 +44,6 @@ bool j1Scene::Awake()
 // Called before the first frame
 bool j1Scene::Start()
 {	
-	
-	App->audio->PlayMusic("audio/music/Audionautix_SportsAction.ogg");
-	
-
 	fade_step = FadeStep::fade_none;
 	fade_time = 1000;
 	fade_rect.w = App->render->camera.w;
@@ -67,6 +63,8 @@ bool j1Scene::Start()
 
 	LoadLevel(mainmenu);
 	
+	App->audio->PlayMusic("audio/music/Audionautix_SportsAction.ogg");
+
 	return true;
 }
 
@@ -118,7 +116,7 @@ bool j1Scene::Update(float dt)
 		FadeToBlack(current_level.GetString());
 
 	if (current_level == mainmenu)
-		App->render->camera.x -= 1 * dt / 15;
+		App->render->camera.x -= 1 * dt / 30;
 
 
 	//Draw the map
@@ -388,6 +386,7 @@ void UiMainMenu::Show()
 
 bool j1Scene::CreateSettingsWindow()
 {
+
 	ui_settings_window = App->gui->AddWindow({1200,50});
 
 	//exit
