@@ -72,6 +72,7 @@ bool j1EntityManager::PostUpdate() {
 
 	accumulated_time = 0.0f;
 
+
 	return true;
 }
 
@@ -174,4 +175,17 @@ void j1EntityManager::DestroyAllEntities() {
 			item = item->next;
 		}
 	}
+}
+
+void j1EntityManager::CleanEntities() 
+{
+	p2List_item<j1Entity*>* item;
+	for (item = entities_list.start; item != nullptr; item = item->next)
+	{
+		if (item->data->collider != nullptr)
+			item->data->collider->to_delete = true;
+
+		item->data->CleanUp();
+	}
+
 }

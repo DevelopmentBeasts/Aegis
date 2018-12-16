@@ -44,6 +44,8 @@ public:
 	float accumulated_time;
 	float update_ms_cycle;
 
+	void CleanEntities();
+
 public:
 
 	bool do_logic;

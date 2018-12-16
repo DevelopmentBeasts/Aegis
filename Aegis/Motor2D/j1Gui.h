@@ -103,10 +103,12 @@ public:
 
 	void Draw();
 
-private:
-
 	//Text we want to print
 	p2SString text;
+
+private:
+
+	
 
 	//Font
 	_TTF_Font* font;

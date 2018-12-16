@@ -237,14 +237,14 @@ bool PlayerClass::ExternalInput(p2Queue<player_inputs> &inputs) {
 		/*if (App->input->GetKey(SDL_SCANCODE_G) == j1KeyState::KEY_DOWN) {
 			Gravity = true;
 		}*/
-		if (App->input->GetKey(SDL_SCANCODE_LEFT) == j1KeyState::KEY_DOWN && !SpeedPowerActivatedLeft && DashEnergy>90) {
+		if (App->input->GetKey(SDL_SCANCODE_LEFT) == j1KeyState::KEY_DOWN && !SpeedPowerActivatedLeft && DashEnergy>30) {
 			if (!sensorcollidingleft) {
 				AvailableDistanceleft = PlayerXmlNode.child("sensors").attribute("sensor_distance").as_int();
 			}
 			SpeedPowerActivatedLeft = true;
 			AvailableDistanceRightNow = AvailableDistanceleft;
 		}
-		if (App->input->GetKey(SDL_SCANCODE_RIGHT) == j1KeyState::KEY_DOWN && !SpeedPowerActivatedRight  && DashEnergy > 90) {
+		if (App->input->GetKey(SDL_SCANCODE_RIGHT) == j1KeyState::KEY_DOWN && !SpeedPowerActivatedRight  && DashEnergy > 30) {
 			if (!sensorcollidingright) {
 				AvailableDistanceright = PlayerXmlNode.child("sensors").attribute("sensor_distance").as_int();
 			}
@@ -542,16 +542,12 @@ void PlayerClass::OnCollision(Collider *c1, Collider *c2) {
 		{
 			if (c1->type == COLLIDER_SENSOR) {
 				if (c1 == sensor_collider1) {
-					//LOG("RIGHT SENSOR ACTIVATED");
 					sensorcollidingright = true;
 					AvailableDistanceright = c2->rect.x - c1->rect.x;
-					//LOG(" AvailableDistance IS %i", AvailableDistanceright);
 				}
 				if (c1 == sensor_collider2) {
-					//LOG("LEFT SENSOR ACTIVATED");
 					sensorcollidingleft = true;
 					AvailableDistanceleft = 300 - ((c2->rect.x+c2->rect.w)-c1->rect.x);
-					//LOG(" AvailableDistance IS %i", AvailableDistanceleft);
 				}
 			}
 			if (c1->type == COLLIDER_PLAYER) 
@@ -613,30 +609,46 @@ void PlayerClass::OnCollision(Collider *c1, Collider *c2) {
 }
 
 void PlayerClass::GodMode(float dt) {
-
+	
 	current_animation = &idle;
 	
-	
-	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) {
-		    //LOG("<----GODMODE");
-		    velocity.x = 10 ;
-		    position.x -= velocity.x*(dt/30);
+	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN) {
+		    
+		    velocity.x -= 10 ;
 	}
-	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) {
-		    //LOG("GODMODE---->");
-			velocity.x = 10 ;
-			position.x += velocity.x*(dt / 30);
+	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_UP) {
+		
+		velocity.x += 10;
 	}
-	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) {
-		    //LOG("GODMODE UP");
-		    velocity.y = -10 ;
-		    position.y -= velocity.x*(dt / 30);
+
+	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_DOWN) {
+		    
+			velocity.x += 10 ;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_UP) {
+		
+		velocity.x -= 10;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN) {
+		    
+		    velocity.y -= 10 ;
 	}	
-	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) {
-		    //LOG("GODMODE DOWN");
-		    velocity.y =10 ;
-		    position.y += velocity.x*(dt / 30);
+	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_UP) {
+		
+		velocity.y += 10;
 	}
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN) {
+		    
+			velocity.y +=10 ;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_UP) {
+		
+		velocity.y -= 10;
+	}
+	
+	position.x += velocity.x*(dt/30);
+	position.y += velocity.y*(dt / 30);
+
 }
 
 void PlayerClass::DieNow() {

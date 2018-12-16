@@ -267,9 +267,6 @@ bool j1Map::Load(const char* file_name)
 			data.start_position.y = objectgroup.child("object").attribute("y").as_int();
 			
 		}
-		/*if(objectname == "Win") {
-			data.wincondition = objectgroup.child("object").attribute("x").as_int();
-		}*/
 		if (objectname == "Death colliders") {
 			LoadColliders(objectgroup, &data.colliders, COLLIDER_DEATH);
 		}
@@ -277,15 +274,17 @@ bool j1Map::Load(const char* file_name)
 			LoadColliders(objectgroup, &data.colliders, COLLIDER_WALL);
 		}
 		if (objectname == "Tribale") {
-			App->j1entity_manager->CreateEnemy(objectgroup.child("object").attribute("x").as_int(), objectgroup.child("object").attribute("y").as_int(), ENEMY_TYPE::TRIBALE);
+			LoadEnemies(objectgroup, ENEMY_TYPE::TRIBALE);
 		}
-		if (objectname == "Win") {
-			App->j1entity_manager->CreateEntity(objectgroup.child("object").attribute("x").as_int(), objectgroup.child("object").attribute("y").as_int(), ENTITY_TYPE::WIN);
+		if (objectname == "Worm") {
+			LoadEnemies(objectgroup, ENEMY_TYPE::WORM);
 		}
 		if (objectname == "Coins") {
-			App->j1entity_manager->CreateEntity(objectgroup.child("object").attribute("x").as_int(), objectgroup.child("object").attribute("y").as_int(), ENTITY_TYPE::COIN);		
+			LoadEntities(objectgroup, ENTITY_TYPE::COIN);
 		}
-	
+		if (objectname == "Win") {
+			LoadEntities(objectgroup, ENTITY_TYPE::WIN);
+		}
 
 		
 	}
@@ -527,7 +526,47 @@ bool j1Map::LoadColliders(pugi::xml_node& node, ColliderData* collider, COLLIDER
 	return ret;
 }
 
+bool j1Map::LoadEntities(pugi::xml_node& node, ENTITY_TYPE type)
+{
+	bool ret = true;
+	pugi::xml_node& entities = node.child("object");
 
+	if (entities == NULL) {
+		LOG("Error parsing map xml file: Cannot find 'colliders' tag.");
+		ret = false;
+	}
+	else {
+		for (entities; entities; entities = entities.next_sibling("object")) {
+			iPoint spawn_position;
+			spawn_position.x = entities.attribute("x").as_int();
+			spawn_position.y = entities.attribute("y").as_int();
+
+			App->j1entity_manager->CreateEntity(spawn_position.x, spawn_position.y, type);
+		}
+	}
+	return ret;
+}
+
+bool j1Map::LoadEnemies(pugi::xml_node& node, ENEMY_TYPE type)
+{
+	bool ret = true;
+	pugi::xml_node& enemies = node.child("object");
+
+	if (enemies == NULL) {
+		LOG("Error parsing map xml file: Cannot find 'colliders' tag.");
+		ret = false;
+	}
+	else {
+		for (enemies; enemies; enemies = enemies.next_sibling("object")) {
+			iPoint spawn_position;
+			spawn_position.x = enemies.attribute("x").as_int();
+			spawn_position.y = enemies.attribute("y").as_int();
+
+			App->j1entity_manager->CreateEnemy(spawn_position.x, spawn_position.y, type);
+		}
+	}
+	return ret;
+}
 
 bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
 {
@@ -573,3 +612,5 @@ bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
 
 	return ret;
 }
+
+

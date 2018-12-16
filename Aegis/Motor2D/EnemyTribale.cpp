@@ -344,7 +344,4 @@ EntityDirection EnemyTribale::NewMovement(const p2DynArray<iPoint>*EntityPath) {
 		else return NO_DIRECTION; // SI NO ENCAJA DENTO DE "i+2"
 	}
 	
-
-	
-
 }

@@ -41,6 +41,15 @@ bool CoinClass::Start() {
 	return ret;
 }
 
+bool CoinClass::CleanUp()
+{
+	App->tex->UnLoad(texture);
+	if (CoinCollider !=nullptr)
+		CoinCollider->to_delete = true;
+
+	return true;
+}
+
 bool CoinClass::Update(float dt) {
 
 	Draw();
@@ -52,8 +61,7 @@ void CoinClass::OnCollision(Collider* c1, Collider* c2) {
 		App->scene->PlayerPt->PlayerCoins++;
 		CoinCollider->to_delete = true;
 		App->tex->UnLoad(texture);
-		Mix_PlayChannel(3, coindropsound, 1);
-		//Mix_FreeChunk(coindropsound);
+		Mix_PlayChannel(3, coindropsound, 0);
 	}
 }
 void CoinClass::Draw() {
