@@ -16,7 +16,9 @@
 #include "j1Pathfinding.h"
 #include "j1Gui.h"
 
+#include "SDL_mixer\include\SDL_mixer.h"
 
+//#pragma comment( lib, "SDL_mixer/libx86/SDL2_mixer.lib" )
 j1Scene::j1Scene() : j1Module()
 {
 	name.create("scene");
@@ -44,6 +46,9 @@ bool j1Scene::Awake()
 bool j1Scene::Start()
 {	
 	
+	App->audio->PlayMusic("audio/music/Audionautix_SportsAction.ogg");
+	
+
 	fade_step = FadeStep::fade_none;
 	fade_time = 1000;
 	fade_rect.w = App->render->camera.w;
@@ -57,8 +62,6 @@ bool j1Scene::Start()
 
 	LoadLevel(mainmenu);
 	
-	
-
 	return true;
 }
 
@@ -75,13 +78,11 @@ bool j1Scene::PreUpdate()
 // Called each loop iteration
 bool j1Scene::Update(float dt)
 {
-
 	//This should be in Start(), but for some reason it doesn't work
 	//So I call it here
 	static bool create_menu= ui_main_menu.Create();
-	static bool lmao = CreatePauseWindow();
-	static bool eskete = CreateSettingsWindow();
-	
+	static bool create_pause_menu = CreatePauseWindow();
+	static bool create_settings_window = CreateSettingsWindow();
 	
 	if (close_app)
 		return false;
@@ -225,6 +226,9 @@ void j1Scene::UpdateFade()
 				ui_pause_window->ChangeState();
 				ui_main_menu.Show();
 			}
+
+			if (ui_settings_window->active)
+				ui_settings_window->ChangeState();
 		}
 		break;
 	case FadeStep::fade_from_black:
@@ -298,11 +302,7 @@ void j1Scene::ButtonAction(UiButton* button)
 		ShellExecuteA(NULL, "open", "https://github.com/DevelopmentBeasts/Aegis", NULL, NULL, SW_SHOWNORMAL);
 		break;
 
-	
-	
 	}
-	
-	
 }
 
 bool j1Scene::CreatePauseWindow()
@@ -390,12 +390,35 @@ bool j1Scene::CreateSettingsWindow()
 	window_exit->NestImage({ 0,0 }, App->gui->exit);
 
 	//music bar
-	music_bar = ui_settings_window->NestBar({ 100,100 });
+	music_bar = ui_settings_window->NestBar({ 300,200 });
+	ui_settings_window->NestLabel({50,200},"MUSIC");
 
 	//sound bar
-	fx_bar= ui_settings_window->NestBar({ 100,150 });
+	fx_bar= ui_settings_window->NestBar({ 300,450 });
+	ui_settings_window->NestLabel({50, 450 }, "FX");
+
+	//volume label
+	ui_settings_window->NestLabel({330,100},"VOLUME");
 
 	ui_settings_window->ChangeState();
 
 	return true;
+}
+
+float j1Scene::GetFxVolume()
+{
+	if (fx_bar != nullptr)
+		return fx_bar->GetValue();
+
+	else
+		return 1.0;
+}
+
+float j1Scene::GetMusicVolume()
+{
+	if (music_bar != nullptr)
+		return music_bar->GetValue();
+
+	else 
+		return 1.0;
 }

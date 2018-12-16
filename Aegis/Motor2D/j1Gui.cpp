@@ -483,21 +483,24 @@ void UiWindow::Draw()
 	}
 }
 
-void UiWindow::NestImage(iPoint image_position, SDL_Rect section)
+UiImage* UiWindow::NestImage(iPoint image_position, SDL_Rect section)
 {
-	UiImage* item = new UiImage({ image_position.x + position.x, image_position.y + position.y }, section);
+	UiImage* item = App->gui->AddImage({ image_position.x + position.x, image_position.y + position.y }, section);
 	item->parent = this;
 
 	element_list.add(item);
 
+	return item;
 }
 
-void UiWindow::NestLabel(iPoint label_position, char*text, _TTF_Font* font)
+UiLabel* UiWindow::NestLabel(iPoint label_position, char*text, _TTF_Font* font)
 {
-	UiLabel* item = new UiLabel({ label_position.x + position.x, label_position.y + position.y }, text, font);
+	UiLabel* item = App->gui->AddLabel({ label_position.x + position.x, label_position.y + position.y }, text, font);
 	item->parent = this;
 
 	element_list.add(item);
+
+	return item;
 }
 
 UiButton* UiWindow::NestButton(iPoint button_position, ButtonSize size, j1Module* callback, ButtonFunction function)
@@ -551,8 +554,9 @@ UiDragBar::UiDragBar(iPoint position) :UiElement(position)
 
 	bar_length = section.w;
 
-	button = App->gui->AddButton(position, ButtonSize::MICRO);
+	button = App->gui->AddButton({ position.x+int(bar_length)/2,position.y }, ButtonSize::MICRO);
 	button->parent = this;
+	value = 0.5f;
 
 	atlas = App->gui->GetAtlas();
 }

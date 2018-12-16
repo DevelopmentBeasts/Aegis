@@ -263,8 +263,8 @@ public:
 	//turn visible or invisible
 	void ChangeState();
 
-	void NestImage(iPoint image_position, SDL_Rect section);
-	void NestLabel(iPoint label_position, char* text = nullptr, _TTF_Font* font = App->fonts->default);
+	UiImage* NestImage(iPoint image_position, SDL_Rect section);
+	UiLabel* NestLabel(iPoint label_position, char* text = nullptr, _TTF_Font* font = App->fonts->default);
 	UiButton* NestButton(iPoint button_position, ButtonSize size, j1Module* callback = nullptr, ButtonFunction function=ButtonFunction::NONE);
 	UiDragBar* NestBar(iPoint bar_position);
 

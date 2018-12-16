@@ -5,7 +5,7 @@
 	<textures />
 	<audio />
 	<map />
-	<scene level="MAGIC_CAVES.tmx" />
+	<scene level="AEGIS_RUN.tmx" />
 	<entities />
 	<:anonymous />
 	<pathfinding />

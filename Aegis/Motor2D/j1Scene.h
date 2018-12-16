@@ -110,6 +110,10 @@ public:
 	//Pointer to the player entity
 	j1Entity * PlayerPt=nullptr;
 
+	//Audio settings
+	float GetMusicVolume();
+	float GetFxVolume();
+
 private:
 
 	//Fade
@@ -134,8 +138,8 @@ private:
 	UiWindow* ui_settings_window = nullptr;
 
 	//settings sound
-	UiDragBar* fx_bar;
-	UiDragBar* music_bar;
+	UiDragBar* fx_bar = nullptr;
+	UiDragBar* music_bar = nullptr;
 };
 
 
