@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="200" height="70" tilewidth="16" tileheight="16" nextobjectid="92">
+ <properties>
+  <property name="Scale" type="float" value="5"/>
+ </properties>
  <tileset firstgid="1" name="pixelcave_tileset_map" tilewidth="16" tileheight="16" tilecount="1024" columns="32">
   <image source="pixelcave_tileset_map.png" width="512" height="512"/>
  </tileset>

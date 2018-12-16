@@ -118,7 +118,7 @@ public:
 	//Audio settings
 	float GetMusicVolume();
 	float GetFxVolume();
-
+	p2SString current_level;
 private:
 
 	//Fade
@@ -129,7 +129,7 @@ private:
 	p2SString level_to_load;	//Level we want to load
 
 	//Level that is loaded at the moment
-	p2SString current_level;
+	
 
 	//UI
 	//Turn this true to close the app
