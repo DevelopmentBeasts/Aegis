@@ -1,3 +1,3 @@
 ------"AEGIS"------
 
-This G
+Game creators: Joan Marín and Jaume Avinyó
